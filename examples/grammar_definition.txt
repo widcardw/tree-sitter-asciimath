@@ -1,0 +1,54 @@
+/**
+ * From http://asciimath.org
+ * v ::= [A-Za-z] | greek letters | numbers | other constant symbols
+ * u ::= sqrt | text | bb | other unary symbols for font commands
+ * b ::= frac | root | stackrel | other binary symbols
+ * l ::= ( | [ | { | (: | {: | other left brackets
+ * r ::= ) | ] | } | :) | :} | other right brackers
+ * S ::= v | lEr | uS | bSS        # Simple expression
+ * I ::= S_S | S^S | S_S^S | S     # Intermediate expression
+ * E ::= IE | I/I                  # Expression
+ */
+
+source_file -> E
+
+// expression repeat(E2)
+E -> null | E2 E
+
+E2 -> intermediate_expr | multi_linebreak
+
+// simple expression
+S -> constant_symbol
+    | literal_string
+    | left_bracket E right_bracket
+    | unary_expression
+    | binary_expression
+    | suffix_expression
+    | infix_expression
+
+intermediate_expr -> S
+    | S_S
+    | S^S
+    | S_S^S
+
+unary_expression -> unary_symbol S
+
+binary_expression -> binary_symbol S S
+
+infix_expression -> S infix_symbol S
+
+suffix_expression -> S suffix_symbol
+
+partial_expression -> partial_symbol partial_upper S S
+
+partial_upper -> null | '^' S
+
+partial_symbol -> 'pp'
+
+multi_linebreak -> /\n{2,}/
+
+matrix -> left_bracket repeat1(matrix_row) right_bracket
+
+matrix_row -> I repeat(seq(',', I)) ';'
+
+

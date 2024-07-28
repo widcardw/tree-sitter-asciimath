@@ -8,3 +8,5 @@ References
 
 - http://asciimath.org
 - https://github.com/asciimath/asciimathml
+- https://gist.github.com/Aerijo/df27228d70c633e088b0591b8857eeef
+
