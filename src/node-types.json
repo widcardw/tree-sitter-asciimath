@@ -1,6 +1,6 @@
 [
   {
-    "type": "binary_expression",
+    "type": "binary_expr",
     "named": true,
     "fields": {},
     "children": {
@@ -8,19 +8,285 @@
       "required": true,
       "types": [
         {
-          "type": "binary_expression",
+          "type": "binary_symbol",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "simple_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "binary_frac",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "intermediate_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "binary_symbol",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "bracket_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_frac",
           "named": true
         },
         {
-          "type": "operator",
+          "type": "concatenation",
           "named": true
         },
         {
-          "type": "unary_expression",
+          "type": "intermediate_expression",
+          "named": true
+        },
+        {
+          "type": "left_bracket",
+          "named": true
+        },
+        {
+          "type": "right_bracket",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "concatenation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_frac",
+          "named": true
+        },
+        {
+          "type": "concatenation",
+          "named": true
+        },
+        {
+          "type": "intermediate_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "constant_symbol",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "intermediate_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "simple_expression",
+          "named": true
+        },
+        {
+          "type": "subscript",
+          "named": true
+        },
+        {
+          "type": "subscript_superscript",
+          "named": true
+        },
+        {
+          "type": "superscript",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "left_bracket",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "literal_string",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        },
+        {
+          "type": "string_fragment",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "matrix_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "left_bracket",
+          "named": true
+        },
+        {
+          "type": "matrix_row_expr",
+          "named": true
+        },
+        {
+          "type": "right_bracket",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "matrix_row_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_frac",
+          "named": true
+        },
+        {
+          "type": "concatenation",
+          "named": true
+        },
+        {
+          "type": "intermediate_expression",
+          "named": true
+        },
+        {
+          "type": "left_bracket",
+          "named": true
+        },
+        {
+          "type": "right_bracket",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "other_matrix_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "left_bracket",
+          "named": true
+        },
+        {
+          "type": "other_matrix_row_expr",
+          "named": true
+        },
+        {
+          "type": "right_bracket",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "other_matrix_row_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_frac",
+          "named": true
+        },
+        {
+          "type": "concatenation",
+          "named": true
+        },
+        {
+          "type": "intermediate_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "right_bracket",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "simple_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_expr",
+          "named": true
+        },
+        {
+          "type": "bracket_expr",
+          "named": true
+        },
+        {
+          "type": "constant_symbol",
+          "named": true
+        },
+        {
+          "type": "literal_string",
+          "named": true
+        },
+        {
+          "type": "matrix_expr",
+          "named": true
+        },
+        {
+          "type": "other_matrix_expr",
+          "named": true
+        },
+        {
+          "type": "unary_expr",
           "named": true
         }
       ]
@@ -35,22 +301,26 @@
       "required": false,
       "types": [
         {
-          "type": "binary_expression",
+          "type": "binary_frac",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "concatenation",
           "named": true
         },
         {
-          "type": "unary_expression",
+          "type": "intermediate_expression",
+          "named": true
+        },
+        {
+          "type": "multi_linebreak",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "unary_expression",
+    "type": "subscript",
     "named": true,
     "fields": {},
     "children": {
@@ -58,30 +328,472 @@
       "required": true,
       "types": [
         {
-          "type": "binary_expression",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "operator",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
+          "type": "simple_expression",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "identifier",
+    "type": "subscript_superscript",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "simple_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "superscript",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "simple_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "unary_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "simple_expression",
+          "named": true
+        },
+        {
+          "type": "unary_symbol",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "unary_symbol",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "!",
+    "named": false
+  },
+  {
+    "type": "!!",
+    "named": false
+  },
+  {
+    "type": "\"",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": "(:",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": ",",
+    "named": false
+  },
+  {
+    "type": "/",
+    "named": false
+  },
+  {
+    "type": ":)",
+    "named": false
+  },
+  {
+    "type": ":}",
+    "named": false
+  },
+  {
+    "type": ";",
+    "named": false
+  },
+  {
+    "type": "Alpha",
+    "named": false
+  },
+  {
+    "type": "Beta",
+    "named": false
+  },
+  {
+    "type": "Chi",
+    "named": false
+  },
+  {
+    "type": "Delta",
+    "named": false
+  },
+  {
+    "type": "Epsilon",
+    "named": false
+  },
+  {
+    "type": "Eta",
+    "named": false
+  },
+  {
+    "type": "Gamma",
+    "named": false
+  },
+  {
+    "type": "Im",
+    "named": false
+  },
+  {
+    "type": "Iota",
+    "named": false
+  },
+  {
+    "type": "Kappa",
+    "named": false
+  },
+  {
+    "type": "Lambda",
+    "named": false
+  },
+  {
+    "type": "Mu",
+    "named": false
+  },
+  {
+    "type": "Nu",
+    "named": false
+  },
+  {
+    "type": "Omega",
+    "named": false
+  },
+  {
+    "type": "Omicron",
+    "named": false
+  },
+  {
+    "type": "Phi",
+    "named": false
+  },
+  {
+    "type": "Pi",
+    "named": false
+  },
+  {
+    "type": "Psi",
+    "named": false
+  },
+  {
+    "type": "Re",
+    "named": false
+  },
+  {
+    "type": "Rho",
+    "named": false
+  },
+  {
+    "type": "Sigma",
+    "named": false
+  },
+  {
+    "type": "Tau",
+    "named": false
+  },
+  {
+    "type": "Theta",
+    "named": false
+  },
+  {
+    "type": "Upsilon",
+    "named": false
+  },
+  {
+    "type": "Xi",
+    "named": false
+  },
+  {
+    "type": "Zeta",
+    "named": false
+  },
+  {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "]",
+    "named": false
+  },
+  {
+    "type": "^",
+    "named": false
+  },
+  {
+    "type": "_",
+    "named": false
+  },
+  {
+    "type": "aleph",
+    "named": false
+  },
+  {
+    "type": "alpha",
+    "named": false
+  },
+  {
+    "type": "atop",
+    "named": false
+  },
+  {
+    "type": "bb",
+    "named": false
+  },
+  {
+    "type": "beta",
+    "named": false
+  },
+  {
+    "type": "bold",
+    "named": false
+  },
+  {
+    "type": "cal",
+    "named": false
+  },
+  {
+    "type": "cc",
+    "named": false
+  },
+  {
+    "type": "chi",
+    "named": false
+  },
+  {
+    "type": "choose",
+    "named": false
+  },
+  {
+    "type": "del",
+    "named": false
+  },
+  {
+    "type": "delta",
+    "named": false
+  },
+  {
+    "type": "ell",
+    "named": false
+  },
+  {
+    "type": "emptyset",
+    "named": false
+  },
+  {
+    "type": "epsilon",
+    "named": false
+  },
+  {
+    "type": "escape_sequence",
     "named": true
   },
   {
-    "type": "operator",
+    "type": "eta",
+    "named": false
+  },
+  {
+    "type": "exists",
+    "named": false
+  },
+  {
+    "type": "forall",
+    "named": false
+  },
+  {
+    "type": "fr",
+    "named": false
+  },
+  {
+    "type": "frac",
+    "named": false
+  },
+  {
+    "type": "frak",
+    "named": false
+  },
+  {
+    "type": "gamma",
+    "named": false
+  },
+  {
+    "type": "grad",
+    "named": false
+  },
+  {
+    "type": "hbar",
+    "named": false
+  },
+  {
+    "type": "infty",
+    "named": false
+  },
+  {
+    "type": "iota",
+    "named": false
+  },
+  {
+    "type": "italic",
+    "named": false
+  },
+  {
+    "type": "kappa",
+    "named": false
+  },
+  {
+    "type": "lambda",
+    "named": false
+  },
+  {
+    "type": "monospace",
+    "named": false
+  },
+  {
+    "type": "mp",
+    "named": false
+  },
+  {
+    "type": "mu",
+    "named": false
+  },
+  {
+    "type": "multi_linebreak",
     "named": true
+  },
+  {
+    "type": "nabla",
+    "named": false
+  },
+  {
+    "type": "nu",
+    "named": false
+  },
+  {
+    "type": "omega",
+    "named": false
+  },
+  {
+    "type": "omicron",
+    "named": false
+  },
+  {
+    "type": "over",
+    "named": false
+  },
+  {
+    "type": "partial",
+    "named": false
+  },
+  {
+    "type": "phi",
+    "named": false
+  },
+  {
+    "type": "pi",
+    "named": false
+  },
+  {
+    "type": "pm",
+    "named": false
+  },
+  {
+    "type": "psi",
+    "named": false
+  },
+  {
+    "type": "rho",
+    "named": false
+  },
+  {
+    "type": "root",
+    "named": false
+  },
+  {
+    "type": "sf",
+    "named": false
+  },
+  {
+    "type": "sigma",
+    "named": false
+  },
+  {
+    "type": "sqrt",
+    "named": false
+  },
+  {
+    "type": "stackrel",
+    "named": false
+  },
+  {
+    "type": "string_fragment",
+    "named": true
+  },
+  {
+    "type": "tau",
+    "named": false
+  },
+  {
+    "type": "text",
+    "named": false
+  },
+  {
+    "type": "theta",
+    "named": false
+  },
+  {
+    "type": "tt",
+    "named": false
+  },
+  {
+    "type": "upsilon",
+    "named": false
+  },
+  {
+    "type": "xi",
+    "named": false
+  },
+  {
+    "type": "zeta",
+    "named": false
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "{:",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
   }
 ]

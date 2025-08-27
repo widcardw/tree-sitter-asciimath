@@ -1,0 +1,27 @@
+source -> simple_expr | multi_line_expr
+
+constant_symbol -> /[A-Za-z]+/ | number_symbol | tokens
+
+number_symbol -> /\d+/
+
+left_bracket -> ( | [ | { | (: | {:
+
+right_bracket -> ) | ] | } | :) | :}
+
+single_line_expr -> repeat(simple_expr)
+
+simple_expr -> constant_symbol
+    | literal_string
+    | intermediate_expr ?
+    | left_bracket simple_expr right_bracket
+    | unary_expr
+    | binary_expr
+    | infix_expr
+    | suffix_expr
+
+intermediate_expr -> simple_expr
+    | simple_expr _ simple_expr
+    | simple_expr ^ simple_expr
+    | simple_expr _ simple_expr ^ simple_expr
+
+
