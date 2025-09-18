@@ -34,7 +34,11 @@
         }
       ]
     },
-    "constant_symbol": {
+    "number_symbol": {
+      "type": "PATTERN",
+      "value": "\\d+(\\.\\d+)?"
+    },
+    "italic_symbol": {
       "type": "CHOICE",
       "members": [
         {
@@ -292,14 +296,128 @@
         {
           "type": "STRING",
           "value": "mp"
+        }
+      ]
+    },
+    "math_op": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "+"
+        },
+        {
+          "type": "STRING",
+          "value": "-"
+        },
+        {
+          "type": "STRING",
+          "value": "*"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        },
+        {
+          "type": "STRING",
+          "value": "lt"
+        },
+        {
+          "type": "STRING",
+          "value": "gt"
+        },
+        {
+          "type": "STRING",
+          "value": ">="
+        },
+        {
+          "type": "STRING",
+          "value": "<="
+        },
+        {
+          "type": "STRING",
+          "value": "=>"
+        },
+        {
+          "type": "STRING",
+          "value": "=/=>"
+        },
+        {
+          "type": "STRING",
+          "value": "~>"
+        },
+        {
+          "type": "STRING",
+          "value": "-/->"
+        },
+        {
+          "type": "STRING",
+          "value": "<-/-"
+        },
+        {
+          "type": "STRING",
+          "value": "<-/->"
+        },
+        {
+          "type": "STRING",
+          "value": "<=="
+        },
+        {
+          "type": "STRING",
+          "value": "<=>"
+        },
+        {
+          "type": "STRING",
+          "value": "<=/=>"
+        },
+        {
+          "type": "STRING",
+          "value": "AA"
+        },
+        {
+          "type": "STRING",
+          "value": "EE"
+        },
+        {
+          "type": "STRING",
+          "value": "_|_"
+        },
+        {
+          "type": "STRING",
+          "value": "TT"
+        },
+        {
+          "type": "STRING",
+          "value": "|--"
+        },
+        {
+          "type": "STRING",
+          "value": "|=="
+        }
+      ]
+    },
+    "constant_symbol": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "italic_symbol"
         },
         {
           "type": "PATTERN",
           "value": "[A-Za-z]+"
         },
         {
-          "type": "PATTERN",
-          "value": "\\d+(\\.\\d+)?"
+          "type": "SYMBOL",
+          "name": "number_symbol"
         },
         {
           "type": "PATTERN",
@@ -650,68 +768,6 @@
         ]
       }
     },
-    "other_matrix_row_expr": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_expression"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ","
-              },
-              {
-                "type": "SYMBOL",
-                "name": "_expression"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "other_matrix_expr": {
-      "type": "PREC_LEFT",
-      "value": 7,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "left_bracket"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "other_matrix_row_expr"
-          },
-          {
-            "type": "REPEAT",
-            "content": {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": ";"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "other_matrix_row_expr"
-                }
-              ]
-            }
-          },
-          {
-            "type": "SYMBOL",
-            "name": "right_bracket"
-          }
-        ]
-      }
-    },
     "unary_expr": {
       "type": "PREC_LEFT",
       "value": 4,
@@ -797,10 +853,6 @@
         {
           "type": "SYMBOL",
           "name": "matrix_expr"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "other_matrix_expr"
         }
       ]
     },

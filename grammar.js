@@ -199,20 +199,7 @@ module.exports = grammar({
 				),
 			),
 
-		other_matrix_row_expr: ($) =>
-			seq($._expression, repeat(seq(",", $._expression))),
-
-		other_matrix_expr: ($) =>
-			prec.left(
-				7,
-				seq(
-					$.left_bracket,
-					$.other_matrix_row_expr,
-					repeat(seq(";", $.other_matrix_row_expr)),
-					$.right_bracket,
-				),
-			),
-
+		
 		unary_expr: ($) => prec.left(4, seq($.unary_symbol, $.simple_expression)),
 
 		binary_expr: ($) =>
@@ -235,7 +222,6 @@ module.exports = grammar({
 				$.bracket_expr,
 				$.binary_expr,
 				$.matrix_expr,
-				$.other_matrix_expr,
 			),
 
 		subscript: ($) =>
