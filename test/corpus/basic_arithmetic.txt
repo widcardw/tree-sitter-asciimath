@@ -1,0 +1,29 @@
+==================
+Basic arithmetic expressions
+==================
+
+a + b
+4 / 5
+
+---
+
+(source_file
+  (concatenation
+    (intermediate_expression
+      (simple_expression
+        (identifier)))
+    (concatenation
+      (intermediate_expression
+        (simple_expression
+          (plus)))
+      (concatenation
+        (intermediate_expression
+          (simple_expression
+            (identifier)))
+        (binary_frac
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol))))))))

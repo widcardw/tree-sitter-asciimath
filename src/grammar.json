@@ -38,487 +38,453 @@
       "type": "PATTERN",
       "value": "\\d+(\\.\\d+)?"
     },
-    "italic_symbol": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "alpha"
-        },
-        {
-          "type": "STRING",
-          "value": "beta"
-        },
-        {
-          "type": "STRING",
-          "value": "gamma"
-        },
-        {
-          "type": "STRING",
-          "value": "delta"
-        },
-        {
-          "type": "STRING",
-          "value": "epsilon"
-        },
-        {
-          "type": "STRING",
-          "value": "zeta"
-        },
-        {
-          "type": "STRING",
-          "value": "eta"
-        },
-        {
-          "type": "STRING",
-          "value": "theta"
-        },
-        {
-          "type": "STRING",
-          "value": "iota"
-        },
-        {
-          "type": "STRING",
-          "value": "kappa"
-        },
-        {
-          "type": "STRING",
-          "value": "lambda"
-        },
-        {
-          "type": "STRING",
-          "value": "mu"
-        },
-        {
-          "type": "STRING",
-          "value": "nu"
-        },
-        {
-          "type": "STRING",
-          "value": "xi"
-        },
-        {
-          "type": "STRING",
-          "value": "omicron"
-        },
-        {
-          "type": "STRING",
-          "value": "pi"
-        },
-        {
-          "type": "STRING",
-          "value": "rho"
-        },
-        {
-          "type": "STRING",
-          "value": "sigma"
-        },
-        {
-          "type": "STRING",
-          "value": "tau"
-        },
-        {
-          "type": "STRING",
-          "value": "upsilon"
-        },
-        {
-          "type": "STRING",
-          "value": "phi"
-        },
-        {
-          "type": "STRING",
-          "value": "chi"
-        },
-        {
-          "type": "STRING",
-          "value": "psi"
-        },
-        {
-          "type": "STRING",
-          "value": "omega"
-        },
-        {
-          "type": "STRING",
-          "value": "Alpha"
-        },
-        {
-          "type": "STRING",
-          "value": "Beta"
-        },
-        {
-          "type": "STRING",
-          "value": "Gamma"
-        },
-        {
-          "type": "STRING",
-          "value": "Delta"
-        },
-        {
-          "type": "STRING",
-          "value": "Epsilon"
-        },
-        {
-          "type": "STRING",
-          "value": "Zeta"
-        },
-        {
-          "type": "STRING",
-          "value": "Eta"
-        },
-        {
-          "type": "STRING",
-          "value": "Theta"
-        },
-        {
-          "type": "STRING",
-          "value": "Iota"
-        },
-        {
-          "type": "STRING",
-          "value": "Kappa"
-        },
-        {
-          "type": "STRING",
-          "value": "Lambda"
-        },
-        {
-          "type": "STRING",
-          "value": "Mu"
-        },
-        {
-          "type": "STRING",
-          "value": "Nu"
-        },
-        {
-          "type": "STRING",
-          "value": "Xi"
-        },
-        {
-          "type": "STRING",
-          "value": "Omicron"
-        },
-        {
-          "type": "STRING",
-          "value": "Pi"
-        },
-        {
-          "type": "STRING",
-          "value": "Rho"
-        },
-        {
-          "type": "STRING",
-          "value": "Sigma"
-        },
-        {
-          "type": "STRING",
-          "value": "Tau"
-        },
-        {
-          "type": "STRING",
-          "value": "Upsilon"
-        },
-        {
-          "type": "STRING",
-          "value": "Phi"
-        },
-        {
-          "type": "STRING",
-          "value": "Chi"
-        },
-        {
-          "type": "STRING",
-          "value": "Psi"
-        },
-        {
-          "type": "STRING",
-          "value": "Omega"
-        },
-        {
-          "type": "STRING",
-          "value": "pi"
-        },
-        {
-          "type": "STRING",
-          "value": "infty"
-        },
-        {
-          "type": "STRING",
-          "value": "hbar"
-        },
-        {
-          "type": "STRING",
-          "value": "ell"
-        },
-        {
-          "type": "STRING",
-          "value": "Re"
-        },
-        {
-          "type": "STRING",
-          "value": "Im"
-        },
-        {
-          "type": "STRING",
-          "value": "aleph"
-        },
-        {
-          "type": "STRING",
-          "value": "nabla"
-        },
-        {
-          "type": "STRING",
-          "value": "partial"
-        },
-        {
-          "type": "STRING",
-          "value": "forall"
-        },
-        {
-          "type": "STRING",
-          "value": "exists"
-        },
-        {
-          "type": "STRING",
-          "value": "emptyset"
-        },
-        {
-          "type": "STRING",
-          "value": "grad"
-        },
-        {
-          "type": "STRING",
-          "value": "del"
-        },
-        {
-          "type": "STRING",
-          "value": "pm"
-        },
-        {
-          "type": "STRING",
-          "value": "mp"
-        }
-      ]
+    "identifier": {
+      "type": "PATTERN",
+      "value": "[A-Za-z]+"
     },
-    "math_op": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "+"
-        },
-        {
-          "type": "STRING",
-          "value": "-"
-        },
-        {
-          "type": "STRING",
-          "value": "*"
-        },
-        {
-          "type": "STRING",
-          "value": "="
-        },
-        {
-          "type": "STRING",
-          "value": "<"
-        },
-        {
-          "type": "STRING",
-          "value": ">"
-        },
-        {
-          "type": "STRING",
-          "value": "lt"
-        },
-        {
-          "type": "STRING",
-          "value": "gt"
-        },
-        {
-          "type": "STRING",
-          "value": ">="
-        },
-        {
-          "type": "STRING",
-          "value": "<="
-        },
-        {
-          "type": "STRING",
-          "value": "=>"
-        },
-        {
-          "type": "STRING",
-          "value": "=/=>"
-        },
-        {
-          "type": "STRING",
-          "value": "~>"
-        },
-        {
-          "type": "STRING",
-          "value": "-/->"
-        },
-        {
-          "type": "STRING",
-          "value": "<-/-"
-        },
-        {
-          "type": "STRING",
-          "value": "<-/->"
-        },
-        {
-          "type": "STRING",
-          "value": "<=="
-        },
-        {
-          "type": "STRING",
-          "value": "<=>"
-        },
-        {
-          "type": "STRING",
-          "value": "<=/=>"
-        },
-        {
-          "type": "STRING",
-          "value": "AA"
-        },
-        {
-          "type": "STRING",
-          "value": "EE"
-        },
-        {
-          "type": "STRING",
-          "value": "_|_"
-        },
-        {
-          "type": "STRING",
-          "value": "TT"
-        },
-        {
-          "type": "STRING",
-          "value": "|--"
-        },
-        {
-          "type": "STRING",
-          "value": "|=="
-        }
-      ]
+    "alpha": {
+      "type": "STRING",
+      "value": "alpha"
     },
-    "constant_symbol": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "italic_symbol"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[A-Za-z]+"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "number_symbol"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[+\\-*=><]"
-        }
-      ]
+    "beta": {
+      "type": "STRING",
+      "value": "beta"
     },
-    "unary_symbol": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "sqrt"
-        },
-        {
-          "type": "STRING",
-          "value": "text"
-        },
-        {
-          "type": "STRING",
-          "value": "bb"
-        },
-        {
-          "type": "STRING",
-          "value": "cc"
-        },
-        {
-          "type": "STRING",
-          "value": "tt"
-        },
-        {
-          "type": "STRING",
-          "value": "fr"
-        },
-        {
-          "type": "STRING",
-          "value": "sf"
-        },
-        {
-          "type": "STRING",
-          "value": "bold"
-        },
-        {
-          "type": "STRING",
-          "value": "cal"
-        },
-        {
-          "type": "STRING",
-          "value": "frak"
-        },
-        {
-          "type": "STRING",
-          "value": "monospace"
-        },
-        {
-          "type": "STRING",
-          "value": "italic"
-        }
-      ]
+    "gamma": {
+      "type": "STRING",
+      "value": "gamma"
     },
-    "binary_symbol": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "frac"
-        },
-        {
-          "type": "STRING",
-          "value": "root"
-        },
-        {
-          "type": "STRING",
-          "value": "stackrel"
-        },
-        {
-          "type": "STRING",
-          "value": "choose"
-        },
-        {
-          "type": "STRING",
-          "value": "atop"
-        },
-        {
-          "type": "STRING",
-          "value": "over"
-        }
-      ]
+    "delta": {
+      "type": "STRING",
+      "value": "delta"
     },
-    "suffix_symbol": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "!"
-        },
-        {
-          "type": "STRING",
-          "value": "!!"
-        }
-      ]
+    "epsilon": {
+      "type": "STRING",
+      "value": "epsilon"
+    },
+    "zeta": {
+      "type": "STRING",
+      "value": "zeta"
+    },
+    "eta": {
+      "type": "STRING",
+      "value": "eta"
+    },
+    "theta": {
+      "type": "STRING",
+      "value": "theta"
+    },
+    "iota": {
+      "type": "STRING",
+      "value": "iota"
+    },
+    "kappa": {
+      "type": "STRING",
+      "value": "kappa"
+    },
+    "lambda": {
+      "type": "STRING",
+      "value": "lambda"
+    },
+    "mu": {
+      "type": "STRING",
+      "value": "mu"
+    },
+    "nu": {
+      "type": "STRING",
+      "value": "nu"
+    },
+    "xi": {
+      "type": "STRING",
+      "value": "xi"
+    },
+    "omicron": {
+      "type": "STRING",
+      "value": "omicron"
+    },
+    "pi": {
+      "type": "STRING",
+      "value": "pi"
+    },
+    "rho": {
+      "type": "STRING",
+      "value": "rho"
+    },
+    "sigma": {
+      "type": "STRING",
+      "value": "sigma"
+    },
+    "tau": {
+      "type": "STRING",
+      "value": "tau"
+    },
+    "upsilon": {
+      "type": "STRING",
+      "value": "upsilon"
+    },
+    "phi": {
+      "type": "STRING",
+      "value": "phi"
+    },
+    "chi": {
+      "type": "STRING",
+      "value": "chi"
+    },
+    "psi": {
+      "type": "STRING",
+      "value": "psi"
+    },
+    "omega": {
+      "type": "STRING",
+      "value": "omega"
+    },
+    "Alpha": {
+      "type": "STRING",
+      "value": "Alpha"
+    },
+    "Beta": {
+      "type": "STRING",
+      "value": "Beta"
+    },
+    "Gamma": {
+      "type": "STRING",
+      "value": "Gamma"
+    },
+    "Delta": {
+      "type": "STRING",
+      "value": "Delta"
+    },
+    "Epsilon": {
+      "type": "STRING",
+      "value": "Epsilon"
+    },
+    "Zeta": {
+      "type": "STRING",
+      "value": "Zeta"
+    },
+    "Eta": {
+      "type": "STRING",
+      "value": "Eta"
+    },
+    "Theta": {
+      "type": "STRING",
+      "value": "Theta"
+    },
+    "Iota": {
+      "type": "STRING",
+      "value": "Iota"
+    },
+    "Kappa": {
+      "type": "STRING",
+      "value": "Kappa"
+    },
+    "Lambda": {
+      "type": "STRING",
+      "value": "Lambda"
+    },
+    "Mu": {
+      "type": "STRING",
+      "value": "Mu"
+    },
+    "Nu": {
+      "type": "STRING",
+      "value": "Nu"
+    },
+    "Xi": {
+      "type": "STRING",
+      "value": "Xi"
+    },
+    "Omicron": {
+      "type": "STRING",
+      "value": "Omicron"
+    },
+    "Pi": {
+      "type": "STRING",
+      "value": "Pi"
+    },
+    "Rho": {
+      "type": "STRING",
+      "value": "Rho"
+    },
+    "Sigma": {
+      "type": "STRING",
+      "value": "Sigma"
+    },
+    "Tau": {
+      "type": "STRING",
+      "value": "Tau"
+    },
+    "Upsilon": {
+      "type": "STRING",
+      "value": "Upsilon"
+    },
+    "Phi": {
+      "type": "STRING",
+      "value": "Phi"
+    },
+    "Chi": {
+      "type": "STRING",
+      "value": "Chi"
+    },
+    "Psi": {
+      "type": "STRING",
+      "value": "Psi"
+    },
+    "Omega": {
+      "type": "STRING",
+      "value": "Omega"
+    },
+    "infty": {
+      "type": "STRING",
+      "value": "infty"
+    },
+    "hbar": {
+      "type": "STRING",
+      "value": "hbar"
+    },
+    "ell": {
+      "type": "STRING",
+      "value": "ell"
+    },
+    "Re": {
+      "type": "STRING",
+      "value": "Re"
+    },
+    "Im": {
+      "type": "STRING",
+      "value": "Im"
+    },
+    "aleph": {
+      "type": "STRING",
+      "value": "aleph"
+    },
+    "nabla": {
+      "type": "STRING",
+      "value": "nabla"
+    },
+    "partial": {
+      "type": "STRING",
+      "value": "partial"
+    },
+    "forall": {
+      "type": "STRING",
+      "value": "forall"
+    },
+    "exists": {
+      "type": "STRING",
+      "value": "exists"
+    },
+    "emptyset": {
+      "type": "STRING",
+      "value": "emptyset"
+    },
+    "grad": {
+      "type": "STRING",
+      "value": "grad"
+    },
+    "del": {
+      "type": "STRING",
+      "value": "del"
+    },
+    "plus": {
+      "type": "STRING",
+      "value": "+"
+    },
+    "minus": {
+      "type": "STRING",
+      "value": "-"
+    },
+    "times": {
+      "type": "STRING",
+      "value": "*"
+    },
+    "equals": {
+      "type": "STRING",
+      "value": "="
+    },
+    "lt": {
+      "type": "STRING",
+      "value": "<"
+    },
+    "gt": {
+      "type": "STRING",
+      "value": ">"
+    },
+    "le": {
+      "type": "STRING",
+      "value": "<="
+    },
+    "ge": {
+      "type": "STRING",
+      "value": ">="
+    },
+    "ne": {
+      "type": "STRING",
+      "value": "!="
+    },
+    "approx": {
+      "type": "STRING",
+      "value": "~="
+    },
+    "pm": {
+      "type": "STRING",
+      "value": "pm"
+    },
+    "mp": {
+      "type": "STRING",
+      "value": "mp"
+    },
+    "implies": {
+      "type": "STRING",
+      "value": "=>"
+    },
+    "equiv": {
+      "type": "STRING",
+      "value": "<=>"
+    },
+    "not_implies": {
+      "type": "STRING",
+      "value": "=/=>"
+    },
+    "tilde_gt": {
+      "type": "STRING",
+      "value": "~>"
+    },
+    "dash_gt": {
+      "type": "STRING",
+      "value": "->"
+    },
+    "not_dash_gt": {
+      "type": "STRING",
+      "value": "-/->"
+    },
+    "lt_dash": {
+      "type": "STRING",
+      "value": "<-"
+    },
+    "not_lt_dash": {
+      "type": "STRING",
+      "value": "<-/-"
+    },
+    "lt_dash_gt": {
+      "type": "STRING",
+      "value": "<->"
+    },
+    "not_lt_dash_gt": {
+      "type": "STRING",
+      "value": "<-/->"
+    },
+    "lt_eq": {
+      "type": "STRING",
+      "value": "<=="
+    },
+    "not_lt_eq_gt": {
+      "type": "STRING",
+      "value": "<=/=>"
+    },
+    "forall_symbol": {
+      "type": "STRING",
+      "value": "AA"
+    },
+    "exists_symbol": {
+      "type": "STRING",
+      "value": "EE"
+    },
+    "falsum": {
+      "type": "STRING",
+      "value": "_|_"
+    },
+    "verum": {
+      "type": "STRING",
+      "value": "TT"
+    },
+    "turnstile": {
+      "type": "STRING",
+      "value": "|--"
+    },
+    "models": {
+      "type": "STRING",
+      "value": "|=="
+    },
+    "sqrt": {
+      "type": "STRING",
+      "value": "sqrt"
+    },
+    "text": {
+      "type": "STRING",
+      "value": "text"
+    },
+    "bb": {
+      "type": "STRING",
+      "value": "bb"
+    },
+    "cc": {
+      "type": "STRING",
+      "value": "cc"
+    },
+    "tt": {
+      "type": "STRING",
+      "value": "tt"
+    },
+    "fr": {
+      "type": "STRING",
+      "value": "fr"
+    },
+    "sf": {
+      "type": "STRING",
+      "value": "sf"
+    },
+    "bold": {
+      "type": "STRING",
+      "value": "bold"
+    },
+    "cal": {
+      "type": "STRING",
+      "value": "cal"
+    },
+    "frak": {
+      "type": "STRING",
+      "value": "frak"
+    },
+    "monospace": {
+      "type": "STRING",
+      "value": "monospace"
+    },
+    "italic": {
+      "type": "STRING",
+      "value": "italic"
+    },
+    "frac": {
+      "type": "STRING",
+      "value": "frac"
+    },
+    "root": {
+      "type": "STRING",
+      "value": "root"
+    },
+    "stackrel": {
+      "type": "STRING",
+      "value": "stackrel"
+    },
+    "choose": {
+      "type": "STRING",
+      "value": "choose"
+    },
+    "atop": {
+      "type": "STRING",
+      "value": "atop"
+    },
+    "over": {
+      "type": "STRING",
+      "value": "over"
+    },
+    "factorial": {
+      "type": "STRING",
+      "value": "!"
+    },
+    "double_factorial": {
+      "type": "STRING",
+      "value": "!!"
     },
     "multi_linebreak": {
       "type": "PATTERN",
@@ -526,7 +492,7 @@
     },
     "_whitespace": {
       "type": "PATTERN",
-      "value": "\\s+|\\r?\\n|\\t "
+      "value": "\\s+|\\r?\\n|\\t"
     },
     "literal_string": {
       "type": "PREC_LEFT",
@@ -775,8 +741,57 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "unary_symbol"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "sqrt"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "text"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "bb"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "cc"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "tt"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "fr"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "sf"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "bold"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "cal"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "frak"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "monospace"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "italic"
+              }
+            ]
           },
           {
             "type": "SYMBOL",
@@ -792,8 +807,33 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "binary_symbol"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "frac"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "root"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "stackrel"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "choose"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "atop"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "over"
+              }
+            ]
           },
           {
             "type": "SYMBOL",
@@ -832,7 +872,271 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "constant_symbol"
+          "name": "number_symbol"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "plus"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minus"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "times"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "equals"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "infty"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "hbar"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ell"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Re"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Im"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "aleph"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "nabla"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "partial"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "forall"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "exists"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "emptyset"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "grad"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "del"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "alpha"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "beta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "gamma"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "delta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "epsilon"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "zeta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "theta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "iota"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "kappa"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lambda"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mu"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "nu"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "xi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "omicron"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rho"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sigma"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tau"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "upsilon"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "phi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "psi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "omega"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Alpha"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Beta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Gamma"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Delta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Epsilon"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Zeta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Eta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Theta"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Iota"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Kappa"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Lambda"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Mu"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Nu"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Xi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Omicron"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Pi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Rho"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Sigma"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Tau"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Upsilon"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Phi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Chi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Psi"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Omega"
         },
         {
           "type": "SYMBOL",

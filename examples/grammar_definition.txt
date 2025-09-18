@@ -10,6 +10,7 @@
  * E ::= IE | I/I                  # Expression
  */
 
+// analysis (not official)
 source_file -> E
 
 // expression repeat(E2)

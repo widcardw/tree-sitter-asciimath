@@ -1,0 +1,39 @@
+// Complex mathematical expressions combining multiple features
+
+// Quadratic formula
+x = (-b +- sqrt(b^2 - 4ac)) / (2a)
+
+// Limit definition
+lim_(h->0) (f(x+h) - f(x)) / h
+
+// Summation
+sum_(i=1)^n i^2
+
+// Integration
+int_a^b f(x) dx
+
+// Matrix operations
+A = [[1,2],[3,4]]
+b = [x,y]
+Ax = b
+
+// Complex fractions and radicals
+sqrt(a^2 + b^2) / c
+frac(sqrt(x+y))(z-w)
+root(frac(a)(b))(n)
+
+// Trigonometric identities
+sin^2(x) + cos^2(x) = 1
+tan(x) = sin(x) / cos(x)
+
+// Binomial coefficient
+(n) choose (k) = n! / (k! * (n-k)!)
+
+// Vector operations
+vec(v) = [v_x, v_y, v_z]
+||vec(v)|| = sqrt(v_x^2 + v_y^2 + v_z^2)
+
+// Greek letters in equations
+E = mc^2
+F = G * (m_1 * m_2) / r^2
+lambda = c / f

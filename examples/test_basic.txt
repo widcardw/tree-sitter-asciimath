@@ -1,0 +1,25 @@
+// Basic arithmetic expressions
+a + b
+x - y
+2 * 3
+4 / 5
+a = b
+x < y
+p > q
+r <= s
+t >= u
+v != w
+
+// Numbers
+42
+3.14159
+0.5
+100
+
+// Variables and constants
+x
+alpha
+beta
+pi
+infty
+sqrt(2)

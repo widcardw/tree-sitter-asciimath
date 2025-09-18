@@ -1,0 +1,20 @@
+// Simple fractions
+a/b
+1/2
+x/y
+
+// Complex fractions with nested expressions
+(a+b)/(c+d)
+frac(a)(b)
+frac(1)(2)
+frac(x+y)(z-w)
+
+// Nested fractions
+frac(a)(b+c)
+frac(frac(a)(b))(c)
+a/(b/c)
+
+// Mixed expressions
+a/b + c/d
+frac(a)(b) * x
+(sqrt(a))/b

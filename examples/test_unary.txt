@@ -1,0 +1,27 @@
+// Square root
+sqrt(x)
+sqrt(2)
+sqrt(a+b)
+sqrt(frac(a)(b))
+
+// Text formatting
+text(hello)
+text(world)
+
+// Font commands
+bb(R)
+bb(C)
+cc(N)
+tt(monospace)
+fr(fraction)
+sf(sans)
+bold(text)
+cal(L)
+frak(F)
+monospace(code)
+italic(variable)
+
+// Complex unary expressions
+sqrt(a^2 + b^2)
+bb(R)^n
+text(hello)_world

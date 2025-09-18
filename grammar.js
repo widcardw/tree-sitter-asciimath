@@ -7,138 +7,142 @@ module.exports = grammar({
 		_expression: ($) =>
 			choice($.binary_frac, $.concatenation, $.intermediate_expression),
 
+		// Numbers and identifiers
 		number_symbol: ($) => /\d+(\.\d+)?/,
-		italic_symbol: ($) =>
-			choice(
-				// 希腊字母（小写）
-				"alpha",
-				"beta",
-				"gamma",
-				"delta",
-				"epsilon",
-				"zeta",
-				"eta",
-				"theta",
-				"iota",
-				"kappa",
-				"lambda",
-				"mu",
-				"nu",
-				"xi",
-				"omicron",
-				"pi",
-				"rho",
-				"sigma",
-				"tau",
-				"upsilon",
-				"phi",
-				"chi",
-				"psi",
-				"omega",
+		identifier: ($) => /[A-Za-z]+/,
 
-				// 希腊字母（大写）
-				"Alpha",
-				"Beta",
-				"Gamma",
-				"Delta",
-				"Epsilon",
-				"Zeta",
-				"Eta",
-				"Theta",
-				"Iota",
-				"Kappa",
-				"Lambda",
-				"Mu",
-				"Nu",
-				"Xi",
-				"Omicron",
-				"Pi",
-				"Rho",
-				"Sigma",
-				"Tau",
-				"Upsilon",
-				"Phi",
-				"Chi",
-				"Psi",
-				"Omega",
+		// Greek letters (lowercase)
+		alpha: ($) => "alpha",
+		beta: ($) => "beta",
+		gamma: ($) => "gamma",
+		delta: ($) => "delta",
+		epsilon: ($) => "epsilon",
+		zeta: ($) => "zeta",
+		eta: ($) => "eta",
+		theta: ($) => "theta",
+		iota: ($) => "iota",
+		kappa: ($) => "kappa",
+		lambda: ($) => "lambda",
+		mu: ($) => "mu",
+		nu: ($) => "nu",
+		xi: ($) => "xi",
+		omicron: ($) => "omicron",
+		pi: ($) => "pi",
+		rho: ($) => "rho",
+		sigma: ($) => "sigma",
+		tau: ($) => "tau",
+		upsilon: ($) => "upsilon",
+		phi: ($) => "phi",
+		chi: ($) => "chi",
+		psi: ($) => "psi",
+		omega: ($) => "omega",
 
-				// 数学常量
-				"pi",
-				"infty",
-				"hbar",
-				"ell",
-				"Re",
-				"Im",
-				"aleph",
-				"nabla",
-				"partial",
-				"forall",
-				"exists",
-				"emptyset",
-				"grad",
-				"del",
-				"pm",
-				"mp",
-			),
-		math_op: ($) =>
-			choice(
-				"+",
-				"-",
-				"*",
-				"=",
-				"<",
-				">",
-				"lt",
-				"gt",
-				">=",
-				"<=",
-				"=>",
-				"=/=>",
-				"~>",
-				"-/->",
-				"<-/-",
-				"<-/->",
-				"<==",
-				"<=>",
-				"<=/=>",
-				"AA",
-				"EE",
-				"_|_",
-				"TT",
-				"|--",
-				"|==",
-			),
+		// Greek letters (uppercase)
+		Alpha: ($) => "Alpha",
+		Beta: ($) => "Beta",
+		Gamma: ($) => "Gamma",
+		Delta: ($) => "Delta",
+		Epsilon: ($) => "Epsilon",
+		Zeta: ($) => "Zeta",
+		Eta: ($) => "Eta",
+		Theta: ($) => "Theta",
+		Iota: ($) => "Iota",
+		Kappa: ($) => "Kappa",
+		Lambda: ($) => "Lambda",
+		Mu: ($) => "Mu",
+		Nu: ($) => "Nu",
+		Xi: ($) => "Xi",
+		Omicron: ($) => "Omicron",
+		Pi: ($) => "Pi",
+		Rho: ($) => "Rho",
+		Sigma: ($) => "Sigma",
+		Tau: ($) => "Tau",
+		Upsilon: ($) => "Upsilon",
+		Phi: ($) => "Phi",
+		Chi: ($) => "Chi",
+		Psi: ($) => "Psi",
+		Omega: ($) => "Omega",
 
-		constant_symbol: ($) =>
-			choice(
-				$.italic_symbol,
+		// Mathematical constants
+		infty: ($) => "infty",
+		hbar: ($) => "hbar",
+		ell: ($) => "ell",
+		Re: ($) => "Re",
+		Im: ($) => "Im",
+		aleph: ($) => "aleph",
+		nabla: ($) => "nabla",
+		partial: ($) => "partial",
+		forall: ($) => "forall",
+		exists: ($) => "exists",
+		emptyset: ($) => "emptyset",
+		grad: ($) => "grad",
+		del: ($) => "del",
 
-				/[A-Za-z]+/,
-				$.number_symbol,
+		// Binary operators
+		plus: ($) => "+",
+		minus: ($) => "-",
+		times: ($) => "*",
+		equals: ($) => "=",
+		lt: ($) => "<",
+		gt: ($) => ">",
+		le: ($) => "<=",
+		ge: ($) => ">=",
+		ne: ($) => "!=",
+		approx: ($) => "~=",
+		pm: ($) => "pm",
+		mp: ($) => "mp",
 
-				/[+\-*=><]/,
-			),
-		unary_symbol: ($) =>
-			choice(
-				"sqrt",
-				"text",
-				"bb",
-				"cc",
-				"tt",
-				"fr",
-				"sf",
-				"bold",
-				"cal",
-				"frak",
-				"monospace",
-				"italic",
-			),
-		binary_symbol: ($) =>
-			choice("frac", "root", "stackrel", "choose", "atop", "over"),
-		suffix_symbol: ($) => choice("!", "!!"),
+		// Logic symbols
+		implies: ($) => "=>",
+		equiv: ($) => "<=>",
+		not_implies: ($) => "=/=>",
+		tilde_gt: ($) => "~>",
+		dash_gt: ($) => "->",
+		not_dash_gt: ($) => "-/->",
+		lt_dash: ($) => "<-",
+		not_lt_dash: ($) => "<-/-",
+		lt_dash_gt: ($) => "<->",
+		not_lt_dash_gt: ($) => "<-/->",
+		lt_eq: ($) => "<==",
+		not_lt_eq_gt: ($) => "<=/=>",
+		forall_symbol: ($) => "AA",
+		exists_symbol: ($) => "EE",
+		falsum: ($) => "_|_",
+		verum: ($) => "TT",
+		turnstile: ($) => "|--",
+		models: ($) => "|==",
+
+		// Unary symbols
+		sqrt: ($) => "sqrt",
+		text: ($) => "text",
+		bb: ($) => "bb",
+		cc: ($) => "cc",
+		tt: ($) => "tt",
+		fr: ($) => "fr",
+		sf: ($) => "sf",
+		bold: ($) => "bold",
+		cal: ($) => "cal",
+		frak: ($) => "frak",
+		monospace: ($) => "monospace",
+		italic: ($) => "italic",
+
+		// Binary symbols
+		frac: ($) => "frac",
+		root: ($) => "root",
+		stackrel: ($) => "stackrel",
+		choose: ($) => "choose",
+		atop: ($) => "atop",
+		over: ($) => "over",
+
+		// Suffix symbols
+		factorial: ($) => "!",
+		double_factorial: ($) => "!!",
+
+		// Whitespace and delimiters
 		multi_linebreak: ($) => /(\r?\n){2,}/,
-		_whitespace: ($) => /\s+|\r?\n|\t /,
+		_whitespace: ($) => /\s+|\r?\n|\t/,
 
+		// String literals
 		literal_string: ($) =>
 			prec.left(
 				10,
@@ -172,12 +176,15 @@ module.exports = grammar({
 				),
 			),
 
+		// Brackets
 		left_bracket: ($) => choice("(", "[", "{", "{:", "(:"),
 		right_bracket: ($) => choice(")", "]", "}", ":}", ":)"),
 
+		// Bracket expressions
 		bracket_expr: ($) =>
 			prec(5, seq($.left_bracket, $._expression, $.right_bracket)),
 
+		// Matrix expressions
 		matrix_row_expr: ($) =>
 			prec.left(
 				6,
@@ -199,24 +206,32 @@ module.exports = grammar({
 				),
 			),
 
-		
-		unary_expr: ($) => prec.left(4, seq($.unary_symbol, $.simple_expression)),
+		// Unary expressions
+		unary_expr: ($) => prec.left(4, seq(choice($.sqrt, $.text, $.bb, $.cc, $.tt, $.fr, $.sf, $.bold, $.cal, $.frak, $.monospace, $.italic), $.simple_expression)),
 
+		// Binary expressions
 		binary_expr: ($) =>
 			prec.left(
 				3,
-				seq($.binary_symbol, $.simple_expression, $.simple_expression),
+				seq(choice($.frac, $.root, $.stackrel, $.choose, $.atop, $.over), $.simple_expression, $.simple_expression),
 			),
 
+		// Fraction expressions (special case)
 		binary_frac: ($) =>
 			prec.left(
 				2,
 				seq($.intermediate_expression, "/", $.intermediate_expression),
 			),
 
+		// Simple expressions
 		simple_expression: ($) =>
 			choice(
-				$.constant_symbol,
+				$.number_symbol,
+				$.identifier,
+				$.plus, $.minus, $.times, $.equals,
+				$.infty, $.hbar, $.ell, $.Re, $.Im, $.aleph, $.nabla, $.partial, $.forall, $.exists, $.emptyset, $.grad, $.del,
+				$.alpha, $.beta, $.gamma, $.delta, $.epsilon, $.zeta, $.eta, $.theta, $.iota, $.kappa, $.lambda, $.mu, $.nu, $.xi, $.omicron, $.pi, $.rho, $.sigma, $.tau, $.upsilon, $.phi, $.chi, $.psi, $.omega,
+				$.Alpha, $.Beta, $.Gamma, $.Delta, $.Epsilon, $.Zeta, $.Eta, $.Theta, $.Iota, $.Kappa, $.Lambda, $.Mu, $.Nu, $.Xi, $.Omicron, $.Pi, $.Rho, $.Sigma, $.Tau, $.Upsilon, $.Phi, $.Chi, $.Psi, $.Omega,
 				$.literal_string,
 				$.unary_expr,
 				$.bracket_expr,
@@ -224,6 +239,7 @@ module.exports = grammar({
 				$.matrix_expr,
 			),
 
+		// Subscript and superscript
 		subscript: ($) =>
 			prec.left(3, seq($.simple_expression, "_", $.simple_expression)),
 
@@ -242,6 +258,7 @@ module.exports = grammar({
 				),
 			),
 
+		// Intermediate expressions
 		intermediate_expression: ($) =>
 			choice(
 				$.subscript,
@@ -250,6 +267,7 @@ module.exports = grammar({
 				$.simple_expression,
 			),
 
+		// Concatenation
 		concatenation: ($) =>
 			prec.left(1, seq($.intermediate_expression, $._expression)),
 	},

@@ -1,0 +1,26 @@
+// Binary operations
+frac(a)(b)
+root(a)(n)
+stackrel(a)(b)
+(n) choose (k)
+atop(a)(b)
+over(a)(b)
+
+// Complex binary expressions
+frac(a+b)(c+d)
+root(sqrt(a))(3)
+stackrel(def)(lim)
+(n+1) choose (k-1)
+atop(x)(y)
+over(frac(a)(b))(c)
+
+// Nested binary operations
+frac(root(a)(b))(c)
+root(frac(a)(b))(n)
+stackrel(alpha)(beta)
+(sum_(i=1)^n a_i) choose (k)
+
+// Mixed expressions
+a choose b + c choose d
+frac(a)(b) choose (c)
+(x+y) choose (z-w) * sqrt(n)

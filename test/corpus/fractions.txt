@@ -1,0 +1,35 @@
+==================
+Fraction expressions
+==================
+
+a/b
+frac(a)(b)
+
+---
+
+(source_file
+  (binary_frac
+    (intermediate_expression
+      (simple_expression
+        (identifier)))
+    (intermediate_expression
+      (simple_expression
+        (identifier))))
+  (intermediate_expression
+    (simple_expression
+      (binary_expr
+        (frac)
+        (simple_expression
+          (bracket_expr
+            (left_bracket)
+            (intermediate_expression
+              (simple_expression
+                (identifier)))
+            (right_bracket)))
+        (simple_expression
+          (bracket_expr
+            (left_bracket)
+            (intermediate_expression
+              (simple_expression
+                (identifier)))
+            (right_bracket)))))))

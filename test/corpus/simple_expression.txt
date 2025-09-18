@@ -1,0 +1,17 @@
+==================
+Simple number and variable
+==================
+
+42
+alpha
+
+---
+
+(source_file
+  (concatenation
+    (intermediate_expression
+      (simple_expression
+        (number_symbol)))
+    (intermediate_expression
+      (simple_expression
+        (alpha)))))
