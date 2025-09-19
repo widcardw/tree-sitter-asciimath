@@ -1,0 +1,85 @@
+==================
+Supscripts and subscripts
+==================
+
+a_i^j + b_k^l
+x_1^2 * y_3^4
+sum_(i=1)^n a_i^2
+
+---
+
+(source_file
+  (concatenation
+    (intermediate_expression
+      (subscript_superscript
+        (simple_expression
+          (identifier))
+        (simple_expression
+          (identifier))
+        (simple_expression
+          (identifier))))
+    (concatenation
+      (intermediate_expression
+        (simple_expression
+          (plus)))
+      (concatenation
+        (intermediate_expression
+          (subscript_superscript
+            (simple_expression
+              (identifier))
+            (simple_expression
+              (identifier))
+            (simple_expression
+              (identifier))))
+        (concatenation
+          (intermediate_expression
+            (subscript_superscript
+              (simple_expression
+                (identifier))
+              (simple_expression
+                (number_symbol))
+              (simple_expression
+                (number_symbol))))
+          (concatenation
+            (intermediate_expression
+              (simple_expression
+                (times)))
+            (concatenation
+              (intermediate_expression
+                (subscript_superscript
+                  (simple_expression
+                    (identifier))
+                  (simple_expression
+                    (number_symbol))
+                  (simple_expression
+                    (number_symbol))))
+              (concatenation
+                (intermediate_expression
+                  (subscript_superscript
+                    (simple_expression
+                      (identifier))
+                    (simple_expression
+                      (bracket_expr
+                        (left_bracket)
+                        (concatenation
+                          (intermediate_expression
+                            (simple_expression
+                              (identifier)))
+                          (concatenation
+                            (intermediate_expression
+                              (simple_expression
+                                (equals)))
+                            (intermediate_expression
+                              (simple_expression
+                                (number_symbol)))))
+                        (right_bracket)))
+                    (simple_expression
+                      (identifier))))
+                (intermediate_expression
+                  (subscript_superscript
+                    (simple_expression
+                      (identifier))
+                    (simple_expression
+                      (identifier))
+                    (simple_expression
+                      (number_symbol))))))))))))

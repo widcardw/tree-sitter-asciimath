@@ -42,6 +42,18 @@
       "type": "PATTERN",
       "value": "[A-Za-z]+"
     },
+    "if": {
+      "type": "STRING",
+      "value": "if"
+    },
+    "otherwise": {
+      "type": "STRING",
+      "value": "otherwise"
+    },
+    "else": {
+      "type": "STRING",
+      "value": "else"
+    },
     "alpha": {
       "type": "STRING",
       "value": "alpha"
@@ -450,6 +462,10 @@
       "type": "STRING",
       "value": "monospace"
     },
+    "mono": {
+      "type": "STRING",
+      "value": "mono"
+    },
     "italic": {
       "type": "STRING",
       "value": "italic"
@@ -496,7 +512,7 @@
     },
     "literal_string": {
       "type": "PREC_LEFT",
-      "value": 10,
+      "value": 25,
       "content": {
         "type": "SEQ",
         "members": [
@@ -636,7 +652,7 @@
     },
     "bracket_expr": {
       "type": "PREC",
-      "value": 5,
+      "value": 18,
       "content": {
         "type": "SEQ",
         "members": [
@@ -657,7 +673,7 @@
     },
     "matrix_row_expr": {
       "type": "PREC_LEFT",
-      "value": 6,
+      "value": 10,
       "content": {
         "type": "SEQ",
         "members": [
@@ -694,7 +710,7 @@
     },
     "matrix_expr": {
       "type": "PREC_LEFT",
-      "value": 6,
+      "value": 9,
       "content": {
         "type": "SEQ",
         "members": [
@@ -736,7 +752,7 @@
     },
     "unary_expr": {
       "type": "PREC_LEFT",
-      "value": 4,
+      "value": 16,
       "content": {
         "type": "SEQ",
         "members": [
@@ -789,6 +805,10 @@
               },
               {
                 "type": "SYMBOL",
+                "name": "mono"
+              },
+              {
+                "type": "SYMBOL",
                 "name": "italic"
               }
             ]
@@ -802,7 +822,7 @@
     },
     "binary_expr": {
       "type": "PREC_LEFT",
-      "value": 3,
+      "value": 17,
       "content": {
         "type": "SEQ",
         "members": [
@@ -848,7 +868,7 @@
     },
     "binary_frac": {
       "type": "PREC_LEFT",
-      "value": 2,
+      "value": 20,
       "content": {
         "type": "SEQ",
         "members": [
@@ -867,6 +887,32 @@
         ]
       }
     },
+    "factorial_expr": {
+      "type": "PREC_LEFT",
+      "value": 24,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "simple_expression"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "double_factorial"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "factorial"
+              }
+            ]
+          }
+        ]
+      }
+    },
     "simple_expression": {
       "type": "CHOICE",
       "members": [
@@ -877,6 +923,18 @@
         {
           "type": "SYMBOL",
           "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "if"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "otherwise"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "else"
         },
         {
           "type": "SYMBOL",
@@ -893,6 +951,38 @@
         {
           "type": "SYMBOL",
           "name": "equals"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "gt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "le"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ge"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ne"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "approx"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pm"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mp"
         },
         {
           "type": "SYMBOL",
@@ -1157,12 +1247,16 @@
         {
           "type": "SYMBOL",
           "name": "matrix_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "factorial_expr"
         }
       ]
     },
     "subscript": {
       "type": "PREC_LEFT",
-      "value": 3,
+      "value": 19,
       "content": {
         "type": "SEQ",
         "members": [
@@ -1183,7 +1277,7 @@
     },
     "superscript": {
       "type": "PREC_LEFT",
-      "value": 3,
+      "value": 19,
       "content": {
         "type": "SEQ",
         "members": [
@@ -1204,29 +1298,59 @@
     },
     "subscript_superscript": {
       "type": "PREC_LEFT",
-      "value": 4,
+      "value": 20,
       "content": {
-        "type": "SEQ",
+        "type": "CHOICE",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "simple_expression"
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "simple_expression"
+              },
+              {
+                "type": "STRING",
+                "value": "_"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "simple_expression"
+              },
+              {
+                "type": "STRING",
+                "value": "^"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "simple_expression"
+              }
+            ]
           },
           {
-            "type": "STRING",
-            "value": "_"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "simple_expression"
-          },
-          {
-            "type": "STRING",
-            "value": "^"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "simple_expression"
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "simple_expression"
+              },
+              {
+                "type": "STRING",
+                "value": "^"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "simple_expression"
+              },
+              {
+                "type": "STRING",
+                "value": "_"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "simple_expression"
+              }
+            ]
           }
         ]
       }
@@ -1254,7 +1378,7 @@
     },
     "concatenation": {
       "type": "PREC_LEFT",
-      "value": 1,
+      "value": 11,
       "content": {
         "type": "SEQ",
         "members": [

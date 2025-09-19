@@ -108,6 +108,29 @@
     }
   },
   {
+    "type": "factorial_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "double_factorial",
+          "named": true
+        },
+        {
+          "type": "factorial",
+          "named": true
+        },
+        {
+          "type": "simple_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "intermediate_expression",
     "named": true,
     "fields": {},
@@ -338,6 +361,10 @@
           "named": true
         },
         {
+          "type": "approx",
+          "named": true
+        },
+        {
           "type": "beta",
           "named": true
         },
@@ -366,6 +393,10 @@
           "named": true
         },
         {
+          "type": "else",
+          "named": true
+        },
+        {
           "type": "emptyset",
           "named": true
         },
@@ -386,6 +417,10 @@
           "named": true
         },
         {
+          "type": "factorial_expr",
+          "named": true
+        },
+        {
           "type": "forall",
           "named": true
         },
@@ -394,7 +429,15 @@
           "named": true
         },
         {
+          "type": "ge",
+          "named": true
+        },
+        {
           "type": "grad",
+          "named": true
+        },
+        {
+          "type": "gt",
           "named": true
         },
         {
@@ -403,6 +446,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "if",
           "named": true
         },
         {
@@ -422,7 +469,15 @@
           "named": true
         },
         {
+          "type": "le",
+          "named": true
+        },
+        {
           "type": "literal_string",
+          "named": true
+        },
+        {
+          "type": "lt",
           "named": true
         },
         {
@@ -434,11 +489,19 @@
           "named": true
         },
         {
+          "type": "mp",
+          "named": true
+        },
+        {
           "type": "mu",
           "named": true
         },
         {
           "type": "nabla",
+          "named": true
+        },
+        {
+          "type": "ne",
           "named": true
         },
         {
@@ -458,6 +521,10 @@
           "named": true
         },
         {
+          "type": "otherwise",
+          "named": true
+        },
+        {
           "type": "partial",
           "named": true
         },
@@ -471,6 +538,10 @@
         },
         {
           "type": "plus",
+          "named": true
+        },
+        {
+          "type": "pm",
           "named": true
         },
         {
@@ -622,6 +693,10 @@
         },
         {
           "type": "italic",
+          "named": true
+        },
+        {
+          "type": "mono",
           "named": true
         },
         {
@@ -812,6 +887,10 @@
     "named": true
   },
   {
+    "type": "approx",
+    "named": true
+  },
+  {
     "type": "atop",
     "named": true
   },
@@ -852,7 +931,15 @@
     "named": true
   },
   {
+    "type": "double_factorial",
+    "named": true
+  },
+  {
     "type": "ell",
+    "named": true
+  },
+  {
+    "type": "else",
     "named": true
   },
   {
@@ -880,6 +967,10 @@
     "named": true
   },
   {
+    "type": "factorial",
+    "named": true
+  },
+  {
     "type": "forall",
     "named": true
   },
@@ -900,7 +991,15 @@
     "named": true
   },
   {
+    "type": "ge",
+    "named": true
+  },
+  {
     "type": "grad",
+    "named": true
+  },
+  {
+    "type": "gt",
     "named": true
   },
   {
@@ -909,6 +1008,10 @@
   },
   {
     "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "if",
     "named": true
   },
   {
@@ -932,11 +1035,27 @@
     "named": true
   },
   {
+    "type": "le",
+    "named": true
+  },
+  {
+    "type": "lt",
+    "named": true
+  },
+  {
     "type": "minus",
     "named": true
   },
   {
+    "type": "mono",
+    "named": true
+  },
+  {
     "type": "monospace",
+    "named": true
+  },
+  {
+    "type": "mp",
     "named": true
   },
   {
@@ -949,6 +1068,10 @@
   },
   {
     "type": "nabla",
+    "named": true
+  },
+  {
+    "type": "ne",
     "named": true
   },
   {
@@ -965,6 +1088,10 @@
   },
   {
     "type": "omicron",
+    "named": true
+  },
+  {
+    "type": "otherwise",
     "named": true
   },
   {
@@ -985,6 +1112,10 @@
   },
   {
     "type": "plus",
+    "named": true
+  },
+  {
+    "type": "pm",
     "named": true
   },
   {

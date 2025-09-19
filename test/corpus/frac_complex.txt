@@ -1,0 +1,77 @@
+==================
+Fraction expressions
+==================
+
+frac(root(a)(b))(c)
+root(frac(a)(b))(n)
+
+---
+
+(source_file
+  (concatenation
+    (intermediate_expression
+      (simple_expression
+        (binary_expr
+          (frac)
+          (simple_expression
+            (bracket_expr
+              (left_bracket)
+              (intermediate_expression
+                (simple_expression
+                  (binary_expr
+                    (root)
+                    (simple_expression
+                      (bracket_expr
+                        (left_bracket)
+                        (intermediate_expression
+                          (simple_expression
+                            (identifier)))
+                        (right_bracket)))
+                    (simple_expression
+                      (bracket_expr
+                        (left_bracket)
+                        (intermediate_expression
+                          (simple_expression
+                            (identifier)))
+                        (right_bracket))))))
+              (right_bracket)))
+          (simple_expression
+            (bracket_expr
+              (left_bracket)
+              (intermediate_expression
+                (simple_expression
+                  (identifier)))
+              (right_bracket))))))
+    (intermediate_expression
+      (simple_expression
+        (binary_expr
+          (root)
+          (simple_expression
+            (bracket_expr
+              (left_bracket)
+              (intermediate_expression
+                (simple_expression
+                  (binary_expr
+                    (frac)
+                    (simple_expression
+                      (bracket_expr
+                        (left_bracket)
+                        (intermediate_expression
+                          (simple_expression
+                            (identifier)))
+                        (right_bracket)))
+                    (simple_expression
+                      (bracket_expr
+                        (left_bracket)
+                        (intermediate_expression
+                          (simple_expression
+                            (identifier)))
+                        (right_bracket))))))
+              (right_bracket)))
+          (simple_expression
+            (bracket_expr
+              (left_bracket)
+              (intermediate_expression
+                (simple_expression
+                  (identifier)))
+              (right_bracket))))))))

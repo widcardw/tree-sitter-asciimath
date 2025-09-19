@@ -1,3 +1,17 @@
+const my_precs = {
+	str: 25,
+	factorial: 24,
+	supsub: 20,
+	binary_frac: 20,
+	sup_or_sub: 19,
+	bracket: 18,
+	binary: 17,
+	unary: 16,
+	concat: 11,
+	matrix_row: 10,
+	matrix: 9,
+};
+
 module.exports = grammar({
 	name: "asciimath",
 	extras: ($) => [$._whitespace],
@@ -10,6 +24,11 @@ module.exports = grammar({
 		// Numbers and identifiers
 		number_symbol: ($) => /\d+(\.\d+)?/,
 		identifier: ($) => /[A-Za-z]+/,
+
+		// special identifiers
+		if: ($) => "if",
+		otherwise: ($) => "otherwise",
+		else: ($) => "else",
 
 		// Greek letters (lowercase)
 		alpha: ($) => "alpha",
@@ -124,6 +143,7 @@ module.exports = grammar({
 		cal: ($) => "cal",
 		frak: ($) => "frak",
 		monospace: ($) => "monospace",
+		mono: ($) => "mono",
 		italic: ($) => "italic",
 
 		// Binary symbols
@@ -145,7 +165,7 @@ module.exports = grammar({
 		// String literals
 		literal_string: ($) =>
 			prec.left(
-				10,
+				my_precs.str,
 				seq(
 					'"',
 					repeat(
@@ -182,12 +202,15 @@ module.exports = grammar({
 
 		// Bracket expressions
 		bracket_expr: ($) =>
-			prec(5, seq($.left_bracket, $._expression, $.right_bracket)),
+			prec(
+				my_precs.bracket,
+				seq($.left_bracket, $._expression, $.right_bracket),
+			),
 
 		// Matrix expressions
 		matrix_row_expr: ($) =>
 			prec.left(
-				6,
+				my_precs.matrix_row,
 				seq(
 					$.left_bracket,
 					$._expression,
@@ -198,7 +221,7 @@ module.exports = grammar({
 
 		matrix_expr: ($) =>
 			prec.left(
-				6,
+				my_precs.matrix,
 				seq(
 					$.left_bracket,
 					seq($.matrix_row_expr, repeat(seq(",", $.matrix_row_expr))),
@@ -207,20 +230,51 @@ module.exports = grammar({
 			),
 
 		// Unary expressions
-		unary_expr: ($) => prec.left(4, seq(choice($.sqrt, $.text, $.bb, $.cc, $.tt, $.fr, $.sf, $.bold, $.cal, $.frak, $.monospace, $.italic), $.simple_expression)),
+		unary_expr: ($) =>
+			prec.left(
+				my_precs.unary,
+				seq(
+					choice(
+						$.sqrt,
+						$.text,
+						$.bb,
+						$.cc,
+						$.tt,
+						$.fr,
+						$.sf,
+						$.bold,
+						$.cal,
+						$.frak,
+						$.monospace,
+						$.mono,
+						$.italic,
+					),
+					$.simple_expression,
+				),
+			),
 
 		// Binary expressions
 		binary_expr: ($) =>
 			prec.left(
-				3,
-				seq(choice($.frac, $.root, $.stackrel, $.choose, $.atop, $.over), $.simple_expression, $.simple_expression),
+				my_precs.binary,
+				seq(
+					choice($.frac, $.root, $.stackrel, $.choose, $.atop, $.over),
+					$.simple_expression,
+					$.simple_expression,
+				),
 			),
 
 		// Fraction expressions (special case)
 		binary_frac: ($) =>
 			prec.left(
-				2,
+				my_precs.binary_frac,
 				seq($.intermediate_expression, "/", $.intermediate_expression),
+			),
+
+		factorial_expr: ($) =>
+			prec.left(
+				my_precs.factorial,
+				seq($.simple_expression, choice($.double_factorial, $.factorial)),
 			),
 
 		// Simple expressions
@@ -228,33 +282,121 @@ module.exports = grammar({
 			choice(
 				$.number_symbol,
 				$.identifier,
-				$.plus, $.minus, $.times, $.equals,
-				$.infty, $.hbar, $.ell, $.Re, $.Im, $.aleph, $.nabla, $.partial, $.forall, $.exists, $.emptyset, $.grad, $.del,
-				$.alpha, $.beta, $.gamma, $.delta, $.epsilon, $.zeta, $.eta, $.theta, $.iota, $.kappa, $.lambda, $.mu, $.nu, $.xi, $.omicron, $.pi, $.rho, $.sigma, $.tau, $.upsilon, $.phi, $.chi, $.psi, $.omega,
-				$.Alpha, $.Beta, $.Gamma, $.Delta, $.Epsilon, $.Zeta, $.Eta, $.Theta, $.Iota, $.Kappa, $.Lambda, $.Mu, $.Nu, $.Xi, $.Omicron, $.Pi, $.Rho, $.Sigma, $.Tau, $.Upsilon, $.Phi, $.Chi, $.Psi, $.Omega,
+				$.if,
+				$.otherwise,
+				$.else,
+				$.plus,
+				$.minus,
+				$.times,
+				$.equals,
+				$.lt,
+				$.gt,
+				$.le,
+				$.ge,
+				$.ne,
+				$.approx,
+				$.pm,
+				$.mp,
+				$.infty,
+				$.hbar,
+				$.ell,
+				$.Re,
+				$.Im,
+				$.aleph,
+				$.nabla,
+				$.partial,
+				$.forall,
+				$.exists,
+				$.emptyset,
+				$.grad,
+				$.del,
+				$.alpha,
+				$.beta,
+				$.gamma,
+				$.delta,
+				$.epsilon,
+				$.zeta,
+				$.eta,
+				$.theta,
+				$.iota,
+				$.kappa,
+				$.lambda,
+				$.mu,
+				$.nu,
+				$.xi,
+				$.omicron,
+				$.pi,
+				$.rho,
+				$.sigma,
+				$.tau,
+				$.upsilon,
+				$.phi,
+				$.chi,
+				$.psi,
+				$.omega,
+				$.Alpha,
+				$.Beta,
+				$.Gamma,
+				$.Delta,
+				$.Epsilon,
+				$.Zeta,
+				$.Eta,
+				$.Theta,
+				$.Iota,
+				$.Kappa,
+				$.Lambda,
+				$.Mu,
+				$.Nu,
+				$.Xi,
+				$.Omicron,
+				$.Pi,
+				$.Rho,
+				$.Sigma,
+				$.Tau,
+				$.Upsilon,
+				$.Phi,
+				$.Chi,
+				$.Psi,
+				$.Omega,
 				$.literal_string,
 				$.unary_expr,
 				$.bracket_expr,
 				$.binary_expr,
 				$.matrix_expr,
+				$.factorial_expr,
 			),
 
 		// Subscript and superscript
 		subscript: ($) =>
-			prec.left(3, seq($.simple_expression, "_", $.simple_expression)),
+			prec.left(
+				my_precs.sup_or_sub,
+				seq($.simple_expression, "_", $.simple_expression),
+			),
 
 		superscript: ($) =>
-			prec.left(3, seq($.simple_expression, "^", $.simple_expression)),
+			prec.left(
+				my_precs.sup_or_sub,
+				seq($.simple_expression, "^", $.simple_expression),
+			),
 
 		subscript_superscript: ($) =>
 			prec.left(
-				4,
-				seq(
-					$.simple_expression,
-					"_",
-					$.simple_expression,
-					"^",
-					$.simple_expression,
+				my_precs.supsub,
+				choice(
+					seq(
+						$.simple_expression,
+						"_",
+						$.simple_expression,
+						"^",
+						$.simple_expression,
+					),
+					seq(
+						$.simple_expression,
+						"^",
+						$.simple_expression,
+						"_",
+						$.simple_expression,
+					),
 				),
 			),
 
@@ -269,6 +411,6 @@ module.exports = grammar({
 
 		// Concatenation
 		concatenation: ($) =>
-			prec.left(1, seq($.intermediate_expression, $._expression)),
+			prec.left(my_precs.concat, seq($.intermediate_expression, $._expression)),
 	},
 });

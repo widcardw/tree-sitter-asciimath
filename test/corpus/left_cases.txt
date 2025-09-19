@@ -1,0 +1,48 @@
+==================
+Cases expressions
+==================
+
+{ (x, if x >= 0), (-x, else) :}
+
+---
+
+(source_file
+  (intermediate_expression
+    (simple_expression
+      (matrix_expr
+        (left_bracket)
+        (matrix_row_expr
+          (left_bracket)
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (concatenation
+            (intermediate_expression
+              (simple_expression
+                (if)))
+            (concatenation
+              (intermediate_expression
+                (simple_expression
+                  (identifier)))
+              (concatenation
+                (intermediate_expression
+                  (simple_expression
+                    (ge)))
+                (intermediate_expression
+                  (simple_expression
+                    (number_symbol))))))
+          (right_bracket))
+        (matrix_row_expr
+          (left_bracket)
+          (concatenation
+            (intermediate_expression
+              (simple_expression
+                (minus)))
+            (intermediate_expression
+              (simple_expression
+                (identifier))))
+          (intermediate_expression
+            (simple_expression
+              (else)))
+          (right_bracket))
+        (right_bracket)))))

@@ -1,0 +1,44 @@
+==================
+Matrix with supsub
+==================
+
+[[a^2,b^3],[c^4,d^5]]
+
+---
+
+(source_file
+  (intermediate_expression
+    (simple_expression
+      (matrix_expr
+        (left_bracket)
+        (matrix_row_expr
+          (left_bracket)
+          (intermediate_expression
+            (superscript
+              (simple_expression
+                (identifier))
+              (simple_expression
+                (number_symbol))))
+          (intermediate_expression
+            (superscript
+              (simple_expression
+                (identifier))
+              (simple_expression
+                (number_symbol))))
+          (right_bracket))
+        (matrix_row_expr
+          (left_bracket)
+          (intermediate_expression
+            (superscript
+              (simple_expression
+                (identifier))
+              (simple_expression
+                (number_symbol))))
+          (intermediate_expression
+            (superscript
+              (simple_expression
+                (identifier))
+              (simple_expression
+                (number_symbol))))
+          (right_bracket))
+        (right_bracket)))))

@@ -1,0 +1,27 @@
+==================
+Basic numbers
+==================
+
+42
+3.14159
+0.5
+100
+
+---
+
+(source_file
+  (concatenation
+    (intermediate_expression
+      (simple_expression
+        (number_symbol)))
+    (concatenation
+      (intermediate_expression
+        (simple_expression
+          (number_symbol)))
+      (concatenation
+        (intermediate_expression
+          (simple_expression
+            (number_symbol)))
+        (intermediate_expression
+          (simple_expression
+            (number_symbol)))))))

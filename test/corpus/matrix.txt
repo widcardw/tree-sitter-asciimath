@@ -1,0 +1,32 @@
+==================
+Basic matrix
+==================
+
+[[1,2],[3,4]]
+
+---
+
+(source_file
+  (intermediate_expression
+    (simple_expression
+      (matrix_expr
+        (left_bracket)
+        (matrix_row_expr
+          (left_bracket)
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (right_bracket))
+        (matrix_row_expr
+          (left_bracket)
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (right_bracket))
+        (right_bracket)))))
