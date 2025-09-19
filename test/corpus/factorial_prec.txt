@@ -1,0 +1,45 @@
+==================
+Factorial precedence
+==================
+
+root(sqrt(n!))(1/x!!)
+
+---
+
+(source_file
+  (intermediate_expression
+    (simple_expression
+      (binary_expr
+        (root)
+        (simple_expression
+          (bracket_expr
+            (left_bracket)
+            (intermediate_expression
+              (simple_expression
+                (unary_expr
+                  (sqrt)
+                  (simple_expression
+                    (bracket_expr
+                      (left_bracket)
+                      (intermediate_expression
+                        (simple_expression
+                          (factorial_expr
+                            (simple_expression
+                              (identifier))
+                            (factorial))))
+                      (right_bracket))))))
+            (right_bracket)))
+        (simple_expression
+          (bracket_expr
+            (left_bracket)
+            (binary_frac
+              (intermediate_expression
+                (simple_expression
+                  (number_symbol)))
+              (intermediate_expression
+                (simple_expression
+                  (factorial_expr
+                    (simple_expression
+                      (identifier))
+                    (double_factorial)))))
+            (right_bracket)))))))
