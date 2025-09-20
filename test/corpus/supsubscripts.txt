@@ -43,7 +43,7 @@ sum_(i=1)^n a_i^2
           (concatenation
             (intermediate_expression
               (simple_expression
-                (times)))
+                (cdot)))
             (concatenation
               (intermediate_expression
                 (subscript_superscript
@@ -57,7 +57,7 @@ sum_(i=1)^n a_i^2
                 (intermediate_expression
                   (subscript_superscript
                     (simple_expression
-                      (identifier))
+                      (sum))
                     (simple_expression
                       (bracket_expr
                         (left_bracket)
