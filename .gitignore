@@ -38,3 +38,7 @@ dist/
 *.o
 
 references/
+# temporary files
+identifiers/
+# upload src when everything is ready
+src/

@@ -5,8 +5,9 @@ const my_precs = {
   binary_frac: 20,
   sup_or_sub: 19,
   bracket: 18,
-  binary: 17,
-  unary: 16,
+  diffential: 17,
+  binary: 16,
+  unary: 15,
   concat: 11,
   matrix_row: 10,
   matrix: 9,
@@ -14,30 +15,30 @@ const my_precs = {
 
 // 导入所有identifier
 const identifiers = require('./identifiers');
-const { buildSimpleExpression, validateIdentifierCoverage, generateStatistics } = require('./utils/expression-builder');
+const { buildSimpleExpression } = require('./utils/expression-builder');
 
 module.exports = grammar({
   name: "asciimath",
-  extras: ($) => [$._whitespace],
+  extras: $ => [$._whitespace],
   rules: {
-    source_file: ($) => repeat(choice($._expression, $.multi_linebreak)),
+    source_file: $ => repeat(choice($._expression, $.multi_linebreak)),
 
-    _expression: ($) =>
+    _expression: $ =>
       choice($.binary_frac, $.concatenation, $.intermediate_expression),
 
     // Numbers and identifiers
-    number_symbol: ($) => /\d+(\.\d+)?/,
-    identifier: ($) => /[A-Za-z]+/,
+    number_symbol: $ => /\d+(\.\d+)?/,
+    identifier: $ => /[A-Za-z]+/,
 
     // 导入所有identifiers
     ...identifiers,
 
     // Whitespace and delimiters
-    multi_linebreak: ($) => /(\r?\n){2,}/,
-    _whitespace: ($) => /\s+|\r?\n|\t/,
+    multi_linebreak: $ => /(\r?\n){2,}/,
+    _whitespace: $ => /\s+|\r?\n|\t/,
 
     // String literals
-    literal_string: ($) =>
+    literal_string: $ =>
       prec.left(
         my_precs.str,
         seq(
@@ -71,18 +72,18 @@ module.exports = grammar({
       ),
 
     // Brackets
-    left_bracket: ($) => choice("(", "[", "{", "{:", ":(", "|__", '|~',),
-    right_bracket: ($) => choice(")", "]", "}", ":}", ":)", "__|", '~|',),
+    left_bracket: $ => choice("(", "[", "{", "{:", ":(", "|__", '|~',),
+    right_bracket: $ => choice(")", "]", "}", ":}", ":)", "__|", '~|',),
 
     // Bracket expressions
-    bracket_expr: ($) =>
+    bracket_expr: $ =>
       prec(
         my_precs.bracket,
         seq($.left_bracket, $._expression, $.right_bracket),
       ),
 
     // Matrix expressions
-    matrix_row_expr: ($) =>
+    matrix_row_expr: $ =>
       prec.left(
         my_precs.matrix_row,
         seq(
@@ -93,7 +94,7 @@ module.exports = grammar({
         ),
       ),
 
-    matrix_expr: ($) =>
+    matrix_expr: $ =>
       prec.left(
         my_precs.matrix,
         seq(
@@ -104,7 +105,7 @@ module.exports = grammar({
       ),
 
     // Unary expressions
-    unary_expr: ($) =>
+    unary_expr: $ =>
       prec.left(
         my_precs.unary,
         seq(
@@ -119,7 +120,6 @@ module.exports = grammar({
             $.bold,
             $.cal,
             $.frak,
-            $.monospace,
             $.mono,
             $.italic,
           ),
@@ -128,7 +128,7 @@ module.exports = grammar({
       ),
 
     // Binary expressions
-    binary_expr: ($) =>
+    binary_expr: $ =>
       prec.left(
         my_precs.binary,
         seq(
@@ -139,35 +139,47 @@ module.exports = grammar({
       ),
 
     // Fraction expressions (special case)
-    binary_frac: ($) =>
+    binary_frac: $ =>
       prec.left(
         my_precs.binary_frac,
         seq($.intermediate_expression, "/", $.intermediate_expression),
       ),
 
-    factorial_expr: ($) =>
+    factorial_expr: $ =>
       prec.left(
         my_precs.factorial,
         seq($.simple_expression, choice($.double_factorial, $.factorial)),
       ),
 
-    // Simple expressions - 使用自动构建的方式
-    simple_expression: ($) => choice(...buildSimpleExpression($)),
+    differential_expr: $ =>
+      prec.left(
+        my_precs.diffential,
+        seq(
+          choice($.dd, $.pp),
+          optional(seq("^", $.simple_expression)),
+          $.simple_expression,
+          $.simple_expression,
+        ),
+      ),
+
+    // Simple expressions (automatically import)
+    // and complex expression (e.g., unary_expr, binary_expr, factorial_expr, matrix_expr) injection
+    simple_expression: $ => choice(...buildSimpleExpression($)),
 
     // Subscript and superscript
-    subscript: ($) =>
+    subscript: $ =>
       prec.left(
         my_precs.sup_or_sub,
         seq($.simple_expression, "_", $.simple_expression),
       ),
 
-    superscript: ($) =>
+    superscript: $ =>
       prec.left(
         my_precs.sup_or_sub,
         seq($.simple_expression, "^", $.simple_expression),
       ),
 
-    subscript_superscript: ($) =>
+    subscript_superscript: $ =>
       prec.left(
         my_precs.supsub,
         choice(
@@ -189,7 +201,7 @@ module.exports = grammar({
       ),
 
     // Intermediate expressions
-    intermediate_expression: ($) =>
+    intermediate_expression: $ =>
       choice(
         $.subscript,
         $.superscript,
@@ -198,7 +210,7 @@ module.exports = grammar({
       ),
 
     // Concatenation
-    concatenation: ($) =>
+    concatenation: $ =>
       prec.left(my_precs.concat, seq($.intermediate_expression, $._expression)),
   },
 });

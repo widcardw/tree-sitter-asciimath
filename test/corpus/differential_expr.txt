@@ -1,0 +1,29 @@
+==================
+Differential expressions
+==================
+
+dd f x
+pp^2 g x
+
+---
+
+(source_file
+  (concatenation
+    (intermediate_expression
+      (simple_expression
+        (differential_expr
+          (dd)
+          (simple_expression
+            (identifier))
+          (simple_expression
+            (identifier)))))
+    (intermediate_expression
+      (simple_expression
+        (differential_expr
+          (pp)
+          (simple_expression
+            (number_symbol))
+          (simple_expression
+            (identifier))
+          (simple_expression
+            (identifier)))))))

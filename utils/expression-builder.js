@@ -8,19 +8,8 @@ const categories = require('../identifiers/categories');
  * @returns {Array} choice数组
  */
 function buildSimpleExpression($, excludeCategories = [], includeOnly = null) {
-  const allCategories = {
-    basicTypes: categories.basicTypes,
-    logicSymbols: categories.logicSymbols,
-    greekLetters: categories.greekLetters,
-    mathConstants: categories.mathConstants,
-    setOperators: categories.setOperators,
-    binaryOperators: categories.binaryOperators,
-    asciiEscape: categories.asciiEscape,
-    miscSymbols: categories.miscSymbols,
-    unaryBinarySymbols: categories.unaryBinarySymbols,
-    complexExpressions: categories.complexExpressions,
-    stringTypes: categories.stringTypes
-  };
+  const allCategories = {}
+  Object.assign(allCategories, categories);
 
   // 如果指定了只包含某些类别
   if (includeOnly) {
@@ -45,7 +34,8 @@ function buildSimpleExpression($, excludeCategories = [], includeOnly = null) {
   });
 
   // 转换为tree-sitter的引用格式
-  return choiceArray.map(item => $[item]);
+  const res = choiceArray.map(item => $[item]);
+  return res
 }
 
 /**
@@ -60,12 +50,12 @@ function validateIdentifierCoverage(allIdentifiers) {
     ...categories.greekLetters,
     ...categories.mathConstants,
     ...categories.setOperators,
-    ...categories.binaryOperators,
+    ...categories.mathOperators,
     ...categories.asciiEscape,
     ...categories.miscSymbols,
-    ...categories.unaryBinarySymbols,
-    ...categories.complexExpressions,
-    ...categories.stringTypes
+    ...categories.unarySymbols,
+    ...categories.binarySymbols,
+    ...categories.differentialSymbols,
   ];
 
   const identifierKeys = Object.keys(allIdentifiers);
