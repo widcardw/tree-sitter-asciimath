@@ -164,7 +164,8 @@
     "succ_than": { "token": ">-" },
     "succ_than_eq": { "token": ">-=" },
     "coloneqq": { "token": ":=" },
-    "eqqcolon": { "token": "=:" }
+    "eqqcolon": { "token": "=:" },
+    "choose": { "token": "choose", "tex": "\\choose" }
   },
 
   "asciiEscape": {
@@ -227,12 +228,11 @@
   },
 
   "binaryMidSymbols": {
-    "choose": { "token": "choose", "tex": "\\choose" },
     "slash_div": {"token": "/", "tex": "\\frac"}
   },
 
   "differentialSymbols": {
-    "dd": { "token": "dd" },
-    "pp": { "token": "pp" }
+    "dd": { "token": "dd", "tex": "\\mathrm{d}" },
+    "pp": { "token": "pp", "tex": "\\partial" }
   }
 }

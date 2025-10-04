@@ -1,51 +1,12 @@
 {
-  "name": "tree-sitter-asciimath",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "types": "bindings/node",
+  "version": "0.1.0",
   "scripts": {
     "init": "tree-sitter init",
-    "generate": "tree-sitter generate",
-    "parse": "tree-sitter parse",
-    "test": "tree-sitter test",
-    "install": "node-gyp-build",
-    "prebuildify": "prebuildify --napi --strip",
-    "build": "tree-sitter generate && node-gyp build",
-    "generate-symbols": "node scripts/generate-symbols.js"
+    "prepare": "node scripts/generate-symbols.js",
+    "gen": "tree-sitter generate",
+    "build": "tree-sitter build"
   },
-  "keywords": [],
-  "files": [
-    "grammar.js",
-    "binding.gyp",
-    "prebuilds/**",
-    "bindings/node/*",
-    "queries/*",
-    "src/**"
-  ],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "node-addon-api": "^8.5.0",
-    "node-gyp-build": "^4.8.4"
-  },
-  "peerDependencies": {
-    "tree-sitter": "^0.25.0"
-  },
-  "peerDependenciesMeta": {
-    "tree_sitter": {
-      "optional": true
-    }
-  },
-  "devDependencies": {
-    "nan": "^2.23.0",
-    "prebuildify": "^6.0.1",
     "tree-sitter-cli": "^0.25.10"
-  },
-  "tree-sitter": [
-    {
-      "scope": "source.asciimath",
-      "injection-regex": "^asciimath$"
-    }
-  ]
+  }
 }

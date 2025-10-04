@@ -14,7 +14,7 @@ const my_precs = {
 };
 
 // 导入所有identifier
-const identifiers = require('./identifiers');
+const identifiers = require('./identifiers/index.js');
 const categorizedSymbols = require('./identifiers/categorized.js');
 
 module.exports = grammar({
