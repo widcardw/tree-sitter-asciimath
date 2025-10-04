@@ -5,6 +5,7 @@
   "main": "index.js",
   "types": "bindings/node",
   "scripts": {
+    "init": "tree-sitter init",
     "generate": "tree-sitter generate",
     "parse": "tree-sitter parse",
     "test": "tree-sitter test",
@@ -25,8 +26,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-addon-api": "^7.1.1",
-    "node-gyp-build": "^4.8.1"
+    "node-addon-api": "^8.5.0",
+    "node-gyp-build": "^4.8.4"
   },
   "peerDependencies": {
     "tree-sitter": "^0.21.0"
@@ -37,9 +38,9 @@
     }
   },
   "devDependencies": {
-    "nan": "^2.20.0",
+    "nan": "^2.23.0",
     "prebuildify": "^6.0.1",
-    "tree-sitter-cli": "^0.22.6"
+    "tree-sitter-cli": "^0.25.10"
   },
   "tree-sitter": [
     {
