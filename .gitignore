@@ -42,3 +42,4 @@ references/
 identifiers/
 # upload src when everything is ready
 src/
+**/__pycache__/
