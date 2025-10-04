@@ -5,7 +5,16 @@ const path = require('path');
 const configPath = path.join(__dirname, '../symbols-config.json');
 const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
+/**
+ * Escape single quotes in a string
+ * @param {string} str
+ * @returns {string} The string with single quotes escaped
+ */
 function escapeQuote(str) {
+  if (typeof str !== 'string') {
+    console.log('Warning: escapeQuote called with non-string argument:', str);
+    return str;
+  }
   return str.replace(/'/g, '\\\'');
 }
 
@@ -35,7 +44,6 @@ function generateIdentifiersIndex() {
   const indexPath = path.join(__dirname, '../identifiers/index.js');
 
   let content = '// Automatically generated, please do not change this file!\n\n';
-  content += 'const { buildSimpleExpression } = require(\'../utils/expression-builder\');\n\n';
 
   // import all the categories
   for (const category of Object.keys(config)) {
@@ -97,6 +105,26 @@ function generateCategoryFiles() {
   }
 }
 
+function generateCategorizedSymbols(excludeCategories = []) {
+  const categorizedSymbolsPath = path.join(__dirname, '../identifiers/categorized.js');
+  let content = '// Automatically generated, please do not change this file!\n\n';
+  content += 'module.exports = {\n';
+
+  for (const [category, symbols] of Object.entries(config)) {
+    if (excludeCategories.includes(category)) {
+      continue;
+    }
+
+    const symbolNames = Object.keys(symbols)
+    content += `  ${category}: $ => choice(${symbolNames.map(name => `$.${name}`).join(', ')}),\n`;
+  }
+
+  content += '};';
+
+  fs.writeFileSync(categorizedSymbolsPath, content);
+  console.log('Generated identifiers/categorized.js');
+}
+
 function main() {
   console.log('Generating symbol files...');
 
@@ -108,6 +136,7 @@ function main() {
   generateCategories();
   generateIdentifiersIndex();
   generateCategoryFiles();
+  generateCategorizedSymbols(['basicTypes', 'complexExpressions']);
 
   console.log('All symbol files generated successfully!');
 }

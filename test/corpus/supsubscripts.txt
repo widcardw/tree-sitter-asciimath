@@ -21,7 +21,8 @@ sum_(i=1)^n a_i^2
     (concatenation
       (intermediate_expression
         (simple_expression
-          (plus)))
+          (mathOperators
+            (plus))))
       (concatenation
         (intermediate_expression
           (subscript_superscript
@@ -43,7 +44,8 @@ sum_(i=1)^n a_i^2
           (concatenation
             (intermediate_expression
               (simple_expression
-                (cdot)))
+                (mathOperators
+                  (cdot))))
             (concatenation
               (intermediate_expression
                 (subscript_superscript
@@ -57,7 +59,8 @@ sum_(i=1)^n a_i^2
                 (intermediate_expression
                   (subscript_superscript
                     (simple_expression
-                      (sum))
+                      (mathConstants
+                        (sum)))
                     (simple_expression
                       (bracket_expr
                         (left_bracket)
@@ -68,7 +71,8 @@ sum_(i=1)^n a_i^2
                           (concatenation
                             (intermediate_expression
                               (simple_expression
-                                (equals)))
+                                (mathOperators
+                                  (equals))))
                             (intermediate_expression
                               (simple_expression
                                 (number_symbol)))))

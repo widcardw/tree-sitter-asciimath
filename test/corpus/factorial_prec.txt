@@ -10,14 +10,16 @@ root(sqrt(n!))(1/x!!)
   (intermediate_expression
     (simple_expression
       (binary_expr
-        (root)
+        (binarySymbols
+          (root))
         (simple_expression
           (bracket_expr
             (left_bracket)
             (intermediate_expression
               (simple_expression
                 (unary_expr
-                  (sqrt)
+                  (unarySymbols
+                    (sqrt))
                   (simple_expression
                     (bracket_expr
                       (left_bracket)
@@ -26,7 +28,8 @@ root(sqrt(n!))(1/x!!)
                           (factorial_expr
                             (simple_expression
                               (identifier))
-                            (factorial))))
+                            (factorialSymbols
+                              (factorial)))))
                       (right_bracket))))))
             (right_bracket)))
         (simple_expression
@@ -36,10 +39,13 @@ root(sqrt(n!))(1/x!!)
               (intermediate_expression
                 (simple_expression
                   (number_symbol)))
+              (binaryMidSymbols
+                (slash_div))
               (intermediate_expression
                 (simple_expression
                   (factorial_expr
                     (simple_expression
                       (identifier))
-                    (double_factorial)))))
+                    (factorialSymbols
+                      (double_factorial))))))
             (right_bracket)))))))

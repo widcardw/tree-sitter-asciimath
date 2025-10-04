@@ -15,7 +15,8 @@ a + b
     (concatenation
       (intermediate_expression
         (simple_expression
-          (plus)))
+          (mathOperators
+            (plus))))
       (concatenation
         (intermediate_expression
           (simple_expression
@@ -24,6 +25,8 @@ a + b
           (intermediate_expression
             (simple_expression
               (number_symbol)))
+          (binaryMidSymbols
+            (slash_div))
           (intermediate_expression
             (simple_expression
               (number_symbol))))))))

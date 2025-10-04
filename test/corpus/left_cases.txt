@@ -19,7 +19,8 @@ Cases expressions
           (concatenation
             (intermediate_expression
               (simple_expression
-                (if)))
+                (logicSymbols
+                  (if))))
             (concatenation
               (intermediate_expression
                 (simple_expression
@@ -27,7 +28,8 @@ Cases expressions
               (concatenation
                 (intermediate_expression
                   (simple_expression
-                    (ge)))
+                    (mathOperators
+                      (ge))))
                 (intermediate_expression
                   (simple_expression
                     (number_symbol))))))
@@ -37,12 +39,14 @@ Cases expressions
           (concatenation
             (intermediate_expression
               (simple_expression
-                (minus)))
+                (mathOperators
+                  (minus))))
             (intermediate_expression
               (simple_expression
                 (identifier))))
           (intermediate_expression
             (simple_expression
-              (else)))
+              (logicSymbols
+                (else))))
           (right_bracket))
         (right_bracket)))))

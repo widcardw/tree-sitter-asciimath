@@ -12,13 +12,16 @@ frac(a)(b)
     (intermediate_expression
       (simple_expression
         (identifier)))
+    (binaryMidSymbols
+      (slash_div))
     (intermediate_expression
       (simple_expression
         (identifier))))
   (intermediate_expression
     (simple_expression
       (binary_expr
-        (frac)
+        (binarySymbols
+          (frac))
         (simple_expression
           (bracket_expr
             (left_bracket)

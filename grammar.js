@@ -1,13 +1,13 @@
 const my_precs = {
-  str: 25,
-  factorial: 24,
-  supsub: 20,
-  binary_frac: 20,
-  sup_or_sub: 19,
-  bracket: 18,
-  diffential: 17,
-  binary: 16,
-  unary: 15,
+  str: 30,
+  factorial: 29,
+  supsub: 25,
+  binary_frac: 25,
+  sup_or_sub: 20,
+  bracket: 19,
+  diffential: 18,
+  binary: 17,
+  unary: 16,
   concat: 11,
   matrix_row: 10,
   matrix: 9,
@@ -15,7 +15,7 @@ const my_precs = {
 
 // 导入所有identifier
 const identifiers = require('./identifiers');
-const { buildSimpleExpression } = require('./utils/expression-builder');
+const categorizedSymbols = require('./identifiers/categorized.js');
 
 module.exports = grammar({
   name: "asciimath",
@@ -26,12 +26,11 @@ module.exports = grammar({
     _expression: $ =>
       choice($.binary_frac, $.concatenation, $.intermediate_expression),
 
-    // Numbers and identifiers
-    number_symbol: $ => /\d+(\.\d+)?/,
-    identifier: $ => /[A-Za-z]+/,
-
-    // 导入所有identifiers
+    // inject all the identifiers
     ...identifiers,
+
+    // categorize all the identifiers, so that we will not enumerate all the choices in grammar.js
+    ...categorizedSymbols,
 
     // Whitespace and delimiters
     multi_linebreak: $ => /(\r?\n){2,}/,
@@ -72,8 +71,8 @@ module.exports = grammar({
       ),
 
     // Brackets
-    left_bracket: $ => choice("(", "[", "{", "{:", ":(", "|__", '|~',),
-    right_bracket: $ => choice(")", "]", "}", ":}", ":)", "__|", '~|',),
+    left_bracket: $ => choice("(", "[", "{", "{:", ":(", "|__", '|~'),
+    right_bracket: $ => choice(")", "]", "}", ":}", ":)", "__|", '~|'),
 
     // Bracket expressions
     bracket_expr: $ =>
@@ -109,20 +108,7 @@ module.exports = grammar({
       prec.left(
         my_precs.unary,
         seq(
-          choice(
-            $.sqrt,
-            $.text,
-            $.bb,
-            $.cc,
-            $.tt,
-            $.fr,
-            $.sf,
-            $.bold,
-            $.cal,
-            $.frak,
-            $.mono,
-            $.italic,
-          ),
+          $.unarySymbols,
           $.simple_expression,
         ),
       ),
@@ -132,7 +118,7 @@ module.exports = grammar({
       prec.left(
         my_precs.binary,
         seq(
-          choice($.frac, $.root, $.stackrel, $.choose, $.atop, $.over),
+          $.binarySymbols,
           $.simple_expression,
           $.simple_expression,
         ),
@@ -142,13 +128,13 @@ module.exports = grammar({
     binary_frac: $ =>
       prec.left(
         my_precs.binary_frac,
-        seq($.intermediate_expression, "/", $.intermediate_expression),
+        seq($.intermediate_expression, $.binaryMidSymbols, $.intermediate_expression),
       ),
 
     factorial_expr: $ =>
       prec.left(
         my_precs.factorial,
-        seq($.simple_expression, choice($.double_factorial, $.factorial)),
+        seq($.simple_expression, $.factorialSymbols),
       ),
 
     differential_expr: $ =>
@@ -164,7 +150,26 @@ module.exports = grammar({
 
     // Simple expressions (automatically import)
     // and complex expression (e.g., unary_expr, binary_expr, factorial_expr, matrix_expr) injection
-    simple_expression: $ => choice(...buildSimpleExpression($)),
+    simple_expression: $ => choice(
+      $.number_symbol,
+      $.identifier,
+      // categorized
+      $.logicSymbols,
+      $.greekLetters,
+      $.mathConstants,
+      $.setOperators,
+      $.mathOperators,
+      $.asciiEscape,
+      $.miscSymbols,
+      // complex expressions
+      $.unary_expr,
+      $.binary_expr,
+      $.factorial_expr,
+      $.differential_expr,
+      $.matrix_expr,
+      $.literal_string,
+      $.bracket_expr,
+    ),
 
     // Subscript and superscript
     subscript: $ =>
