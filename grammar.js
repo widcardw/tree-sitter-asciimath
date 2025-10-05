@@ -1,8 +1,9 @@
 const my_precs = {
   str: 30,
   factorial: 29,
-  bigEqual: 28,
-  supsub: 25,
+  det: 28,
+  bigEqual: 27,
+  supsub: 26,
   binary_frac: 25,
   sup_or_sub: 20,
   bracket: 19,
@@ -114,6 +115,23 @@ module.exports = grammar({
         ),
       ),
 
+    det_expr: $ =>
+      prec.left(
+        my_precs.det,
+        choice(
+          seq(
+            '|',
+            seq($.matrix_row_expr, repeat(seq(",", $.matrix_row_expr))),
+            '|',
+          ),
+          seq(
+            '||',
+            seq($.matrix_row_expr, repeat(seq(",", $.matrix_row_expr))),
+            '||',
+          )
+        ),
+      ),
+
     // Unary expressions
     unary_expr: $ =>
       prec.left(
@@ -220,6 +238,7 @@ module.exports = grammar({
       $.factorial_expr,
       $.differential_expr,
       $.matrix_expr,
+      $.det_expr,
       $.literal_string,
       $.bracket_expr,
       $.binary_frac,

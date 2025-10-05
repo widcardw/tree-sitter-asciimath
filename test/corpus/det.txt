@@ -1,0 +1,60 @@
+==================
+Basic arithmetic expressions
+==================
+
+|(a,b),(c,d)|
+||(1,2),(3,4)||
+
+---
+
+(source_file
+  (intermediate_expression
+    (simple_expression
+      (det_expr
+        (matrix_row_expr
+          (left_bracket
+            (lparen))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (right_bracket
+            (rparen)))
+        (matrix_row_expr
+          (left_bracket
+            (lparen))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (right_bracket
+            (rparen))))))
+  (intermediate_expression
+    (simple_expression
+      (det_expr
+        (matrix_row_expr
+          (left_bracket
+            (lparen))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (right_bracket
+            (rparen)))
+        (matrix_row_expr
+          (left_bracket
+            (lparen))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (right_bracket
+            (rparen)))))))

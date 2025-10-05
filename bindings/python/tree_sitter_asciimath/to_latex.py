@@ -81,7 +81,8 @@ class AsciiMathTransformer:
             token = node.children[0].type # text.decode('utf-8')
             return self.get_tex(node.type, token)
 
-        raise ValueError(f"Unknown constant type: {node.type}")
+        return node.type
+        # raise ValueError(f"Unknown constant type: {node.type}")
 
     def superscript_to_latex(self, node: Node):
         assert node.children
@@ -279,6 +280,18 @@ class AsciiMathTransformer:
             + f'\\end{{array}}\\right{rb}'
         )
     
+    def det_expr_to_latex(self, node: Node):
+        assert node.children
+        assert len(node.children) >= 3
+        bar = self.constant_to_latex(node.children[0])  # left bar and right bar are the same
+        rows = [self.matrix_row_to_list(child) 
+                for child in node.children[1:-1] if child.type == 'matrix_row_expr']
+        return (
+            f'\\left{bar}\\begin{{array}}{{{len(rows[0])*"c"}}}'
+            + " \\\\ ".join([" & ".join(row) for row in rows])
+            + f'\\end{{array}}\\right{bar}'
+        )
+    
     def bigEqual_expr_to_latex(self, node: Node):
         assert node.children
         op = self.constant_to_latex(node.children[0])
@@ -372,6 +385,9 @@ class AsciiMathTransformer:
         
         if node.type == 'matrix_expr':
             return self.matrix_expr_to_latex(node)
+        
+        if node.type == 'det_expr':
+            return self.det_expr_to_latex(node)
         
         if node.type == 'color_expr':
             return self.color_expr_to_latex(node)

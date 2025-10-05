@@ -52,5 +52,10 @@ class TestTransformerToLatex(TestCase):
             latex = transformer.to_latex(root)
             self.assertEqual(latex, "\\LaTeX")
 
+            tree = parser.parse(b"|[a, b], [c, d]|")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "\\left|\\begin{array}{cc}a & b \\\\ c & d\\end{array}\\right|")
+
         except Exception as e:
             self.fail(f"Error loading AsciiMath transformer: {e}")
