@@ -136,7 +136,7 @@ function main() {
   generateCategories();
   generateIdentifiersIndex();
   generateCategoryFiles();
-  generateCategorizedSymbols(['basicTypes', 'complexExpressions']);
+  generateCategorizedSymbols(['basicTypes']);
 
   console.log('All symbol files generated successfully!');
 }
