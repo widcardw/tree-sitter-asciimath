@@ -13,7 +13,6 @@ class CommonSymbol(TypedDict):
     alias: list[str]
     tex: str
     template: NotRequired[str]
-    frozen: NotRequired[list[int]]
 
 
 class AsciiMathTransformer:

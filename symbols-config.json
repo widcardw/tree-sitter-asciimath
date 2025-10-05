@@ -314,10 +314,10 @@
   },
 
   "unaryFrozenSymbols": {
-    "text": { "token": "text", "tex": "\\text", "frozen": [1] },
-    "tex": { "token": "tex", "tex": "", "frozen": [1], "template": "$1" },
-    "op": { "token": "op", "tex": "\\operatorname", "frozen": [1] },
-    "hspace": { "token": "hspace", "tex": "\\hspace", "frozen": [1] },
-    "chemistry": { "token": "ce", "tex": "\\ce", "frozen": [1] }
+    "text": { "token": "text", "tex": "\\text" },
+    "tex": { "token": "tex", "tex": "", "template": "$1" },
+    "op": { "token": "op", "tex": "\\operatorname" },
+    "hspace": { "token": "hspace", "tex": "\\hspace" },
+    "chemistry": { "token": "ce", "tex": "\\ce" }
   }
 }
