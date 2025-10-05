@@ -8,25 +8,24 @@ a + b
 ---
 
 (source_file
-  (concatenation
-    (intermediate_expression
-      (simple_expression
-        (identifier)))
-    (concatenation
-      (intermediate_expression
-        (simple_expression
-          (mathOperators
-            (plus))))
-      (concatenation
+  (intermediate_expression
+    (simple_expression
+      (identifier)))
+  (intermediate_expression
+    (simple_expression
+      (mathOperators
+        (plus))))
+  (intermediate_expression
+    (simple_expression
+      (identifier)))
+  (intermediate_expression
+    (simple_expression
+      (binary_frac
         (intermediate_expression
           (simple_expression
-            (identifier)))
-        (binary_frac
-          (intermediate_expression
-            (simple_expression
-              (number_symbol)))
-          (binaryMidSymbols
-            (slash_div))
-          (intermediate_expression
-            (simple_expression
-              (number_symbol))))))))
+            (number_symbol)))
+        (binaryMidSymbols
+          (slash_div))
+        (intermediate_expression
+          (simple_expression
+            (number_symbol)))))))

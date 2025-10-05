@@ -14,7 +14,8 @@ root(sqrt(n!))(1/x!!)
           (root))
         (simple_expression
           (bracket_expr
-            (left_bracket)
+            (left_bracket
+              (lparen))
             (intermediate_expression
               (simple_expression
                 (unary_expr
@@ -22,7 +23,8 @@ root(sqrt(n!))(1/x!!)
                     (sqrt))
                   (simple_expression
                     (bracket_expr
-                      (left_bracket)
+                      (left_bracket
+                        (lparen))
                       (intermediate_expression
                         (simple_expression
                           (factorial_expr
@@ -30,22 +32,28 @@ root(sqrt(n!))(1/x!!)
                               (identifier))
                             (factorialSymbols
                               (factorial)))))
-                      (right_bracket))))))
-            (right_bracket)))
+                      (right_bracket
+                        (rparen)))))))
+            (right_bracket
+              (rparen))))
         (simple_expression
           (bracket_expr
-            (left_bracket)
-            (binary_frac
-              (intermediate_expression
-                (simple_expression
-                  (number_symbol)))
-              (binaryMidSymbols
-                (slash_div))
-              (intermediate_expression
-                (simple_expression
-                  (factorial_expr
+            (left_bracket
+              (lparen))
+            (intermediate_expression
+              (simple_expression
+                (binary_frac
+                  (intermediate_expression
                     (simple_expression
-                      (identifier))
-                    (factorialSymbols
-                      (double_factorial))))))
-            (right_bracket)))))))
+                      (number_symbol)))
+                  (binaryMidSymbols
+                    (slash_div))
+                  (intermediate_expression
+                    (simple_expression
+                      (factorial_expr
+                        (simple_expression
+                          (identifier))
+                        (factorialSymbols
+                          (double_factorial))))))))
+            (right_bracket
+              (rparen))))))))

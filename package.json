@@ -4,6 +4,7 @@
     "init": "tree-sitter init",
     "prepare": "node scripts/generate-symbols.js",
     "gen": "tree-sitter generate",
+    "test": "tree-sitter test",
     "build": "tree-sitter build"
   },
   "dependencies": {

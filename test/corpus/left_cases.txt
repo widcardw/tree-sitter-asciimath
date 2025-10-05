@@ -10,43 +10,46 @@ Cases expressions
   (intermediate_expression
     (simple_expression
       (matrix_expr
-        (left_bracket)
+        (left_bracket
+          (lbrace))
         (matrix_row_expr
-          (left_bracket)
+          (left_bracket
+            (lparen))
           (intermediate_expression
             (simple_expression
               (identifier)))
-          (concatenation
-            (intermediate_expression
-              (simple_expression
-                (logicSymbols
-                  (if))))
-            (concatenation
-              (intermediate_expression
-                (simple_expression
-                  (identifier)))
-              (concatenation
-                (intermediate_expression
-                  (simple_expression
-                    (mathOperators
-                      (ge))))
-                (intermediate_expression
-                  (simple_expression
-                    (number_symbol))))))
-          (right_bracket))
+          (intermediate_expression
+            (simple_expression
+              (logicSymbols
+                (if))))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (intermediate_expression
+            (simple_expression
+              (mathOperators
+                (ge))))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (right_bracket
+            (rparen)))
         (matrix_row_expr
-          (left_bracket)
-          (concatenation
-            (intermediate_expression
-              (simple_expression
-                (mathOperators
-                  (minus))))
-            (intermediate_expression
-              (simple_expression
-                (identifier))))
+          (left_bracket
+            (lparen))
+          (intermediate_expression
+            (simple_expression
+              (mathOperators
+                (minus))))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
           (intermediate_expression
             (simple_expression
               (logicSymbols
                 (else))))
-          (right_bracket))
-        (right_bracket)))))
+          (right_bracket
+            (rparen)))
+        (right_bracket
+          (rtransparent))))))
+

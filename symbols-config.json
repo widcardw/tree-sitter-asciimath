@@ -199,6 +199,26 @@
     "triangle": { "token": "triangle", "alias": ["/_\\\\"], "tex": "\\triangle" }
   },
 
+  "left_bracket": {
+    "lparen": { "token": "(", "tex": "(" },
+    "lbracket": { "token": "[", "tex": "[" },
+    "lbrace": { "token": "{", "tex": "\\{" },
+    "lfloor": { "token": "|__", "tex": "\\lfloor" },
+    "langle": { "token": "(:", "tex": "\\langle" },
+    "ltransparent": {"token": "{:", "tex": "."},
+    "lceil": { "token": "|~", "tex": "\\lceil" }
+  },
+
+  "right_bracket": {
+    "rparen": { "token": ")", "tex": ")" },
+    "rbracket": { "token": "]", "tex": "]" },
+    "rbrace": { "token": "}", "tex": "\\}" },
+    "rfloor": { "token": "__|", "tex": "\\rfloor" },
+    "rangle": { "token": ":)", "tex": "\\rangle" },
+    "rtransparent": {"token": ":}", "tex": "."},
+    "rceil": { "token": "~|", "tex": "\\rceil" }
+  },
+
   "unarySymbols": {
     "sqrt": { "token": "sqrt", "tex": "\\sqrt" },
     "text": { "token": "text", "tex": "\\text" },
@@ -217,6 +237,12 @@
   "factorialSymbols": {
     "factorial": { "token": "!", "tex": "!" },
     "double_factorial": { "token": "!!", "tex": "!!" }
+  },
+
+  "separatorSymbols": {
+    "comma": { "token": ",", "tex": "," },
+    "semi": { "token": ";", "tex": ";" },
+    "colon": { "token": ":", "tex": ":" }
   },
 
   "binarySymbols": {

@@ -8,6 +8,7 @@ const my_precs = {
   diffential: 18,
   binary: 17,
   unary: 16,
+  multiline: 12,
   concat: 11,
   matrix_row: 10,
   matrix: 9,
@@ -21,10 +22,14 @@ module.exports = grammar({
   name: "asciimath",
   extras: $ => [$._whitespace],
   rules: {
-    source_file: $ => repeat(choice($._expression, $.multi_linebreak)),
+    source_file: $ => choice($._expression, $.multiline_expr),
 
-    _expression: $ =>
-      choice($.binary_frac, $.concatenation, $.intermediate_expression),
+    _expression: $ => prec.left(
+      my_precs.concat,
+      seq(
+        $.intermediate_expression,
+        repeat($._expression),
+      )),
 
     // inject all the identifiers
     ...identifiers,
@@ -35,6 +40,15 @@ module.exports = grammar({
     // Whitespace and delimiters
     multi_linebreak: $ => /(\r?\n){2,}/,
     _whitespace: $ => /\s+|\r?\n|\t/,
+
+    // multiline expression
+    multiline_expr: $ => prec.left(
+      my_precs.multiline,
+      seq(
+        $._expression,
+        repeat1(seq($.multi_linebreak, $._expression))
+      )
+    ),
 
     // String literals
     literal_string: $ =>
@@ -69,10 +83,6 @@ module.exports = grammar({
           ),
         ),
       ),
-
-    // Brackets
-    left_bracket: $ => choice("(", "[", "{", "{:", ":(", "|__", '|~'),
-    right_bracket: $ => choice(")", "]", "}", ":}", ":)", "__|", '~|'),
 
     // Bracket expressions
     bracket_expr: $ =>
@@ -161,6 +171,7 @@ module.exports = grammar({
       $.mathOperators,
       $.asciiEscape,
       $.miscSymbols,
+      $.separatorSymbols,
       // complex expressions
       $.unary_expr,
       $.binary_expr,
@@ -169,6 +180,7 @@ module.exports = grammar({
       $.matrix_expr,
       $.literal_string,
       $.bracket_expr,
+      $.binary_frac,
     ),
 
     // Subscript and superscript

@@ -8,15 +8,17 @@ frac(a)(b)
 ---
 
 (source_file
-  (binary_frac
-    (intermediate_expression
-      (simple_expression
-        (identifier)))
-    (binaryMidSymbols
-      (slash_div))
-    (intermediate_expression
-      (simple_expression
-        (identifier))))
+  (intermediate_expression
+    (simple_expression
+      (binary_frac
+        (intermediate_expression
+          (simple_expression
+            (identifier)))
+        (binaryMidSymbols
+          (slash_div))
+        (intermediate_expression
+          (simple_expression
+            (identifier))))))
   (intermediate_expression
     (simple_expression
       (binary_expr
@@ -24,15 +26,19 @@ frac(a)(b)
           (frac))
         (simple_expression
           (bracket_expr
-            (left_bracket)
+            (left_bracket
+              (lparen))
             (intermediate_expression
               (simple_expression
                 (identifier)))
-            (right_bracket)))
+            (right_bracket
+              (rparen))))
         (simple_expression
           (bracket_expr
-            (left_bracket)
+            (left_bracket
+              (lparen))
             (intermediate_expression
               (simple_expression
                 (identifier)))
-            (right_bracket)))))))
+            (right_bracket
+              (rparen))))))))

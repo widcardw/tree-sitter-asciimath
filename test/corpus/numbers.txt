@@ -10,18 +10,15 @@ Basic numbers
 ---
 
 (source_file
-  (concatenation
-    (intermediate_expression
-      (simple_expression
-        (number_symbol)))
-    (concatenation
-      (intermediate_expression
-        (simple_expression
-          (number_symbol)))
-      (concatenation
-        (intermediate_expression
-          (simple_expression
-            (number_symbol)))
-        (intermediate_expression
-          (simple_expression
-            (number_symbol)))))))
+  (intermediate_expression
+    (simple_expression
+      (number_symbol)))
+  (intermediate_expression
+    (simple_expression
+      (number_symbol)))
+  (intermediate_expression
+    (simple_expression
+      (number_symbol)))
+  (intermediate_expression
+    (simple_expression
+      (number_symbol))))

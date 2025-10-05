@@ -3,6 +3,7 @@ Basic matrix
 ==================
 
 [[1,2],[3,4]]
+(1,2,3,4)
 
 ---
 
@@ -10,23 +11,60 @@ Basic matrix
   (intermediate_expression
     (simple_expression
       (matrix_expr
-        (left_bracket)
+        (left_bracket
+          (lbracket))
         (matrix_row_expr
-          (left_bracket)
+          (left_bracket
+            (lbracket))
           (intermediate_expression
             (simple_expression
               (number_symbol)))
           (intermediate_expression
             (simple_expression
               (number_symbol)))
-          (right_bracket))
+          (right_bracket
+            (rbracket)))
         (matrix_row_expr
-          (left_bracket)
+          (left_bracket
+            (lbracket))
           (intermediate_expression
             (simple_expression
               (number_symbol)))
           (intermediate_expression
             (simple_expression
               (number_symbol)))
-          (right_bracket))
-        (right_bracket)))))
+          (right_bracket
+            (rbracket)))
+        (right_bracket
+          (rbracket)))))
+  (intermediate_expression
+    (simple_expression
+      (bracket_expr
+        (left_bracket
+          (lparen))
+        (intermediate_expression
+          (simple_expression
+            (number_symbol)))
+        (intermediate_expression
+          (simple_expression
+            (separatorSymbols
+              (comma))))
+        (intermediate_expression
+          (simple_expression
+            (number_symbol)))
+        (intermediate_expression
+          (simple_expression
+            (separatorSymbols
+              (comma))))
+        (intermediate_expression
+          (simple_expression
+            (number_symbol)))
+        (intermediate_expression
+          (simple_expression
+            (separatorSymbols
+              (comma))))
+        (intermediate_expression
+          (simple_expression
+            (number_symbol)))
+        (right_bracket
+          (rparen))))))

@@ -37,6 +37,9 @@ class AsciiMathTransformer:
             assert len(node.children) == 1
             assert node.children[0].text
             return node.children[0].text.decode('utf-8')
+        
+        if node.type == ',':
+            return ','
 
         raise ValueError(f"Unknown constant type: {node.type}")
 
@@ -91,8 +94,8 @@ class AsciiMathTransformer:
     def binary_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
-        left = self.to_latex(node.children[0])
-        op = self.constant_to_latex(node.children[1])
+        op = self.constant_to_latex(node.children[0])
+        left = self.to_latex(node.children[1])
         right = self.to_latex(node.children[2])
         return f"{op} {left} {right}"
 
@@ -136,57 +139,60 @@ class AsciiMathTransformer:
         assert len(node.children) == 1
         return self.to_latex(node.children[0])
 
-    def concat_expr_to_latex(self, node: Node):
-        assert node.children
-        assert len(node.children) == 2
-        left = self.to_latex(node.children[0])
-        right = self.to_latex(node.children[1])
-        return f"{left} {right}"
-
     def matrix_row_to_latex(self, node: Node):
         assert node.children
-        assert len(node.children) >= 1
-        row = [self.to_latex(child) for child in node.children]
-        return " & ".join(row) + " \\\\"
+        assert len(node.children) >= 3
+        _lb = self.constant_to_latex(node.children[0])
+        _rb = self.constant_to_latex(node.children[-1])
+        row = [self.to_latex(child) 
+               for child in node.children[1:-1] if child.type != ',']
+        return " & ".join(row)
 
     def matrix_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
         lb = self.constant_to_latex(node.children[0])
         rb = self.constant_to_latex(node.children[-1])
-        rows = [self.matrix_row_to_latex(child) for child in node.children[1:-1]]
-        return f"{lb} \n {rows} \n {rb}"
+        rows = [self.matrix_row_to_latex(child) 
+                for child in node.children[1:-1] if child.type == 'matrix_row_expr']
+        return f"{lb} \n {' \\\\ '.join(rows)} \n {rb}"
 
     def to_latex(self, node: Node):
         if not isinstance(node, Node):
             raise TypeError("Expected a tree_sitter.Node object")
 
         if node.type == 'source_file':
-            return self.to_latex(node.children[0])
+            return " ".join([
+                self.to_latex(child)
+                for child in node.children
+            ])
 
         if node.type == 'simple_expression':
             return self.simple_expression_to_latex(node)
 
-        if node.type == 'concat_expression':
-            return self.concat_expr_to_latex(node)
+        # if node.type == 'concatenation':
+        #     return self.concat_expr_to_latex(node)
 
-        if node.type == 'bracket_expression':
+        if node.type == 'bracket_expr':
             return self.bracket_expr_to_latex(node)
 
-        if node.type == 'unary_expression':
+        if node.type == 'unary_expr':
             return self.unary_expr_to_latex(node)
 
-        if node.type == 'binary_expression':
+        if node.type == 'binary_expr':
             return self.binary_expr_to_latex(node)
 
         if node.type == 'binary_frac':
             return self.binary_frac_to_latex(node)
 
-        if node.type == 'factorial_expression':
+        if node.type == 'factorial_expr':
             return self.factorial_expr_to_latex(node)
 
-        if node.type == 'differential_expression':
+        if node.type == 'differential_expr':
             return self.differential_expr_to_latex(node)
+        
+        if node.type == 'matrix_expr':
+            return self.matrix_expr_to_latex(node)
 
         if node.type == 'intermediate_expression':
             assert node.children

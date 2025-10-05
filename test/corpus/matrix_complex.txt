@@ -10,9 +10,11 @@ Matrix with supsub
   (intermediate_expression
     (simple_expression
       (matrix_expr
-        (left_bracket)
+        (left_bracket
+          (lbracket))
         (matrix_row_expr
-          (left_bracket)
+          (left_bracket
+            (lbracket))
           (intermediate_expression
             (superscript
               (simple_expression
@@ -25,9 +27,11 @@ Matrix with supsub
                 (identifier))
               (simple_expression
                 (number_symbol))))
-          (right_bracket))
+          (right_bracket
+            (rbracket)))
         (matrix_row_expr
-          (left_bracket)
+          (left_bracket
+            (lbracket))
           (intermediate_expression
             (superscript
               (simple_expression
@@ -40,5 +44,7 @@ Matrix with supsub
                 (identifier))
               (simple_expression
                 (number_symbol))))
-          (right_bracket))
-        (right_bracket)))))
+          (right_bracket
+            (rbracket)))
+        (right_bracket
+          (rbracket))))))
