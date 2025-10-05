@@ -3,7 +3,6 @@ Basic arithmetic expressions
 ==================
 
 a + b
-4 / 5
 
 ---
 
@@ -17,15 +16,4 @@ a + b
         (plus))))
   (intermediate_expression
     (simple_expression
-      (identifier)))
-  (intermediate_expression
-    (simple_expression
-      (binary_frac
-        (intermediate_expression
-          (simple_expression
-            (number_symbol)))
-        (binaryMidSymbols
-          (slash_div))
-        (intermediate_expression
-          (simple_expression
-            (number_symbol)))))))
+      (identifier))))

@@ -1,24 +1,62 @@
 from tree_sitter import Node
+import json
+from typing import TypedDict, NotRequired
+# from objprint import objprint
+
+class PatternSymbol(TypedDict):
+    pattern: str
+    type: str
+
+
+class CommonSymbol(TypedDict):
+    token: str
+    alias: list[str]
+    tex: str
+    template: NotRequired[str]
+    frozen: NotRequired[list[int]]
+
 
 class AsciiMathTransformer:
 
     def __init__(self):
         '''
-        现在只是雏形，甚至还没把 tex 加载进来，如果需要 to_latex 还需要将 json 加载进来
-        '''
-        pass
+        Load symbol config from symbols-config.json
 
+        几种情况需要将小括号去掉：
+        1. 上下标
+        2. 除法
+        3. differential expr 的上下标
+        几种情况需要将小括号转换成latex的大括号：
+        1. unary_expr
+        2. binary_expr
+        '''
+        self.symbol_config: dict[str, dict[str, CommonSymbol]]
+        with open('symbols-config.json', 'r') as f:
+            self.symbol_config = json.load(f)
+
+    def get_tex(self, typ: str, token: str):
+        if typ not in self.symbol_config:
+            raise ValueError(f"Unknown type: {typ}")
+        target_category = self.symbol_config[typ]
+        if token not in target_category:
+            raise ValueError(f"Unknown token: {token}")
+        return target_category[token]['tex']
+        
     def constant_to_latex(self, node: Node):
         if (node.type == 'number_symbol'
-            or node.type == 'identifier'
-            or node.type == 'literal_string'):
+            or node.type == 'identifier'):
             assert node.text
             return node.text.decode('utf-8')
+        
+        if node.type == 'literal_string':
+            assert node.text
+            return node.text.decode('utf-8')[1:-1]
 
         if (node.type == 'left_bracket'
             or node.type == 'right_bracket'):
             assert node.text
-            return node.text.decode('utf-8')
+            token = node.children[0].type  # .text.decode('utf-8')
+            return self.get_tex(node.type, token)
 
         if (node.type == 'logicSymbols'
             or node.type == 'greekLetters'
@@ -32,14 +70,17 @@ class AsciiMathTransformer:
             or node.type == 'binarySymbols'
             or node.type == 'binaryMidSymbols'
             or node.type == 'differentialSymbols'
+            or node.type == 'separatorSymbols'
+            or node.type == 'bigEqualSymbols'
+            or node.type == 'unaryFrozenSymbols'
+            # special cases
+            or node.type == 'color'
         ):
             assert node.children
             assert len(node.children) == 1
             assert node.children[0].text
-            return node.children[0].text.decode('utf-8')
-        
-        if node.type == ',':
-            return ','
+            token = node.children[0].type # text.decode('utf-8')
+            return self.get_tex(node.type, token)
 
         raise ValueError(f"Unknown constant type: {node.type}")
 
@@ -78,41 +119,119 @@ class AsciiMathTransformer:
 
     def bracket_expr_to_latex(self, node: Node):
         assert node.children
-        assert len(node.children) == 3
+        assert len(node.children) >= 3
         left = self.constant_to_latex(node.children[0])
-        content = self.to_latex(node.children[1])
-        right = self.constant_to_latex(node.children[2])
-        return f"{left}{content}{right}"
-
+        contents = node.children[1:-1]
+        contents_str = " ".join([self.to_latex(child) for child in contents])
+        right = self.constant_to_latex(node.children[-1])
+        return f"{left}{contents_str}{right}"
+    
+    def bracket_expr_to_obj(self, node: Node):
+        assert node.children
+        assert len(node.children) >= 3
+        left = self.constant_to_latex(node.children[0])
+        contents = node.children[1:-1]
+        right = self.constant_to_latex(node.children[-1])
+        return {
+            'left': left,
+            'right': right,
+            'contents': " ".join([self.to_latex(child) for child in contents])
+        }
+    
+    def _trim_paren(self, expr_node: Node):
+        if len(expr_node.children) == 1 and expr_node.children[0].type == 'bracket_expr':
+            return self.bracket_expr_to_obj(expr_node.children[0])['contents']
+        else:
+            return self.to_latex(expr_node)
+    
     def unary_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 2
         op = self.constant_to_latex(node.children[0])
-        expr = self.to_latex(node.children[1])
-        return f"{op} {expr}"
+
+        # node.children[0] is the category
+        # node.children[0].children[0] is the symbol token
+        token = node.children[0].children[0].type
+        
+        expr_node = node.children[1]  # simple_expression
+        expr = self._trim_paren(expr_node)
+
+        tpl = self.symbol_config["unarySymbols"][token].get('template')
+        if tpl is not None:
+            return (tpl.replace('$0', op)
+                       .replace('$1', expr))
+
+        return '%s{%s}' % (op, expr)
+    
+    def unary_frozen_expr_to_latex(self, node: Node):
+        assert node.children
+        assert len(node.children) == 2 or len(node.children) == 4
+        op = self.constant_to_latex(node.children[0])
+        # node.children[0] is the category
+        # node.children[0].children[0] is the symbol token
+        token = node.children[0].children[0].type
+        if len(node.children) == 2:  # literal string
+            expr_node = node.children[1]
+            assert expr_node.text
+            expr = expr_node.text.decode('utf-8')[1:-1]  # remove the surrounding quotes
+        else:
+            expr_node = node.children[2]
+            assert expr_node.text
+            expr = expr_node.text.decode('utf-8')
+
+        tpl = self.symbol_config["unaryFrozenSymbols"][token].get('template')
+        if tpl is not None:
+            return (tpl.replace('$0', op)
+                       .replace('$1', expr))
+        
+        return '%s{%s}' % (op, expr)
+    
+    def color_expr_to_latex(self, node: Node):
+        assert node.children
+        assert len(node.children) == 3 or len(node.children) == 5
+        if len(node.children) == 3:  # literal string
+            color_node = node.children[1]
+            assert color_node.text
+            color = color_node.text.decode('utf-8')[1:-1]  # remove the surrounding quotes
+        else:
+            color_node = node.children[2]  # using the exact color string
+            assert color_node.text
+            color = color_node.text.decode('utf-8')
+
+        expr_node = node.children[-1]
+        expr = self._trim_paren(expr_node)
+        return '{\\color{%s}%s}' % (color, expr)
 
     def binary_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
         op = self.constant_to_latex(node.children[0])
-        left = self.to_latex(node.children[1])
-        right = self.to_latex(node.children[2])
-        return f"{op} {left} {right}"
+
+        token = node.children[0].children[0].type
+        left = self._trim_paren(node.children[1])
+        right = self._trim_paren(node.children[2])
+        
+        if tpl := self.symbol_config["binarySymbols"][token].get('template'):
+            return (tpl.replace('$0', op)
+                       .replace('$1', left)
+                       .replace('$2', right))
+
+        return f"{op}{{{left}}}{{{right}}}"
 
     def binary_frac_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
-        left = self.to_latex(node.children[0])
-        op = self.constant_to_latex(node.children[1])
-        right = self.to_latex(node.children[2])
-        return f"{op} {{{left}}} {{{right}}}"
+        left = self._trim_paren(node.children[0])
+        # op = self.constant_to_latex(node.children[1])
+        right = self._trim_paren(node.children[2])
+        return f"\\frac{{{left}}}{{{right}}}"
 
     def factorial_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 2
         expr = self.to_latex(node.children[0])
         factorial = self.constant_to_latex(node.children[1])
-        return f"{expr} {factorial}"
+        return f"{expr}{factorial}"
 
     def differential_expr_to_latex(self, node: Node):
         assert node.children
@@ -123,11 +242,11 @@ class AsciiMathTransformer:
             up = node.children[1]
             down = node.children[2]
         else:
-            sup = self.to_latex(node.children[1])
+            sup = self._trim_paren(node.children[1])
             up = node.children[2]
             down = node.children[3]
-        up = self.to_latex(up)
-        down = self.to_latex(down)
+        up = self._trim_paren(up)
+        down = self._trim_paren(down)
 
         if sup is None:
             return f"\\frac{{ {diff} {up} }} {{ {diff} {down} }}"
@@ -139,25 +258,85 @@ class AsciiMathTransformer:
         assert len(node.children) == 1
         return self.to_latex(node.children[0])
 
-    def matrix_row_to_latex(self, node: Node):
+    def matrix_row_to_list(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
-        _lb = self.constant_to_latex(node.children[0])
-        _rb = self.constant_to_latex(node.children[-1])
+        # _lb = self.constant_to_latex(node.children[0])
+        # _rb = self.constant_to_latex(node.children[-1])
         row = [self.to_latex(child) 
                for child in node.children[1:-1] if child.type != ',']
-        return " & ".join(row)
+        return row
 
     def matrix_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
         lb = self.constant_to_latex(node.children[0])
         rb = self.constant_to_latex(node.children[-1])
-        rows = [self.matrix_row_to_latex(child) 
+        rows = [self.matrix_row_to_list(child) 
                 for child in node.children[1:-1] if child.type == 'matrix_row_expr']
-        return f"{lb} \n {' \\\\ '.join(rows)} \n {rb}"
+        return (
+            f'\\left{lb}\\begin{{array}}{{{len(rows[0])*"c"}}}'
+            + " \\\\ ".join([" & ".join(row) for row in rows])
+            + f'\\end{{array}}\\right{rb}'
+        )
+    
+    def bigEqual_expr_to_latex(self, node: Node):
+        assert node.children
+        op = self.constant_to_latex(node.children[0])
+        if len(node.children) == 3:
+            sub_or_sub = node.children[1].type  # _ or ^
+            if sub_or_sub == '_':
+                sub = self._trim_paren(node.children[2])
+                sup = None
+            elif sub_or_sub == '^':
+                sub = None
+                sup = self._trim_paren(node.children[2])
+            else:
+                raise ValueError(f'Met unexpected sub_or_sub in bigEqual_expr: {sub_or_sub}. '
+                                 f'The node is {node.text}')
+        elif len(node.children) == 5:
+            sup, sub = None, None
+            second_node = node.children[1].type
+            if second_node == '_':
+                sub = self._trim_paren(node.children[2])
+            elif second_node == '^':
+                sup = self._trim_paren(node.children[2])
+            else:
+                raise ValueError(f'Met unexpected second_node in bigEqual_expr: {second_node}. '
+                                 f'The node is {node.text}')
+            fourth_node = node.children[3].type
+            if fourth_node == '_':
+                sub = self._trim_paren(node.children[4])
+            elif fourth_node == '^':
+                sup = self._trim_paren(node.children[4])
+            else:
+                raise ValueError(f'Met unexpected fourth_node in bigEqual_expr: {fourth_node}. '
+                                 f'The node is {node.text}')
+        else:
+            raise ValueError(f'Met unexpected number of children in bigEqual_expr: {len(node.children)}, expect 3 or 5. '
+                             f'The node is {node.text}')
+        
+        if sup is None and sub is None:
+            return f"{op}"
+        
+        token = node.children[0].children[0].type
+        tpl = self.symbol_config["bigEqualSymbols"][token].get('template')
 
-    def to_latex(self, node: Node):
+        if tpl is None:
+            raise ValueError(f'Met unexpected token in bigEqual_expr {token} or cannot find template for {token}. '
+                             f'The node is {node.text}')
+
+        if sub is None and sup is not None:
+            return tpl.replace('$0', op).replace("$1", sup).replace('$2', '')
+        elif sub is not None and sup is None:
+            return tpl.replace('$0', op).replace("$1", '').replace('$2', sub)
+        elif sub is not None and sup is not None:
+            return tpl.replace('$0', op).replace("$1", sup).replace('$2', sub)
+        else: # unreachable since we have covered all cases
+            raise ValueError(f'Met unexpected case in bigEqual_expr: {sup} {sub}. '
+                                f'The node is {node.text}')
+
+    def to_latex(self, node: Node) -> str:
         if not isinstance(node, Node):
             raise TypeError("Expected a tree_sitter.Node object")
 
@@ -170,29 +349,36 @@ class AsciiMathTransformer:
         if node.type == 'simple_expression':
             return self.simple_expression_to_latex(node)
 
-        # if node.type == 'concatenation':
-        #     return self.concat_expr_to_latex(node)
-
         if node.type == 'bracket_expr':
             return self.bracket_expr_to_latex(node)
 
         if node.type == 'unary_expr':
+            # 需要将小括号替换成 latex 中的大括号
             return self.unary_expr_to_latex(node)
 
         if node.type == 'binary_expr':
+            # 需要将小括号替换成 latex 中的大括号
             return self.binary_expr_to_latex(node)
 
         if node.type == 'binary_frac':
+            # 可能需要将小括号删除
             return self.binary_frac_to_latex(node)
 
         if node.type == 'factorial_expr':
             return self.factorial_expr_to_latex(node)
 
         if node.type == 'differential_expr':
+            # 可能需要将小括号删除
             return self.differential_expr_to_latex(node)
         
         if node.type == 'matrix_expr':
             return self.matrix_expr_to_latex(node)
+        
+        if node.type == 'color_expr':
+            return self.color_expr_to_latex(node)
+        
+        if node.type == 'unaryFrozen_expr':
+            return self.unary_frozen_expr_to_latex(node)
 
         if node.type == 'intermediate_expression':
             assert node.children
@@ -202,13 +388,19 @@ class AsciiMathTransformer:
                 return self.simple_expression_to_latex(child)
 
             elif child.type == 'subscript_superscript':
+                # 可能需要将小括号删除
                 return self.sup_and_sub_to_latex(child)
 
             elif child.type == 'subscript':
+                # 可能需要将小括号删除
                 return self.subscript_to_latex(child)
 
             elif child.type == 'superscript':
+                # 可能需要将小括号删除
                 return self.superscript_to_latex(child)
+            
+            elif child.type == 'bigEqual_expr':
+                return self.bigEqual_expr_to_latex(child)
 
             else:
                 raise ValueError(f"Unknown intermediate_expression type: {child.type}")

@@ -1,5 +1,5 @@
 ==================
-Fraction expressions
+Binary expressions
 ==================
 
 frac(root(a)(b))(c)

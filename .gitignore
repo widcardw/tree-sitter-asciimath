@@ -43,3 +43,6 @@ identifiers/
 # upload src when everything is ready
 src/
 **/__pycache__/
+
+# Garbage
+.DS_Store

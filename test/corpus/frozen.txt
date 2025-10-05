@@ -1,0 +1,69 @@
+==================
+Frozen expressions
+==================
+
+text"Story Book"
+text(abcd)
+tex"\\infty"
+color"red"(abc)
+color(blue)(xyz)
+
+---
+
+(source_file
+  (intermediate_expression
+    (simple_expression
+      (unaryFrozen_expr
+        (unaryFrozenSymbols
+          (text))
+        (literal_string
+          (string_fragment)))))
+  (intermediate_expression
+    (simple_expression
+      (unaryFrozen_expr
+        (unaryFrozenSymbols
+          (text))
+        (left_bracket
+          (lparen))
+        (inner_frozen)
+        (right_bracket
+          (rparen)))))
+  (intermediate_expression
+    (simple_expression
+      (unaryFrozen_expr
+        (unaryFrozenSymbols
+          (tex))
+        (literal_string
+          (escape_sequence)
+          (string_fragment)))))
+  (intermediate_expression
+    (simple_expression
+      (color_expr
+        (literal_string
+          (string_fragment))
+        (simple_expression
+          (bracket_expr
+            (left_bracket
+              (lparen))
+            (intermediate_expression
+              (simple_expression
+                (identifier)))
+            (right_bracket
+              (rparen)))))))
+  (intermediate_expression
+    (simple_expression
+      (color_expr
+        (left_bracket
+          (lparen))
+        (inner_frozen)
+        (right_bracket
+          (rparen))
+        (simple_expression
+          (bracket_expr
+            (left_bracket
+              (lparen))
+            (intermediate_expression
+              (simple_expression
+                (identifier)))
+            (right_bracket
+              (rparen))))))))

@@ -1,6 +1,7 @@
 const my_precs = {
   str: 30,
   factorial: 29,
+  bigEqual: 28,
   supsub: 25,
   binary_frac: 25,
   sup_or_sub: 20,
@@ -123,6 +124,31 @@ module.exports = grammar({
         ),
       ),
 
+    inner_frozen: _ => token.immediate(prec(1, /[^\)]+/)),
+ 
+    unaryFrozen_expr: $ => prec.left(
+      my_precs.unary,
+      seq(
+        $.unaryFrozenSymbols,
+        choice(
+          $.literal_string,
+          seq($.left_bracket, $.inner_frozen, $.right_bracket)
+        )
+      )
+    ),
+
+    color_expr: $ => prec.left(
+      my_precs.binary,
+      seq(
+        "color",
+        choice(
+          $.literal_string,
+          seq($.left_bracket, $.inner_frozen, $.right_bracket)
+        ),
+        $.simple_expression,
+      )
+    ),
+
     // Binary expressions
     binary_expr: $ =>
       prec.left(
@@ -158,6 +184,22 @@ module.exports = grammar({
         ),
       ),
 
+    bigEqual_expr: $ => prec.left(
+      my_precs.bigEqual,
+      choice(
+        seq(
+          $.bigEqualSymbols,
+          optional(seq("^", $.simple_expression)),
+          optional(seq("_", $.simple_expression)),
+        ),
+        seq(
+          $.bigEqualSymbols,
+          optional(seq("_", $.simple_expression)),
+          optional(seq("^", $.simple_expression)),
+        ),
+      )
+    ),
+
     // Simple expressions (automatically import)
     // and complex expression (e.g., unary_expr, binary_expr, factorial_expr, matrix_expr) injection
     simple_expression: $ => choice(
@@ -181,6 +223,9 @@ module.exports = grammar({
       $.literal_string,
       $.bracket_expr,
       $.binary_frac,
+      // 需要将下一个 expression 直接以原格式接收的表达式
+      $.unaryFrozen_expr,
+      $.color_expr,
     ),
 
     // Subscript and superscript
@@ -224,6 +269,10 @@ module.exports = grammar({
         $.superscript,
         $.subscript_superscript,
         $.simple_expression,
+
+        // bigEqual_expr should not be in simple_expression, 
+        // otherwise super and sub script will be matched first
+        $.bigEqual_expr,
       ),
 
     // Concatenation

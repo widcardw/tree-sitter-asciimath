@@ -20,6 +20,15 @@ wheels = [
 ]
 
 [[package]]
+name = "objprint"
+version = "0.3.0"
+source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
+sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/81/b8/c10e96120f1585824a1992655334b49da3924edfb364e84a26cc0ecdb89b/objprint-0.3.0.tar.gz", hash = "sha256:b5d83f9d62db5b95353bb42959106e1cd43010dcaa3eed1ad8d7d0b2df9b2d5a", size = 47481 }
+wheels = [
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/ec/af/572825252f16f36eeecbc8e3b721913d2640d69b984fdb8907aa8b4b0975/objprint-0.3.0-py3-none-any.whl", hash = "sha256:489083bfc8baf0526f8fd6af74673799511532636f0ce4141133255ded773405", size = 41619 },
+]
+
+[[package]]
 name = "packaging"
 version = "25.0"
 source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
@@ -63,6 +72,15 @@ wheels = [
 ]
 
 [[package]]
+name = "setuptools"
+version = "80.9.0"
+source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
+sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/18/5d/3bf57dcd21979b887f014ea83c24ae194cfcd12b9e0fda66b957c69d1fca/setuptools-80.9.0.tar.gz", hash = "sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c", size = 1319958 }
+wheels = [
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl", hash = "sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922", size = 1201486 },
+]
+
+[[package]]
 name = "tree-sitter"
 version = "0.25.2"
 source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
@@ -96,8 +114,11 @@ name = "tree-sitter-asciimath"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "objprint" },
     { name = "pytest" },
+    { name = "setuptools" },
     { name = "tree-sitter" },
+    { name = "wheel" },
 ]
 
 [package.optional-dependencies]
@@ -107,7 +128,19 @@ core = [
 
 [package.metadata]
 requires-dist = [
+    { name = "objprint", specifier = ">=0.3.0" },
     { name = "pytest", specifier = ">=8.4.2" },
+    { name = "setuptools", specifier = ">=80.9.0" },
     { name = "tree-sitter", specifier = ">=0.25.2" },
     { name = "tree-sitter", marker = "extra == 'core'", specifier = "~=0.24" },
+    { name = "wheel", specifier = ">=0.45.1" },
+]
+
+[[package]]
+name = "wheel"
+version = "0.45.1"
+source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
+sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/8a/98/2d9906746cdc6a6ef809ae6338005b3f21bb568bea3165cfc6a243fdc25c/wheel-0.45.1.tar.gz", hash = "sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729", size = 107545 }
+wheels = [
+    { url = "https://pypi.tuna.tsinghua.edu.cn/packages/0b/2c/87f3254fd8ffd29e4c02732eee68a83a1d3c346ae39bc6822dcbcb697f2b/wheel-0.45.1-py3-none-any.whl", hash = "sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248", size = 72494 },
 ]

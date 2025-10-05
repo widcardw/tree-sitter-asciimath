@@ -3,7 +3,7 @@ from unittest import TestCase
 from tree_sitter import Language, Parser
 import tree_sitter_asciimath
 from tree_sitter_asciimath.to_latex import AsciiMathTransformer
-
+# from objprint import objprint
 
 class TestTransformerToLatex(TestCase):
 
@@ -25,12 +25,32 @@ class TestTransformerToLatex(TestCase):
             tree = parser.parse(b"root(3)(4)")
             root = tree.root_node
             latex = transformer.to_latex(root)
-            self.assertEqual(latex, "root (3) (4)")
+            self.assertEqual(latex, "\\sqrt[3]{4}")
 
             tree = parser.parse(b"[[a, b], [c, d]]")
             root = tree.root_node
             latex = transformer.to_latex(root)
-            self.assertEqual(latex, "[ \n a & b \\\\ c & d \n ]")
+            self.assertEqual(latex, "\\left[\\begin{array}{cc}a & b \\\\ c & d\\end{array}\\right]")
+
+            tree = parser.parse(b"Q ==_a^b")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "Q \\xlongequal[a]{b}")
+
+            tree = parser.parse(b"-->^1")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "\\xrightarrow[]{1}")
+
+            tree = parser.parse(b"color(#ff0000)(x)")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "{\\color{#ff0000}x}")
+
+            tree = parser.parse(b'tex"\\LaTeX"')
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "\\LaTeX")
 
         except Exception as e:
             self.fail(f"Error loading AsciiMath transformer: {e}")

@@ -1,13 +1,24 @@
 {
+  "name": "tree-sitter-asciimath",
   "version": "0.1.0",
+  "description": "Tree-sitter parser for AsciiMath",
   "scripts": {
     "init": "tree-sitter init",
     "prepare": "node scripts/generate-symbols.js",
-    "gen": "tree-sitter generate",
+    "generate": "tree-sitter generate",
     "test": "tree-sitter test",
-    "build": "tree-sitter build"
+    "build": "tree-sitter build",
+    "uv-prepare": "uv remove wheel && uv add wheel"
   },
+  "keywords": [
+    "tree-sitter",
+    "asciimath"
+  ],
+  "author": "widcardw",
+  "license": "MIT",
   "dependencies": {
+    "node-addon-api": "^8.5.0",
+    "node-gyp-build": "^4.8.4",
     "tree-sitter-cli": "^0.25.10"
   }
 }

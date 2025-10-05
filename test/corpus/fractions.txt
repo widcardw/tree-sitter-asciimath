@@ -3,6 +3,7 @@ Fraction expressions
 ==================
 
 a/b
+c/(d+e)
 frac(a)(b)
 
 ---
@@ -19,6 +20,31 @@ frac(a)(b)
         (intermediate_expression
           (simple_expression
             (identifier))))))
+  (intermediate_expression
+    (simple_expression
+      (binary_frac
+        (intermediate_expression
+          (simple_expression
+            (identifier)))
+        (binaryMidSymbols
+          (slash_div))
+        (intermediate_expression
+          (simple_expression
+            (bracket_expr
+              (left_bracket
+                (lparen))
+              (intermediate_expression
+                (simple_expression
+                  (identifier)))
+              (intermediate_expression
+                (simple_expression
+                  (mathOperators
+                    (plus))))
+              (intermediate_expression
+                (simple_expression
+                  (identifier)))
+              (right_bracket
+                (rparen))))))))
   (intermediate_expression
     (simple_expression
       (binary_expr

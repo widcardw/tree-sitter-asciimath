@@ -28,7 +28,6 @@
     "lt_dash_gt": { "token": "<->", "tex": "\\leftrightarrow" },
     "n_left_right_arrow": { "token": "<-/->", "tex": "\\nleftrightarrow" },
     "long_left_arrow": { "token": "<--", "tex": "\\longleftarrow" },
-    "long_right_arrow": { "token": "-->", "tex": "\\longrightarrow" },
     "not_iff": { "token": "<=/=>", "alias": ["!iff"], "tex": "\\centernot\\iff" },
     "long_left_dbl_arrow": {"token": "<==", "tex": "\\Longleftarrow" },
     "long_right_dbl_arrow": {"token": "==>", "tex": "\\Longrightarrow" }
@@ -63,7 +62,7 @@
     "Alpha": { "token": "Alpha", "tex": "\\Alpha" },
     "Beta": { "token": "Beta", "tex": "\\Beta" },
     "Gamma": { "token": "Gamma", "tex": "\\Gamma" },
-    "Delta": { "token": "Delta", "tex": "\\Delta" },
+    "Delta": { "token": "Delta", "alias": ["laplace"], "tex": "\\Delta" },
     "Epsilon": { "token": "Epsilon", "tex": "\\Epsilon" },
     "Zeta": { "token": "Zeta", "tex": "\\Zeta" },
     "Eta": { "token": "Eta", "tex": "\\Eta" },
@@ -105,7 +104,13 @@
     "NN": { "token": "NN", "tex": "\\mathbb{N}" },
     "RR": { "token": "RR", "tex": "\\mathbb{R}" },
     "QQ": { "token": "QQ", "tex": "\\mathbb{Q}" },
-    "ZZ": { "token": "ZZ", "tex": "\\mathbb{Z}" }
+    "ZZ": { "token": "ZZ", "tex": "\\mathbb{Z}" },
+    "int": { "token": "int", "tex": "\\int" },
+    "iint": { "token": "iint", "tex": "\\iint" },
+    "iiint": { "token": "iiint", "tex": "\\iiint" },
+    "oint": { "token": "oint", "tex": "\\oint" },
+    "oiint": { "token": "oiint", "tex": "\u222F" },
+    "oiiint": { "token": "oiiint", "tex": "\u2230" }
   },
 
   "setOperators": {
@@ -124,7 +129,15 @@
     "subset": { "token": "sub", "tex": "\\subset" },
     "supset": { "token": "sup", "tex": "\\supset" },
     "sub_eq": { "token": "sube", "tex": "\\subseteq" },
-    "sup_eq": { "token": "supe", "tex": "\\supseteq" }
+    "sup_eq": { "token": "supe", "tex": "\\supseteq" },
+    "n_sub_eq": { "token": "!sube", "tex": "\\not\\subseteq" },
+    "n_sup_eq": { "token": "!supe", "tex": "\\not\\supseteq" },
+    "subne": { "token": "subne", "tex": "\\subsetneqq" },
+    "supne": { "token": "supne", "tex": "\\supsetneqq" },
+    "lhd": { "token": "lhd", "tex": "\\lhd" },
+    "rhd": { "token": "rhd", "tex": "\\rhd" },
+    "normal": { "token": "normal", "tex": "\\unlhd" },
+    "rnormal": { "token": "rnormal", "tex": "\\unrhd" }
   },
 
   "mathOperators": {
@@ -165,7 +178,18 @@
     "succ_than_eq": { "token": ">-=" },
     "coloneqq": { "token": ":=" },
     "eqqcolon": { "token": "=:" },
-    "choose": { "token": "choose", "tex": "\\choose" }
+    "choose": { "token": "choose", "tex": "\\choose" },
+    "prime": { "token": "'", "tex": "\\prime" },
+    "dblprime": { "token": "''", "tex": "\\prime\\prime" },
+    "triprime": { "token": "'''", "tex": "\\prime\\prime\\prime" },
+    "amp": { "token": "&", "tex": "&" },
+    "dblamp": { "token": "&&", "tex": "&&" },
+    "Vert": { "token": "||", "tex": "\\Vert" },
+    "n_Vert": { "token": "!||", "tex": "\u2226" },
+    "S_eq": { "token": "S=", "tex": "\u224C" },
+    "S_tilde": { "token": "S~", "tex": "\u223D" },
+    "n_equiv": { "token": "!-=", "tex": "\\not\\equiv"},
+    "n_divisable": { "token": "!|", "tex": "\u2224"}
   },
 
   "asciiEscape": {
@@ -221,17 +245,39 @@
 
   "unarySymbols": {
     "sqrt": { "token": "sqrt", "tex": "\\sqrt" },
-    "text": { "token": "text", "tex": "\\text" },
-    "bb": { "token": "bb", "tex": "\\mathbb" },
-    "cc": { "token": "cc", "tex": "\\mathcal" },
-    "tt": { "token": "tt", "tex": "\\mathtt" },
-    "fr": { "token": "fr", "tex": "\\mathrm" },
+    "mbox": { "token": "mbox", "tex": "\\mbox" },
+    "cancel": { "token": "cancel", "tex": "\\cancel" },
+    "hat": { "token": "hat", "tex": "\\hat" },
+    "widehat": { "token": "widehat", "alias": ["Hat"], "tex": "\\widehat" },
+    "tilde": { "token": "tilde", "tex": "\\tilde" },
+    "widetilde": { "token": "widetilde", "alias": ["Tilde"], "tex": "\\widetilde" },
+    "overline": { "token": "overline", "alias": ["ol"], "tex": "\\overline" },
+    "underline": { "token": "underline", "alias": ["ul"], "tex": "\\underline" },
+    "arc": { "token": "arc", "tex": "\\stackrel{\\frown}" },
+    "vec": { "token": "vec", "tex": "\\vec" },
+    "Vec": { "token": "Vec", "tex": "\\overrightarrow" },
+    "Aec": { "token": "Aec", "tex": "\\overleftarrow" },
+    "bar": { "token": "bar", "tex": "\\bar" },
+    "dot": { "token": "dot", "tex": "\\dot" },
+    "ddot": { "token": "ddot", "tex": "\\ddot" },
+    "underbrace": { "token": "underbrace", "alias": ["ubrace"], "tex": "\\underbrace" },
+    "overbrace": { "token": "overbrace", "alias": ["obrace"], "tex": "\\overbrace" },
+    "bb": { "token": "bb", "alias": ["bf"], "tex": "\\mathbf" },
+    "bbb": { "token": "bbb", "tex": "\\mathbb" },
+    "cc": { "token": "cc", "alias": ["cal"], "tex": "\\mathcal" },
+    "tt": { "token": "tt", "alias": ["mono"], "tex": "\\mathtt" },
+    "fr": { "token": "fr", "tex": "\\mathfrak" },
     "sf": { "token": "sf", "tex": "\\mathsf" },
-    "bf": { "token": "bf", "tex": "\\mathbf" },
-    "cal": { "token": "cal", "tex": "\\mathcal" },
+    "scr": { "token": "scr", "tex": "\\mathscr" },
+    "bm": { "token": "bm", "tex": "\\boldsymbol" },
+    "rm": { "token": "rm", "tex": "\\mathrm" },
     "frak": { "token": "frak", "tex": "\\mathfrak" },
-    "mono": { "token": "mono", "tex": "\\mathtt" },
-    "italic": { "token": "italic", "tex": "\\mathit" }
+    "italic": { "token": "it", "alias": ["italic"], "tex": "\\mathit" },
+    "limits": {"token": "limits", "tex": "\\limits", "template": "\\mathop{$1}$0"},
+    "tiny": { "token": "tiny", "tex": "\\tiny", "template": "{$0 $1}" },
+    "small": { "token": "small", "tex": "\\small", "template": "{$0 $1}" },
+    "large": { "token": "large", "tex": "\\large", "template": "{$0 $1}" },
+    "huge": { "token": "huge", "tex": "\\huge", "template": "{$0 $1}" }
   },
 
   "factorialSymbols": {
@@ -246,7 +292,7 @@
   },
 
   "binarySymbols": {
-    "root": { "token": "root", "tex": "\\sqrt" },
+    "root": { "token": "root", "tex": "\\sqrt", "template": "$0[$1]{$2}" },
     "frac": { "token": "frac", "tex": "\\frac" },
     "stackrel": { "token": "stackrel", "tex": "\\stackrel" },
     "atop": { "token": "atop", "tex": "\\atop" },
@@ -260,5 +306,18 @@
   "differentialSymbols": {
     "dd": { "token": "dd", "tex": "\\mathrm{d}" },
     "pp": { "token": "pp", "tex": "\\partial" }
+  },
+
+  "bigEqualSymbols": {
+    "long_equal": { "token": "==", "tex": "\\xlongequal", "template": "$0[$2]{$1}"},
+    "x_right_arrow": { "token": "-->", "tex": "\\xrightarrow", "template": "$0[$2]{$1}"}
+  },
+
+  "unaryFrozenSymbols": {
+    "text": { "token": "text", "tex": "\\text", "frozen": [1] },
+    "tex": { "token": "tex", "tex": "", "frozen": [1], "template": "$1" },
+    "op": { "token": "op", "tex": "\\operatorname", "frozen": [1] },
+    "hspace": { "token": "hspace", "tex": "\\hspace", "frozen": [1] },
+    "chemistry": { "token": "ce", "tex": "\\ce", "frozen": [1] }
   }
 }

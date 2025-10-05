@@ -1,0 +1,38 @@
+==================
+Big Equal Expressions
+==================
+
+==_a^b
+-->_c^d
+-->
+==^1
+
+---
+
+(source_file
+  (intermediate_expression
+    (bigEqual_expr
+      (bigEqualSymbols
+        (long_equal))
+      (simple_expression
+        (identifier))
+      (simple_expression
+        (identifier))))
+  (intermediate_expression
+    (bigEqual_expr
+      (bigEqualSymbols
+        (x_right_arrow))
+      (simple_expression
+        (identifier))
+      (simple_expression
+        (identifier))))
+  (intermediate_expression
+    (bigEqual_expr
+      (bigEqualSymbols
+        (x_right_arrow))))
+  (intermediate_expression
+    (bigEqual_expr
+      (bigEqualSymbols
+        (long_equal))
+      (simple_expression
+        (number_symbol)))))
