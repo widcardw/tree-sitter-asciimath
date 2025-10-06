@@ -9,7 +9,8 @@ class TestTransformerToLatex(TestCase):
 
     def __init__(self, methodName: str = "latex_transformer") -> None:
         super().__init__(methodName)
-        self.parser = Parser(Language(tree_sitter_asciimath.language()))
+        lang = Language(tree_sitter_asciimath.language())
+        self.parser = Parser(lang)
         self.transformer = AsciiMathTransformer()
 
     def test_can_transform_to_latex(self):

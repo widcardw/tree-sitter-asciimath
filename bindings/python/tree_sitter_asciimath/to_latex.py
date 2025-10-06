@@ -20,14 +20,6 @@ class AsciiMathTransformer:
     def __init__(self):
         '''
         Load symbol config from symbols-config.json
-
-        几种情况需要将小括号去掉：
-        1. 上下标
-        2. 除法
-        3. differential expr 的上下标
-        几种情况需要将小括号转换成latex的大括号：
-        1. unary_expr
-        2. binary_expr
         '''
         self.symbol_config: dict[str, dict[str, CommonSymbol]]
         with open('symbols-config.json', 'r') as f:
@@ -216,7 +208,7 @@ class AsciiMathTransformer:
                        .replace('$1', left)
                        .replace('$2', right))
 
-        return f"{op}{{{left}}}{{{right}}}"
+        return '%s{%s}{%s}' % (op, left, right)
 
     def binary_frac_to_latex(self, node: Node):
         assert node.children
@@ -224,7 +216,7 @@ class AsciiMathTransformer:
         left = self._trim_paren(node.children[0])
         # op = self.constant_to_latex(node.children[1])
         right = self._trim_paren(node.children[2])
-        return f"\\frac{{{left}}}{{{right}}}"
+        return '\\frac{%s}{%s}' % (left, right)
 
     def factorial_expr_to_latex(self, node: Node):
         assert node.children
@@ -249,9 +241,9 @@ class AsciiMathTransformer:
         down = self._trim_paren(down)
 
         if sup is None:
-            return f"\\frac{{ {diff} {up} }} {{ {diff} {down} }}"
+            return '\\frac{%s}{%s}' % (f'{diff} {up}', f'{diff} {down}')
         else:
-            return f"\\frac{{ {diff}^{{{sup}}} {up} }} {{ {diff} {down}^{{{sup}}} }}"
+            return '\\frac{%s}{%s}' % (f'{diff}^{{{sup}}} {up}', f'{diff} {down}^{{{sup}}}')
 
     def simple_expression_to_latex(self, node: Node):
         assert node.children
@@ -273,7 +265,8 @@ class AsciiMathTransformer:
         lb = self.constant_to_latex(node.children[0])
         rb = self.constant_to_latex(node.children[-1])
         rows = [self.matrix_row_to_list(child) 
-                for child in node.children[1:-1] if child.type == 'matrix_row_expr']
+                for child in node.children[1:-1]   # strip left and right parens
+                if child.type == 'matrix_row_expr']
         return (
             f'\\left{lb}\\begin{{array}}{{{len(rows[0])*"c"}}}'
             + " \\\\ ".join([" & ".join(row) for row in rows])
@@ -285,7 +278,8 @@ class AsciiMathTransformer:
         assert len(node.children) >= 3
         bar = self.constant_to_latex(node.children[0])  # left bar and right bar are the same
         rows = [self.matrix_row_to_list(child) 
-                for child in node.children[1:-1] if child.type == 'matrix_row_expr']
+                for child in node.children[1:-1]    # strip left and right parens
+                if child.type == 'matrix_row_expr']
         return (
             f'\\left{bar}\\begin{{array}}{{{len(rows[0])*"c"}}}'
             + " \\\\ ".join([" & ".join(row) for row in rows])
@@ -295,7 +289,12 @@ class AsciiMathTransformer:
     def bigEqual_expr_to_latex(self, node: Node):
         assert node.children
         op = self.constant_to_latex(node.children[0])
+        if len(node.children) == 1:
+            return f"{op}"
+        
         if len(node.children) == 3:
+            # operator    sub/sup    expr
+            # ^.child(0)  ^child(1)  ^child2
             sub_or_sub = node.children[1].type  # _ or ^
             if sub_or_sub == '_':
                 sub = self._trim_paren(node.children[2])
@@ -307,32 +306,29 @@ class AsciiMathTransformer:
                 raise ValueError(f'Met unexpected sub_or_sub in bigEqual_expr: {sub_or_sub}. '
                                  f'The node is {node.text}')
         elif len(node.children) == 5:
+            # 2 cases
+            # 1. operator    sub        expr_sub  sup        expr_sup
+            #    ^.child(0)  ^child(1)  ^child2   ^child(3)  ^child4
+            # 2. operator    sup        expr_sup  sub        expr_sub
+            #    ^.child(0)  ^child(1)  ^child2   ^child(3)  ^child4
             sup, sub = None, None
             second_node = node.children[1].type
-            if second_node == '_':
+            fourth_node = node.children[3].type
+            if second_node == '_' and fourth_node == '^':
                 sub = self._trim_paren(node.children[2])
-            elif second_node == '^':
+                sup = self._trim_paren(node.children[4])
+            elif second_node == '^' and fourth_node == '_':
+                sub = self._trim_paren(node.children[4])
                 sup = self._trim_paren(node.children[2])
             else:
-                raise ValueError(f'Met unexpected second_node in bigEqual_expr: {second_node}. '
-                                 f'The node is {node.text}')
-            fourth_node = node.children[3].type
-            if fourth_node == '_':
-                sub = self._trim_paren(node.children[4])
-            elif fourth_node == '^':
-                sup = self._trim_paren(node.children[4])
-            else:
-                raise ValueError(f'Met unexpected fourth_node in bigEqual_expr: {fourth_node}. '
+                raise ValueError(f'Met unexpected second_node or fourth_node in bigEqual_expr: {second_node} {fourth_node}. '
                                  f'The node is {node.text}')
         else:
             raise ValueError(f'Met unexpected number of children in bigEqual_expr: {len(node.children)}, expect 3 or 5. '
                              f'The node is {node.text}')
         
-        if sup is None and sub is None:
-            return f"{op}"
-        
         token = node.children[0].children[0].type
-        tpl = self.symbol_config["bigEqualSymbols"][token].get('template')
+        tpl = self.symbol_config["bigEqualSymbols"][token].get('template')  # $0[$2]{$1}
 
         if tpl is None:
             raise ValueError(f'Met unexpected token in bigEqual_expr {token} or cannot find template for {token}. '
@@ -344,9 +340,9 @@ class AsciiMathTransformer:
             return tpl.replace('$0', op).replace("$1", '').replace('$2', sub)
         elif sub is not None and sup is not None:
             return tpl.replace('$0', op).replace("$1", sup).replace('$2', sub)
-        else: # unreachable since we have covered all cases
+        else:
             raise ValueError(f'Met unexpected case in bigEqual_expr: {sup} {sub}. '
-                                f'The node is {node.text}')
+                             f'The node is {node.text}')
 
     def to_latex(self, node: Node) -> str:
         if not isinstance(node, Node):

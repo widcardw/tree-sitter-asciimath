@@ -10,6 +10,12 @@ References
 - https://github.com/asciimath/asciimathml
 - https://gist.github.com/Aerijo/df27228d70c633e088b0591b8857eeef
 
+## TODO
+
+- [ ] Bars in matrices
+- [ ] Test cases in `test/`
+- [ ] Test cases for bindings
+
 ## Warning
 
 You are **NOT** encouraged to use `pnpm` to install dependencies, since it will cause some issues, especially `gyp` and bindings. Use `npm` instead, then everything will work fine.
