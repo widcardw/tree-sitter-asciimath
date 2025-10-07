@@ -18,6 +18,13 @@ References
     - [ ] Recursive bracket parsing
     - [ ] Unary `+` and `-`
 
+## Setup
+
+1. `npm install tree-sitter-cli`
+2. `npm run prepare && npm run generate`
+3. `uv sync` (make sure `python` is in `PATH`)
+4. `npm i`
+
 ## Warning
 
 You are **NOT** encouraged to use `pnpm` to install dependencies, since it will cause some issues, especially `gyp` and bindings. Use `npm` instead, then everything will work fine.
