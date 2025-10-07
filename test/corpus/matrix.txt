@@ -4,6 +4,7 @@ Basic matrix
 
 [[1,2],[3,4]]
 (1,2,3,4)
+(x,y)
 
 ---
 
@@ -66,5 +67,22 @@ Basic matrix
         (intermediate_expression
           (simple_expression
             (number_symbol)))
+        (right_bracket
+          (rparen)))))
+  (intermediate_expression
+    (simple_expression
+      (bracket_expr
+        (left_bracket
+          (lparen))
+        (intermediate_expression
+          (simple_expression
+            (identifier)))
+        (intermediate_expression
+          (simple_expression
+            (separatorSymbols
+              (comma))))
+        (intermediate_expression
+          (simple_expression
+            (identifier)))
         (right_bracket
           (rparen))))))

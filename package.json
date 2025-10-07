@@ -6,6 +6,7 @@
     "init": "tree-sitter init",
     "prepare": "node scripts/generate-symbols.js",
     "generate": "tree-sitter generate",
+    "parse": "tree-sitter parse",
     "test": "tree-sitter test",
     "build": "tree-sitter build",
     "uv-prepare": "uv remove wheel && uv add wheel"

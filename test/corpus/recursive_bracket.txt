@@ -1,0 +1,29 @@
+==================
+Recursive brackets
+==================
+
+{(x,y)}
+
+---
+
+(source_file
+  (intermediate_expression
+    (simple_expression
+      (bracket_expr
+        (left_bracket
+          (lbrace))
+        (intermediate_expression
+          (simple_expression
+            (bracket_expr
+              (left_bracket
+                (lparen))
+              (intermediate_expression
+                (simple_expression
+                  (identifier)))
+              (intermediate_expression
+                (simple_expression
+                  (identifier)))
+              (right_bracket
+                (rparen)))))
+        (right_bracket
+          (rbrace))))))

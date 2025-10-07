@@ -1,7 +1,7 @@
 from tree_sitter import Node
 import json
 from typing import TypedDict, NotRequired
-# from objprint import objprint
+from objprint import objprint
 
 class PatternSymbol(TypedDict):
     pattern: str
@@ -41,7 +41,7 @@ class AsciiMathTransformer:
         
         if node.type == 'literal_string':
             assert node.text
-            return node.text.decode('utf-8')[1:-1]
+            return '\\text{%s}' % node.text.decode('utf-8')[1:-1]
 
         if (node.type == 'left_bracket'
             or node.type == 'right_bracket'):
@@ -81,16 +81,16 @@ class AsciiMathTransformer:
         assert len(node.children) == 3
         base = self.to_latex(node.children[0])
         assert node.children[1].type == '^'
-        sub_or_sup = self.to_latex(node.children[2])
-        return f"{{{base}}}^{{{sub_or_sup}}}"
+        sup = self._trim_paren(node.children[2])
+        return "%s^{%s}" % (base, sup) # f"{{{base}}}^{{{sup}}}"
 
     def subscript_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
         base = self.to_latex(node.children[0])
         assert node.children[1].type == '_'
-        sub_or_sup = self.to_latex(node.children[2])
-        return f"{{{base}}}_{{{sub_or_sup}}}"
+        sub = self._trim_paren(node.children[2])
+        return "%s_{%s}" % (base, sub) # f"{{{base}}}_{{{sub_or_sup}}}"
 
     def sup_and_sub_to_latex(self, node: Node):
         assert node.children
@@ -98,29 +98,36 @@ class AsciiMathTransformer:
         base = self.to_latex(node.children[0])
         if (node.children[1].type == '^'
             and node.children[3].type == '_'):
-            sup = self.to_latex(node.children[2])
-            sub = self.to_latex(node.children[4])
-            return f"{{{base}}}^{{{sup}}}_{{{sub}}}"
+            sup = self._trim_paren(node.children[2])
+            sub = self._trim_paren(node.children[4])
+            return "%s_{%s}^{%s}" % (base, sub, sup) # f"{{{base}}}^{{{sup}}}_{{{sub}}}"
         elif (node.children[1].type == '_'
             and node.children[3].type == '^'):
-            sub = self.to_latex(node.children[2])
-            sup = self.to_latex(node.children[4])
-            return f"{{{base}}}_{{{sub}}}^{{{sup}}}"
+            sub = self._trim_paren(node.children[2])
+            sup = self._trim_paren(node.children[4])
+            return "%s_{%s}^{%s}" % (base, sub, sup) # f"{{{base}}}_{{{sub}}}^{{{sup}}}"
         else:
             raise ValueError(f"Unknown superscript and subscript combination: {node.children[1].type} and {node.children[3].type}")
 
     def bracket_expr_to_latex(self, node: Node):
+        objprint(node, node.children[1].text)
         assert node.children
-        assert len(node.children) >= 3
-        left = self.constant_to_latex(node.children[0])
+        assert len(node.children) >= 2
+        left, right = node.children[0], node.children[-1]
+        assert left.children and right.children
         contents = node.children[1:-1]
         contents_str = " ".join([self.to_latex(child) for child in contents])
-        right = self.constant_to_latex(node.children[-1])
-        return f"{left}{contents_str}{right}"
+
+        if left.children[0].type == 'ltransparent' and right.children[0].type == 'rtransparent':
+            return '{%s}' % contents_str
+
+        left_str = self.constant_to_latex(left)
+        right_str = self.constant_to_latex(right)
+        return f"\\left{left_str}{contents_str}\\right{right_str}"
     
     def bracket_expr_to_obj(self, node: Node):
         assert node.children
-        assert len(node.children) >= 3
+        assert len(node.children) >= 2
         left = self.constant_to_latex(node.children[0])
         contents = node.children[1:-1]
         right = self.constant_to_latex(node.children[-1])
@@ -130,9 +137,34 @@ class AsciiMathTransformer:
             'contents': " ".join([self.to_latex(child) for child in contents])
         }
     
+    def __process_bracket_only(self, node: Node):
+        expr_obj = self.bracket_expr_to_obj(node)
+        left = expr_obj['left']
+        right = expr_obj['right']
+        contents_str = expr_obj['contents']
+        if left.strip() == '(' and right.strip() == ')':
+            return contents_str
+        elif left.strip() == '.' and right.strip() == '.':  # ltransparent and rtransparent
+            return '{%s}' % contents_str
+        else:
+            return f"\\left{left}{contents_str}\\right{right}"
+    
     def _trim_paren(self, expr_node: Node):
-        if len(expr_node.children) == 1 and expr_node.children[0].type == 'bracket_expr':
-            return self.bracket_expr_to_obj(expr_node.children[0])['contents']
+        if ( # simple_expression for unary and binary
+            expr_node.type == 'simple_expression'
+            and expr_node.children[0].type == 'bracket_expr'
+        ):
+            return self.__process_bracket_only(expr_node.children[0])
+        elif (  # fractions with bracket_expr
+            expr_node.type == 'intermediate_expression'
+            and expr_node.children[0].type == 'simple_expression'
+            and expr_node.children[0].children[0].type == 'bracket_expr'
+        ):
+            return self.__process_bracket_only(expr_node.children[0].children[0])
+        # elif (expr_node.type == 'intermediate_expression'):
+        #     # the child can be sup/sub/sup_and_sub/bigEqual, 
+        #     # but to_latex has `intermediate_expression` processor, just skip
+        #     return self.to_latex(expr_node)
         else:
             return self.to_latex(expr_node)
     
@@ -213,9 +245,13 @@ class AsciiMathTransformer:
     def binary_frac_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
-        left = self._trim_paren(node.children[0])
         # op = self.constant_to_latex(node.children[1])
-        right = self._trim_paren(node.children[2])
+
+        lnode = node.children[0]
+        rnode = node.children[2]
+            
+        left = self._trim_paren(lnode)
+        right = self._trim_paren(rnode)
         return '\\frac{%s}{%s}' % (left, right)
 
     def factorial_expr_to_latex(self, node: Node):
@@ -224,26 +260,52 @@ class AsciiMathTransformer:
         expr = self.to_latex(node.children[0])
         factorial = self.constant_to_latex(node.children[1])
         return f"{expr}{factorial}"
+    
+    def __grab_variables_for_diff_lower(self, node: Node):
+        if node.type == 'bracket_expr':
+            # _left = node.children[0]
+            # _right = node.children[-1]
+            contents = node.children[1:-1]
+            return [self.to_latex(child) for child in contents]
+        else:
+            raise ValueError(f"Unsupported type {node.type} for differential variable grabbing")
 
     def differential_expr_to_latex(self, node: Node):
         assert node.children
-        assert len(node.children) == 3 or len(node.children) == 4
+        assert len(node.children) == 3 or len(node.children) == 5
         diff = self.constant_to_latex(node.children[0])
+        copy_supper = True
         if len(node.children) == 3:
             sup = None
             up = node.children[1]
             down = node.children[2]
-        else:
-            sup = self._trim_paren(node.children[1])
-            up = node.children[2]
-            down = node.children[3]
-        up = self._trim_paren(up)
-        down = self._trim_paren(down)
+            up_str = self._trim_paren(up)
+            down_str = self._trim_paren(down)
+        else:   # with superscripts
+            # if superscripts only exists on the upper and lower only has one variable, 
+            #   then automatically copy the superscript to lower
+            # otherwise, do not copy, but copy the `diff operator` to the front of each variable of the lower
+            sup = self._trim_paren(node.children[2])
+            up = node.children[3]
+            up_str = self._trim_paren(up)
+            down = node.children[4]  # simple_expression
+            # walk the down node to check if it has multiple variables
+            if (down.children[0].type == 'bracket_expr'
+                and len(down.children[0].children) > 3):  # TODO
+                # down.children[0] ==> bracker_expr
+                # ==> [lbracket E rbracket], E => I{2,}
+                copy_supper = False
+                _d = self.__grab_variables_for_diff_lower(down.children[0])
+                down_str = ' '.join([f'{diff} {d}' for d in _d])
+            else:
+                down_str = self._trim_paren(down)
 
         if sup is None:
-            return '\\frac{%s}{%s}' % (f'{diff} {up}', f'{diff} {down}')
+            return '\\frac{%s}{%s}' % (f'{diff} {up_str}', f'{diff} {down_str}')
+        elif copy_supper:
+            return '\\frac{%s}{%s}' % (f'{diff}^{{{sup}}} {up_str}', f'{diff} {down_str}^{{{sup}}}')
         else:
-            return '\\frac{%s}{%s}' % (f'{diff}^{{{sup}}} {up}', f'{diff} {down}^{{{sup}}}')
+            return '\\frac{%s}{%s}' % (f'{diff}^{{{sup}}} {up_str}', down_str)
 
     def simple_expression_to_latex(self, node: Node):
         assert node.children
@@ -268,9 +330,9 @@ class AsciiMathTransformer:
                 for child in node.children[1:-1]   # strip left and right parens
                 if child.type == 'matrix_row_expr']
         return (
-            f'\\left{lb}\\begin{{array}}{{{len(rows[0])*"c"}}}'
+            f'\\left{lb}\\begin{{array}}{{{len(rows[0])*"c"}}} '
             + " \\\\ ".join([" & ".join(row) for row in rows])
-            + f'\\end{{array}}\\right{rb}'
+            + f' \\end{{array}}\\right{rb}'
         )
     
     def det_expr_to_latex(self, node: Node):

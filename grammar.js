@@ -1,3 +1,6 @@
+/// <reference types="tree-sitter-cli/dsl" />
+// @ts-check
+
 const my_precs = {
   str: 30,
   factorial: 29,
@@ -6,14 +9,14 @@ const my_precs = {
   supsub: 26,
   binary_frac: 25,
   sup_or_sub: 20,
-  bracket: 19,
   diffential: 18,
   binary: 17,
   unary: 16,
   multiline: 12,
-  concat: 11,
-  matrix_row: 10,
-  matrix: 9,
+  matrix: 10,
+  matrix_row: 9,
+  bracket: 8,
+  concat: 7,
 };
 
 // 导入所有identifier
@@ -24,7 +27,7 @@ module.exports = grammar({
   name: "asciimath",
   extras: $ => [$._whitespace],
   rules: {
-    source_file: $ => choice($._expression, $.multiline_expr),
+    source_file: $ => optional(choice($._expression, $.multiline_expr)),
 
     _expression: $ => prec.left(
       my_precs.concat,
@@ -90,7 +93,7 @@ module.exports = grammar({
     bracket_expr: $ =>
       prec(
         my_precs.bracket,
-        seq($.left_bracket, $._expression, $.right_bracket),
+        seq($.left_bracket, optional($._expression), $.right_bracket),
       ),
 
     // Matrix expressions
@@ -110,7 +113,7 @@ module.exports = grammar({
         my_precs.matrix,
         seq(
           $.left_bracket,
-          seq($.matrix_row_expr, repeat(seq(",", $.matrix_row_expr))),
+          seq($.matrix_row_expr, repeat1(seq(",", $.matrix_row_expr))),
           $.right_bracket,
         ),
       ),
@@ -121,12 +124,12 @@ module.exports = grammar({
         choice(
           seq(
             '|',
-            seq($.matrix_row_expr, repeat(seq(",", $.matrix_row_expr))),
+            seq($.matrix_row_expr, repeat1(seq(",", $.matrix_row_expr))),
             '|',
           ),
           seq(
             '||',
-            seq($.matrix_row_expr, repeat(seq(",", $.matrix_row_expr))),
+            seq($.matrix_row_expr, repeat1(seq(",", $.matrix_row_expr))),
             '||',
           )
         ),
@@ -143,7 +146,7 @@ module.exports = grammar({
       ),
 
     inner_frozen: _ => token.immediate(prec(1, /[^\)]+/)),
- 
+
     unaryFrozen_expr: $ => prec.left(
       my_precs.unary,
       seq(
@@ -195,7 +198,7 @@ module.exports = grammar({
       prec.left(
         my_precs.diffential,
         seq(
-          choice($.dd, $.pp),
+          $.differentialSymbols,
           optional(seq("^", $.simple_expression)),
           $.simple_expression,
           $.simple_expression,
@@ -289,7 +292,7 @@ module.exports = grammar({
         $.subscript_superscript,
         $.simple_expression,
 
-        // bigEqual_expr should not be in simple_expression, 
+        // bigEqual_expr should not be in simple_expression,
         // otherwise super and sub script will be matched first
         $.bigEqual_expr,
       ),

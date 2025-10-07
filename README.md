@@ -15,6 +15,8 @@ References
 - [ ] Bars in matrices
 - [ ] Test cases in `test/`
 - [ ] Test cases for bindings
+    - [ ] Recursive bracket parsing
+    - [ ] Unary `+` and `-`
 
 ## Warning
 

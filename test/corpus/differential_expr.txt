@@ -4,25 +4,41 @@ Differential expressions
 
 dd f x
 pp^2 g x
+pp {::} x
 
 ---
 
-(source_file
-  (intermediate_expression
-    (simple_expression
-      (differential_expr
-        (dd)
+    (source_file
+      (intermediate_expression
         (simple_expression
-          (identifier))
+          (differential_expr
+            (differentialSymbols
+              (dd))
+            (simple_expression
+              (identifier))
+            (simple_expression
+              (identifier)))))
+      (intermediate_expression
         (simple_expression
-          (identifier)))))
-  (intermediate_expression
-    (simple_expression
-      (differential_expr
-        (pp)
+          (differential_expr
+            (differentialSymbols
+              (pp))
+            (simple_expression
+              (number_symbol))
+            (simple_expression
+              (identifier))
+            (simple_expression
+              (identifier)))))
+      (intermediate_expression
         (simple_expression
-          (number_symbol))
-        (simple_expression
-          (identifier))
-        (simple_expression
-          (identifier))))))
+          (differential_expr
+            (differentialSymbols
+              (pp))
+            (simple_expression
+              (bracket_expr
+                (left_bracket
+                  (ltransparent))
+                (right_bracket
+                  (rtransparent))))
+            (simple_expression
+              (identifier))))))
