@@ -86,3 +86,73 @@ Basic matrix
             (identifier)))
         (right_bracket
           (rparen))))))
+
+==================
+Cases expression
+==================
+
+|x| = { (x, if x > 0), (-x, otherwise) :}
+
+---
+
+(source_file
+  (intermediate_expression
+    (simple_expression
+      (mathOperators
+        (vbar))))
+  (intermediate_expression
+    (simple_expression
+      (identifier)))
+  (intermediate_expression
+    (simple_expression
+      (mathOperators
+        (vbar))))
+  (intermediate_expression
+    (simple_expression
+      (mathOperators
+        (equals))))
+  (intermediate_expression
+    (simple_expression
+      (matrix_expr
+        (left_bracket
+          (lbrace))
+        (matrix_row_expr
+          (left_bracket
+            (lparen))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (intermediate_expression
+            (simple_expression
+              (logicSymbols
+                (if))))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (intermediate_expression
+            (simple_expression
+              (mathOperators
+                (gt))))
+          (intermediate_expression
+            (simple_expression
+              (number_symbol)))
+          (right_bracket
+            (rparen)))
+        (matrix_row_expr
+          (left_bracket
+            (lparen))
+          (intermediate_expression
+            (simple_expression
+              (mathOperators
+                (minus))))
+          (intermediate_expression
+            (simple_expression
+              (identifier)))
+          (intermediate_expression
+            (simple_expression
+              (logicSymbols
+                (otherwise))))
+          (right_bracket
+            (rparen)))
+        (right_bracket
+          (rtransparent))))))

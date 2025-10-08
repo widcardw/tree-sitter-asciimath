@@ -26,11 +26,14 @@ const categorizedSymbols = require('./identifiers/categorized.js');
 module.exports = grammar({
   name: "asciimath",
   extras: $ => [$._whitespace],
+  conflicts: $ => [
+    [$._expression],
+    [$.matrix_row_expr, $.bracket_expr],
+  ],
   rules: {
     source_file: $ => optional(choice($._expression, $.multiline_expr)),
 
-    _expression: $ => prec.left(
-      my_precs.concat,
+    _expression: $ => prec.dynamic(-1,
       seq(
         $.intermediate_expression,
         repeat($._expression),
@@ -90,15 +93,11 @@ module.exports = grammar({
       ),
 
     // Bracket expressions
-    bracket_expr: $ =>
-      prec(
-        my_precs.bracket,
-        seq($.left_bracket, optional($._expression), $.right_bracket),
-      ),
+    bracket_expr: $ => seq($.left_bracket, optional($._expression), $.right_bracket),
 
     // Matrix expressions
     matrix_row_expr: $ =>
-      prec.left(
+      prec.dynamic(
         my_precs.matrix_row,
         seq(
           $.left_bracket,
@@ -109,13 +108,10 @@ module.exports = grammar({
       ),
 
     matrix_expr: $ =>
-      prec.left(
-        my_precs.matrix,
-        seq(
-          $.left_bracket,
-          seq($.matrix_row_expr, repeat1(seq(",", $.matrix_row_expr))),
-          $.right_bracket,
-        ),
+      seq(
+        $.left_bracket,
+        $.matrix_row_expr, repeat1(seq(",", $.matrix_row_expr)),
+        $.right_bracket,
       ),
 
     det_expr: $ =>

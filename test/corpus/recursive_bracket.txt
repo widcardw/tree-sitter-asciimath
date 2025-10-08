@@ -22,6 +22,10 @@ Recursive brackets
                   (identifier)))
               (intermediate_expression
                 (simple_expression
+                  (separatorSymbols
+                    (comma))))
+              (intermediate_expression
+                (simple_expression
                   (identifier)))
               (right_bracket
                 (rparen)))))

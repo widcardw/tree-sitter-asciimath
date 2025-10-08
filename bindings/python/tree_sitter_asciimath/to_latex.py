@@ -1,7 +1,7 @@
 from tree_sitter import Node
 import json
 from typing import TypedDict, NotRequired
-from objprint import objprint
+# from objprint import objprint
 
 class PatternSymbol(TypedDict):
     pattern: str
@@ -110,7 +110,7 @@ class AsciiMathTransformer:
             raise ValueError(f"Unknown superscript and subscript combination: {node.children[1].type} and {node.children[3].type}")
 
     def bracket_expr_to_latex(self, node: Node):
-        objprint(node, node.children[1].text)
+        # objprint(node, node.children[1].text)
         assert node.children
         assert len(node.children) >= 2
         left, right = node.children[0], node.children[-1]
@@ -317,8 +317,22 @@ class AsciiMathTransformer:
         assert len(node.children) >= 3
         # _lb = self.constant_to_latex(node.children[0])
         # _rb = self.constant_to_latex(node.children[-1])
-        row = [self.to_latex(child) 
-               for child in node.children[1:-1] if child.type != ',']
+        row = []
+        temp_cell = []
+        for child in node.children[1:-1]:
+            if child.type == ',':
+                if len(temp_cell) == 0:
+                    row.append(None)
+                else:
+                    row.append(' '.join(temp_cell))
+                temp_cell = []
+            else:
+                temp_cell.append(self.to_latex(child))
+        else:
+            if len(temp_cell) == 0:
+                row.append(None)
+            else:
+                row.append(' '.join(temp_cell))
         return row
 
     def matrix_expr_to_latex(self, node: Node):
@@ -326,11 +340,15 @@ class AsciiMathTransformer:
         assert len(node.children) >= 3
         lb = self.constant_to_latex(node.children[0])
         rb = self.constant_to_latex(node.children[-1])
+        if lb.strip() == '\\lbrace' and rb.strip() == '.':
+            align = 'l'
+        else:
+            align = 'c'
         rows = [self.matrix_row_to_list(child) 
                 for child in node.children[1:-1]   # strip left and right parens
                 if child.type == 'matrix_row_expr']
         return (
-            f'\\left{lb}\\begin{{array}}{{{len(rows[0])*"c"}}} '
+            f'\\left{lb}\\begin{{array}}{{{len(rows[0])*align}}} '
             + " \\\\ ".join([" & ".join(row) for row in rows])
             + f' \\end{{array}}\\right{rb}'
         )
@@ -343,9 +361,9 @@ class AsciiMathTransformer:
                 for child in node.children[1:-1]    # strip left and right parens
                 if child.type == 'matrix_row_expr']
         return (
-            f'\\left{bar}\\begin{{array}}{{{len(rows[0])*"c"}}}'
+            f'\\left{bar}\\begin{{array}}{{{len(rows[0])*"c"}}} '
             + " \\\\ ".join([" & ".join(row) for row in rows])
-            + f'\\end{{array}}\\right{bar}'
+            + f' \\end{{array}}\\right{bar}'
         )
     
     def bigEqual_expr_to_latex(self, node: Node):
