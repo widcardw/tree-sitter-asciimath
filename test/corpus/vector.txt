@@ -7,34 +7,30 @@ Vectors
 ---
 
 (source_file
-  (intermediate_expression
-    (simple_expression
-      (matrix_expr
+  (simple_expression
+    (matrix_expr
+      (left_bracket
+        (lbracket))
+      (matrix_row_expr
         (left_bracket
           (lbracket))
-        (matrix_row_expr
-          (left_bracket
-            (lbracket))
-          (intermediate_expression
-            (simple_expression
-              (identifier)))
-          (right_bracket
-            (rbracket)))
-        (matrix_row_expr
-          (left_bracket
-            (lbracket))
-          (intermediate_expression
-            (simple_expression
-              (identifier)))
-          (right_bracket
-            (rbracket)))
-        (matrix_row_expr
-          (left_bracket
-            (lbracket))
-          (intermediate_expression
-            (simple_expression
-              (identifier)))
-          (right_bracket
-            (rbracket)))
+        (simple_expression
+          (identifier))
         (right_bracket
-          (rbracket))))))
+          (rbracket)))
+      (matrix_row_expr
+        (left_bracket
+          (lbracket))
+        (simple_expression
+          (identifier))
+        (right_bracket
+          (rbracket)))
+      (matrix_row_expr
+        (left_bracket
+          (lbracket))
+        (simple_expression
+          (identifier))
+        (right_bracket
+          (rbracket)))
+      (right_bracket
+        (rbracket)))))

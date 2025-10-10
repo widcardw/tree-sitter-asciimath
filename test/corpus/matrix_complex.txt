@@ -7,44 +7,39 @@ Matrix with supsub
 ---
 
 (source_file
-  (intermediate_expression
-    (simple_expression
-      (matrix_expr
+  (simple_expression
+    (matrix_expr
+      (left_bracket
+        (lbracket))
+      (matrix_row_expr
         (left_bracket
           (lbracket))
-        (matrix_row_expr
-          (left_bracket
-            (lbracket))
-          (intermediate_expression
-            (superscript
-              (simple_expression
-                (identifier))
-              (simple_expression
-                (number_symbol))))
-          (intermediate_expression
-            (superscript
-              (simple_expression
-                (identifier))
-              (simple_expression
-                (number_symbol))))
-          (right_bracket
-            (rbracket)))
-        (matrix_row_expr
-          (left_bracket
-            (lbracket))
-          (intermediate_expression
-            (superscript
-              (simple_expression
-                (identifier))
-              (simple_expression
-                (number_symbol))))
-          (intermediate_expression
-            (superscript
-              (simple_expression
-                (identifier))
-              (simple_expression
-                (number_symbol))))
-          (right_bracket
-            (rbracket)))
+        (superscript
+          (simple_expression
+            (identifier))
+          (simple_expression
+            (number_symbol)))
+        (superscript
+          (simple_expression
+            (identifier))
+          (simple_expression
+            (number_symbol)))
         (right_bracket
-          (rbracket))))))
+          (rbracket)))
+      (matrix_row_expr
+        (left_bracket
+          (lbracket))
+        (superscript
+          (simple_expression
+            (identifier))
+          (simple_expression
+            (number_symbol)))
+        (superscript
+          (simple_expression
+            (identifier))
+          (simple_expression
+            (number_symbol)))
+        (right_bracket
+          (rbracket)))
+      (right_bracket
+        (rbracket)))))

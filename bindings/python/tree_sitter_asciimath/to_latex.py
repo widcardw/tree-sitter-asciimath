@@ -471,29 +471,29 @@ class AsciiMathTransformer:
         if node.type == 'unaryFrozen_expr':
             return self.unary_frozen_expr_to_latex(node)
 
-        if node.type == 'intermediate_expression':
-            assert node.children
-            assert len(node.children) == 1
-            child = node.children[0]
-            if child.type == 'simple_expression':
-                return self.simple_expression_to_latex(child)
+        # if node.type == 'intermediate_expression':
+        #     assert node.children
+        #     assert len(node.children) == 1
+        #     child = node.children[0]
+        #     if child.type == 'simple_expression':
+        #         return self.simple_expression_to_latex(child)
 
-            elif child.type == 'subscript_superscript':
-                # 可能需要将小括号删除
-                return self.sup_and_sub_to_latex(child)
+        if node.type == 'subscript_superscript':
+            # 可能需要将小括号删除
+            return self.sup_and_sub_to_latex(node)
 
-            elif child.type == 'subscript':
-                # 可能需要将小括号删除
-                return self.subscript_to_latex(child)
+        if node.type == 'subscript':
+            # 可能需要将小括号删除
+            return self.subscript_to_latex(node)
 
-            elif child.type == 'superscript':
-                # 可能需要将小括号删除
-                return self.superscript_to_latex(child)
-            
-            elif child.type == 'bigEqual_expr':
-                return self.bigEqual_expr_to_latex(child)
+        if node.type == 'superscript':
+            # 可能需要将小括号删除
+            return self.superscript_to_latex(node)
+        
+        if node.type == 'bigEqual_expr':
+            return self.bigEqual_expr_to_latex(node)
 
-            else:
-                raise ValueError(f"Unknown intermediate_expression type: {child.type}")
+        # else:
+        #     raise ValueError(f"Unknown intermediate_expression type: {child.type}")
 
         return self.constant_to_latex(node)

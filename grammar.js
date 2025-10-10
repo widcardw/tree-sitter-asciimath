@@ -35,7 +35,7 @@ module.exports = grammar({
 
     _expression: $ => prec.dynamic(-1,
       seq(
-        $.intermediate_expression,
+        $._intermediate_expression,
         repeat($._expression),
       )),
 
@@ -181,7 +181,7 @@ module.exports = grammar({
     binary_frac: $ =>
       prec.left(
         my_precs.binary_frac,
-        seq($.intermediate_expression, $.binaryMidSymbols, $.intermediate_expression),
+        seq($._intermediate_expression, $.binaryMidSymbols, $._intermediate_expression),
       ),
 
     factorial_expr: $ =>
@@ -281,7 +281,7 @@ module.exports = grammar({
       ),
 
     // Intermediate expressions
-    intermediate_expression: $ =>
+    _intermediate_expression: $ =>
       choice(
         $.subscript,
         $.superscript,
@@ -295,6 +295,6 @@ module.exports = grammar({
 
     // Concatenation
     concatenation: $ =>
-      prec.left(my_precs.concat, seq($.intermediate_expression, $._expression)),
+      prec.left(my_precs.concat, seq($._intermediate_expression, $._expression)),
   },
 });
