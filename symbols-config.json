@@ -1,9 +1,4 @@
 {
-  "basicTypes": {
-    "number_symbol": { "pattern": "\\d+(\\.\\d+)?", "type": "regex" },
-    "identifier": { "pattern": "[A-Za-z]+", "type": "regex" }
-  },
-
   "logicSymbols": {
     "if": { "token": "if", "tex": "\\text{if}\\quad" },
     "otherwise": { "token": "otherwise", "tex": "\\text{otherwise}" },
@@ -185,9 +180,12 @@
     "rnormal": { "token": "rnormal", "tex": "\\unrhd" }
   },
 
-  "mathOperators": {
+  "rightAssociativeOperators": {
     "plus": { "token": "+", "tex": "+" },
-    "minus": { "token": "-", "tex": "-" },
+    "minus": { "token": "-", "tex": "-" }
+  },
+
+  "mathOperators": {
     "cdot": { "token": "cdot", "alias": ["*"], "tex": "\\cdot" },
     "times": { "token": "xx", "tex": "\\times" },
     "equals": { "token": "=", "tex": "=" },

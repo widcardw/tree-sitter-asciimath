@@ -49,7 +49,7 @@ cc(N)
           (simple_expression
             (identifier))
           (simple_expression
-            (mathOperators
+            (rightAssociativeOperators
               (plus)))
           (simple_expression
             (identifier))

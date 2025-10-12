@@ -5,6 +5,7 @@ const my_precs = {
   str: 30,
   factorial: 29,
   det: 28,
+  right_associative: 28,
   bigEqual: 27,
   supsub: 26,
   binary_frac: 25,
@@ -38,6 +39,9 @@ module.exports = grammar({
         $._intermediate_expression,
         repeat($._expression),
       )),
+
+    number_symbol: $ => /\d+(?:\.\d+)?/,
+    identifier: $ => /[A-Za-z\u4e00-\u9fa5\u{1F300}-\u{1FAD6}]+/v,
 
     // inject all the identifiers
     ...identifiers,
@@ -195,7 +199,7 @@ module.exports = grammar({
         my_precs.diffential,
         seq(
           $.differentialSymbols,
-          optional(seq("^", $.simple_expression)),
+          optional(seq("^", choice($.simple_expression, $.right_associative_expr))),
           $.simple_expression,
           $.simple_expression,
         ),
@@ -206,14 +210,22 @@ module.exports = grammar({
       choice(
         seq(
           $.bigEqualSymbols,
-          optional(seq("^", $.simple_expression)),
-          optional(seq("_", $.simple_expression)),
+          optional(seq("^", choice($.simple_expression, $.right_associative_expr))),
+          optional(seq("_", choice($.simple_expression, $.right_associative_expr))),
         ),
         seq(
           $.bigEqualSymbols,
-          optional(seq("_", $.simple_expression)),
-          optional(seq("^", $.simple_expression)),
+          optional(seq("_", choice($.simple_expression, $.right_associative_expr))),
+          optional(seq("^", choice($.simple_expression, $.right_associative_expr))),
         ),
+      )
+    ),
+
+    right_associative_expr: $ => prec.right(
+      my_precs.right_associative,
+      seq(
+        $.rightAssociativeOperators,
+        $._intermediate_expression,
       )
     ),
 
@@ -226,6 +238,7 @@ module.exports = grammar({
       $.logicSymbols,
       $.greekLetters,
       $.mathConstants,
+      $.rightAssociativeOperators,
       $.setOperators,
       $.mathOperators,
       $.asciiEscape,
@@ -241,6 +254,7 @@ module.exports = grammar({
       $.literal_string,
       $.bracket_expr,
       $.binary_frac,
+      // $.right_associative_expr,
       // 需要将下一个 expression 直接以原格式接收的表达式
       $.unaryFrozen_expr,
       $.color_expr,
@@ -250,13 +264,13 @@ module.exports = grammar({
     subscript: $ =>
       prec.left(
         my_precs.sup_or_sub,
-        seq($.simple_expression, "_", $.simple_expression),
+        seq($.simple_expression, "_", choice($.simple_expression, $.right_associative_expr)),
       ),
 
     superscript: $ =>
       prec.left(
         my_precs.sup_or_sub,
-        seq($.simple_expression, "^", $.simple_expression),
+        seq($.simple_expression, "^", choice($.simple_expression, $.right_associative_expr)),
       ),
 
     subscript_superscript: $ =>
@@ -266,16 +280,16 @@ module.exports = grammar({
           seq(
             $.simple_expression,
             "_",
-            $.simple_expression,
+            choice($.simple_expression, $.right_associative_expr),
             "^",
-            $.simple_expression,
+            choice($.simple_expression, $.right_associative_expr),
           ),
           seq(
             $.simple_expression,
             "^",
-            $.simple_expression,
+            choice($.simple_expression, $.right_associative_expr),
             "_",
-            $.simple_expression,
+            choice($.simple_expression, $.right_associative_expr),
           ),
         ),
       ),

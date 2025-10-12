@@ -32,13 +32,13 @@ class AsciiMathTransformer:
         if token not in target_category:
             raise ValueError(f"Unknown token: {token}")
         return target_category[token]['tex']
-        
+
     def constant_to_latex(self, node: Node):
         if (node.type == 'number_symbol'
             or node.type == 'identifier'):
             assert node.text
             return node.text.decode('utf-8')
-        
+
         if node.type == 'literal_string':
             assert node.text
             return '\\text{%s}' % node.text.decode('utf-8')[1:-1]
@@ -64,6 +64,7 @@ class AsciiMathTransformer:
             or node.type == 'separatorSymbols'
             or node.type == 'bigEqualSymbols'
             or node.type == 'unaryFrozenSymbols'
+            or node.type == 'rightAssociativeOperators'
             # special cases
             or node.type == 'color'
         ):
@@ -124,7 +125,7 @@ class AsciiMathTransformer:
         left_str = self.constant_to_latex(left)
         right_str = self.constant_to_latex(right)
         return f"\\left{left_str}{contents_str}\\right{right_str}"
-    
+
     def bracket_expr_to_obj(self, node: Node):
         assert node.children
         assert len(node.children) >= 2
@@ -136,7 +137,7 @@ class AsciiMathTransformer:
             'right': right,
             'contents': " ".join([self.to_latex(child) for child in contents])
         }
-    
+
     def __process_bracket_only(self, node: Node):
         expr_obj = self.bracket_expr_to_obj(node)
         left = expr_obj['left']
@@ -148,7 +149,7 @@ class AsciiMathTransformer:
             return '{%s}' % contents_str
         else:
             return f"\\left{left}{contents_str}\\right{right}"
-    
+
     def _trim_paren(self, expr_node: Node):
         if ( # simple_expression for unary and binary
             expr_node.type == 'simple_expression'
@@ -162,12 +163,12 @@ class AsciiMathTransformer:
         ):
             return self.__process_bracket_only(expr_node.children[0].children[0])
         # elif (expr_node.type == 'intermediate_expression'):
-        #     # the child can be sup/sub/sup_and_sub/bigEqual, 
+        #     # the child can be sup/sub/sup_and_sub/bigEqual,
         #     # but to_latex has `intermediate_expression` processor, just skip
         #     return self.to_latex(expr_node)
         else:
             return self.to_latex(expr_node)
-    
+
     def unary_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 2
@@ -176,7 +177,7 @@ class AsciiMathTransformer:
         # node.children[0] is the category
         # node.children[0].children[0] is the symbol token
         token = node.children[0].children[0].type
-        
+
         expr_node = node.children[1]  # simple_expression
         expr = self._trim_paren(expr_node)
 
@@ -186,7 +187,7 @@ class AsciiMathTransformer:
                        .replace('$1', expr))
 
         return '%s{%s}' % (op, expr)
-    
+
     def unary_frozen_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 2 or len(node.children) == 4
@@ -207,9 +208,9 @@ class AsciiMathTransformer:
         if tpl is not None:
             return (tpl.replace('$0', op)
                        .replace('$1', expr))
-        
+
         return '%s{%s}' % (op, expr)
-    
+
     def color_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3 or len(node.children) == 5
@@ -234,7 +235,7 @@ class AsciiMathTransformer:
         token = node.children[0].children[0].type
         left = self._trim_paren(node.children[1])
         right = self._trim_paren(node.children[2])
-        
+
         if tpl := self.symbol_config["binarySymbols"][token].get('template'):
             return (tpl.replace('$0', op)
                        .replace('$1', left)
@@ -249,7 +250,7 @@ class AsciiMathTransformer:
 
         lnode = node.children[0]
         rnode = node.children[2]
-            
+
         left = self._trim_paren(lnode)
         right = self._trim_paren(rnode)
         return '\\frac{%s}{%s}' % (left, right)
@@ -260,7 +261,7 @@ class AsciiMathTransformer:
         expr = self.to_latex(node.children[0])
         factorial = self.constant_to_latex(node.children[1])
         return f"{expr}{factorial}"
-    
+
     def __grab_variables_for_diff_lower(self, node: Node):
         if node.type == 'bracket_expr':
             # _left = node.children[0]
@@ -282,7 +283,7 @@ class AsciiMathTransformer:
             up_str = self._trim_paren(up)
             down_str = self._trim_paren(down)
         else:   # with superscripts
-            # if superscripts only exists on the upper and lower only has one variable, 
+            # if superscripts only exists on the upper and lower only has one variable,
             #   then automatically copy the superscript to lower
             # otherwise, do not copy, but copy the `diff operator` to the front of each variable of the lower
             sup = self._trim_paren(node.children[2])
@@ -344,7 +345,7 @@ class AsciiMathTransformer:
             align = 'l'
         else:
             align = 'c'
-        rows = [self.matrix_row_to_list(child) 
+        rows = [self.matrix_row_to_list(child)
                 for child in node.children[1:-1]   # strip left and right parens
                 if child.type == 'matrix_row_expr']
         return (
@@ -352,12 +353,12 @@ class AsciiMathTransformer:
             + " \\\\ ".join([" & ".join(row) for row in rows])
             + f' \\end{{array}}\\right{rb}'
         )
-    
+
     def det_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
         bar = self.constant_to_latex(node.children[0])  # left bar and right bar are the same
-        rows = [self.matrix_row_to_list(child) 
+        rows = [self.matrix_row_to_list(child)
                 for child in node.children[1:-1]    # strip left and right parens
                 if child.type == 'matrix_row_expr']
         return (
@@ -365,13 +366,13 @@ class AsciiMathTransformer:
             + " \\\\ ".join([" & ".join(row) for row in rows])
             + f' \\end{{array}}\\right{bar}'
         )
-    
+
     def bigEqual_expr_to_latex(self, node: Node):
         assert node.children
         op = self.constant_to_latex(node.children[0])
         if len(node.children) == 1:
             return f"{op}"
-        
+
         if len(node.children) == 3:
             # operator    sub/sup    expr
             # ^.child(0)  ^child(1)  ^child2
@@ -406,7 +407,7 @@ class AsciiMathTransformer:
         else:
             raise ValueError(f'Met unexpected number of children in bigEqual_expr: {len(node.children)}, expect 3 or 5. '
                              f'The node is {node.text}')
-        
+
         token = node.children[0].children[0].type
         tpl = self.symbol_config["bigEqualSymbols"][token].get('template')  # $0[$2]{$1}
 
@@ -423,6 +424,29 @@ class AsciiMathTransformer:
         else:
             raise ValueError(f'Met unexpected case in bigEqual_expr: {sup} {sub}. '
                              f'The node is {node.text}')
+
+    def right_associative_expr_to_latex_supsub(self, node: Node):
+        assert node.children
+        assert len(node.children) == 2
+        op = self.constant_to_latex(node.children[0])
+        expr = self.to_latex(node.children[1])
+        return '%s %s' % (op, expr)   # the braces will be added by supsubscripts
+
+    def multiline_expr_to_latex(self, node: Node):
+        assert node.children
+        tmp_row = []
+        all_rows = []
+        for i, child in enumerate(node.children):
+            if child.type == 'multi_linebreak':
+                all_rows.append(' '.join(tmp_row))
+                tmp_row = []
+            else:
+                expr = self.to_latex(child)
+                tmp_row.append(expr)
+        else:
+            if len(tmp_row):
+                all_rows.append(' '.join(tmp_row))
+        return '\\begin{aligned} %s \\end{aligned}' % ' \\\\ '.join(all_rows)
 
     def to_latex(self, node: Node) -> str:
         if not isinstance(node, Node):
@@ -458,16 +482,16 @@ class AsciiMathTransformer:
         if node.type == 'differential_expr':
             # 可能需要将小括号删除
             return self.differential_expr_to_latex(node)
-        
+
         if node.type == 'matrix_expr':
             return self.matrix_expr_to_latex(node)
-        
+
         if node.type == 'det_expr':
             return self.det_expr_to_latex(node)
-        
+
         if node.type == 'color_expr':
             return self.color_expr_to_latex(node)
-        
+
         if node.type == 'unaryFrozen_expr':
             return self.unary_frozen_expr_to_latex(node)
 
@@ -489,9 +513,15 @@ class AsciiMathTransformer:
         if node.type == 'superscript':
             # 可能需要将小括号删除
             return self.superscript_to_latex(node)
-        
+
         if node.type == 'bigEqual_expr':
             return self.bigEqual_expr_to_latex(node)
+
+        if node.type == 'right_associative_expr':
+            return self.right_associative_expr_to_latex_supsub(node)
+
+        if node.type == 'multiline_expr':
+            return self.multiline_expr_to_latex(node)
 
         # else:
         #     raise ValueError(f"Unknown intermediate_expression type: {child.type}")

@@ -17,7 +17,7 @@ sum_(i=1)^n a_i^2
     (simple_expression
       (identifier)))
   (simple_expression
-    (mathOperators
+    (rightAssociativeOperators
       (plus)))
   (subscript_superscript
     (simple_expression

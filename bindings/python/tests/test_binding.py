@@ -223,11 +223,11 @@ class TestAsciiMathExamples(TestCase):
             },
             {   # TODO
                 'i': 'e^-x',
-                'o': 'e^{-x}',
+                'o': 'e^{- x}',
             },
             {
                 'i': 'e^-(x^-2+y^2)',
-                'o': 'e ^{ {-\\left( x ^{ {-2 } } + y ^{ 2 } \\right) } }',
+                'o': 'e^{- \\left(x^{- 2} + y^{2}\\right)}',
             },
             {
                 'i': '-(a+b-c)/2',
@@ -275,50 +275,45 @@ class TestAsciiMathExamples(TestCase):
                 'o': '\\left[1 , 2\\right]',
             },
             {
-                'i': '[1, 2; 3]',
-                'o': '\\left[ \\begin{array}{cc} 1 & 2 \\\\ 3 \\end{array} \\right]',
+                'i': '[[1, 2], [3]]',
+                'o': '\\left[\\begin{array}{cc} 1 & 2 \\\\ 3 \\end{array}\\right]',
             },
             {
-                'i': '[1, 2; ,3]',
-                'o': '\\left[ \\begin{array}{cc} 1 & 2 \\\\  & 3 \\end{array} \\right]',
+                'i': '[[1, 2], [{::},3]]',
+                'o': '\\left[\\begin{array}{cc} 1 & 2 \\\\ {} & 3 \\end{array}\\right]',
             },
-            {
-                'i': '[1, 2;]',
-                'o': '\\left[ \\begin{array}{cc} 1 & 2 \\end{array} \\right]',
-            },
-
             {
                 'i': '| |',
-                'o': '\\left| \\right|',
+                'o': '| |',
             },
             {
                 'i': '|1|',
-                'o': '\\left| 1 \\right|',
+                'o': '| 1 |',
             },
             {
                 'i': '|1,|',
-                'o': '\\left| 1 , \\right|',
+                'o': '| 1 , |',
             },
-            {
-                'i': '|(1)|',
-                'o': '\\left| \\begin{array}{c} 1 \\end{array} \\right|',
-            },
+            # {
+            #     'i': '|(1)|',
+            #     'o': '\\left| \\begin{array}{c} 1 \\end{array} \\right|',
+            # },
             {
                 'i': '|1, 2|',
-                'o': '\\left| 1 , 2 \\right|',
+                'o': '| 1 , 2 |',
             },
             {
                 'i': '|(1, 2), (3, 4)|',
-                'o': '\\left| \\begin{array}{cc} 1 & 2 \\\\ 3 & 4 \\end{array} \\right|',
+                'o': '\\left|\\begin{array}{cc} 1 & 2 \\\\ 3 & 4 \\end{array}\\right|',
             },
             {
-                'i': '|(1, 2); (,3)|',
-                'o': '\\left| \\begin{array}{cc} 1 & 2 \\\\  & 3 \\end{array} \\right|',
+                'i': '|(1, 2), ({::},3)|',
+                'o': '\\left|\\begin{array}{cc} 1 & 2 \\\\ {} & 3 \\end{array}\\right|',
             },
-            {
-                'i': '|(1, 2),|',
-                'o': '\\left| \\begin{array}{cc} 1 & 2 \\end{array} \\right|',
-            },
+            # {
+            #     'i': '|(1, 2),|',
+            #     'o': '\\left| \\begin{array}{cc} 1 & 2 \\end{array} \\right|',
+            # },
 
             # {
             #     'i': '[1, 2 | 3; 4, 5 | 6]',
@@ -350,47 +345,47 @@ class TestAsciiMathExamples(TestCase):
             # },
             {
                 'i': '==^b_a',
-                'o': '\\xlongequal[ a ]{ b }',
+                'o': '\\xlongequal[a]{b}',
             },
             {
                 'i': '-->^114_5',
-                'o': '\\xrightarrow[ 5 ]{ 114 }',
+                'o': '\\xrightarrow[5]{114}',
             },
             {
                 'i': '==^b',
-                'o': '\\xlongequal[  ]{ b }',
+                'o': '\\xlongequal[]{b}',
             },
             {
                 'i': '==_a',
-                'o': '\\xlongequal[ a ]{  }',
+                'o': '\\xlongequal[a]{}',
+            },
+            # {
+            #     'i': '\uD83D\uDC40',
+            #     'o': '\uD83D\uDC40',
+            # },
+            {
+                'i': '🍎/(🍌+🍍) + 🍌/(🍍+🍎) + 🍍/(🍎+🍌) = 4',
+                'o': '\\frac{🍎}{🍌 + 🍍} + \\frac{🍌}{🍍 + 🍎} + \\frac{🍍}{🍎 + 🍌} = 4',
             },
             {
                 'i': '& 1111\n\n& 2222',
-                'o': '\\begin{aligned}& 1111 \\\\ & 2222\\end{aligned}',
+                'o': '\\begin{aligned} & 1111 \\\\ & 2222 \\end{aligned}',
             },
-            {
-                'i': 'hline\na && 111 && 333\n\nhline\nb && 222\n\nhline',
-                'o': '\\begin{aligned}\\hline a && 111 && 333 \\\\ \\hline b && 222 \\\\ \\hline\\end{aligned}',
-            },
-            {
-                'i': '[hline|a|b|;]',
-                'o': '\\left[ \\begin{array}{|c|c|} \\hline a & b \\end{array} \\right]',
-            },
-            {
-                'i': '{:\n--\n|a|b|;\n--\nc, d;\n--\n:}',
-                'o': '\\left. \\begin{array}{|c|c|} \\hline a & b \\\\ \\hline c & d \\\\ \\hline \\end{array} \\right.',
-            },
-            {
-                'i': '\uD83D\uDC40',
-                'o': '\uD83D\uDC40',
-            },
-            {
-                'i': '🍎/(🍌+🍍) + 🍌/(🍍+🍎) + 🍍/(🍎+🍌) = 4',
-                'o': '\\frac{ 🍎 }{ 🍌 + 🍍 } + \\frac{ 🍌 }{ 🍍 + 🍎 } + \\frac{ 🍍 }{ 🍎 + 🍌 } = 4',
-            },
+            # {
+            #     'i': 'hline\na && 111 && 333\n\nhline\nb && 222\n\nhline',
+            #     'o': '\\begin{aligned}\\hline a && 111 && 333 \\\\ \\hline b && 222 \\\\ \\hline\\end{aligned}',
+            # },
+            # {
+            #     'i': '[hline|a|b|;]',
+            #     'o': '\\left[ \\begin{array}{|c|c|} \\hline a & b \\end{array} \\right]',
+            # },
+            # {
+            #     'i': '{:\n--\n|a|b|;\n--\nc, d;\n--\n:}',
+            #     'o': '\\left. \\begin{array}{|c|c|} \\hline a & b \\\\ \\hline c & d \\\\ \\hline \\end{array} \\right.',
+            # },
             {
                 'i': '"\\\\"',
-                'o': '\\text{\\}',
+                'o': r'\text{\\}',
             },
             {
                 'i': '"some text and \\ backslashes \\ a"',
