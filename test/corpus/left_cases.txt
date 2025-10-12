@@ -32,7 +32,7 @@ Cases expressions
         (left_bracket
           (lparen))
         (simple_expression
-          (mathOperators
+          (rightAssociativeOperators
             (minus)))
         (simple_expression
           (identifier))
@@ -43,4 +43,3 @@ Cases expressions
           (rparen)))
       (right_bracket
         (rtransparent)))))
-

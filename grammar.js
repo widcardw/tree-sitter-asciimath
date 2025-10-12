@@ -20,7 +20,7 @@ const my_precs = {
   concat: 7,
 };
 
-// 导入所有identifier
+// import all predefined identifiers
 const identifiers = require('./identifiers/index.js');
 const categorizedSymbols = require('./identifiers/categorized.js');
 
@@ -41,7 +41,8 @@ module.exports = grammar({
       )),
 
     number_symbol: $ => /\d+(?:\.\d+)?/,
-    identifier: $ => /[A-Za-z\u4e00-\u9fa5\u{1F300}-\u{1FAD6}]+/v,
+    // common indicator - as the fallback
+    identifier: $ => prec(-100, /[^\s\d+\-*/^_=<>\|&.,;:!\?\[\]{}()"'\\]+/),
 
     // inject all the identifiers
     ...identifiers,
@@ -255,7 +256,7 @@ module.exports = grammar({
       $.bracket_expr,
       $.binary_frac,
       // $.right_associative_expr,
-      // 需要将下一个 expression 直接以原格式接收的表达式
+      // receive the next token as *raw*
       $.unaryFrozen_expr,
       $.color_expr,
     ),

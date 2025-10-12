@@ -9,7 +9,7 @@
     "parse": "tree-sitter parse",
     "test": "tree-sitter test",
     "build": "tree-sitter build",
-    "uv-prepare": "uv remove wheel && uv add wheel"
+    "uv-prepare": "uv pip install --no-deps --force-reinstall ."
   },
   "keywords": [
     "tree-sitter",

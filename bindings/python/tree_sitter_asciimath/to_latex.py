@@ -164,7 +164,7 @@ class AsciiMathTransformer:
             return self.__process_bracket_only(expr_node.children[0].children[0])
         # elif (expr_node.type == 'intermediate_expression'):
         #     # the child can be sup/sub/sup_and_sub/bigEqual,
-        #     # but to_latex has `intermediate_expression` processor, just skip
+        #     # but to_latex will automatically process `intermediate_expression`, just skip
         #     return self.to_latex(expr_node)
         else:
             return self.to_latex(expr_node)
@@ -283,7 +283,7 @@ class AsciiMathTransformer:
             up_str = self._trim_paren(up)
             down_str = self._trim_paren(down)
         else:   # with superscripts
-            # if superscripts only exists on the upper and lower only has one variable,
+            # if superscripts only exists on the upper and lower has *only one* variable,
             #   then automatically copy the superscript to lower
             # otherwise, do not copy, but copy the `diff operator` to the front of each variable of the lower
             sup = self._trim_paren(node.children[2])
@@ -292,7 +292,7 @@ class AsciiMathTransformer:
             down = node.children[4]  # simple_expression
             # walk the down node to check if it has multiple variables
             if (down.children[0].type == 'bracket_expr'
-                and len(down.children[0].children) > 3):  # TODO
+                and len(down.children[0].children) > 3):  # there must be >1 variables at lower
                 # down.children[0] ==> bracker_expr
                 # ==> [lbracket E rbracket], E => I{2,}
                 copy_supper = False
@@ -322,14 +322,17 @@ class AsciiMathTransformer:
         temp_cell = []
         for child in node.children[1:-1]:
             if child.type == ',':
+                # a matrix cell should be ready
                 if len(temp_cell) == 0:
-                    row.append(None)
+                    row.append(None)  # in fact each cell should not be empty
                 else:
                     row.append(' '.join(temp_cell))
                 temp_cell = []
             else:
                 temp_cell.append(self.to_latex(child))
         else:
+            # the final cell, not ended with comma
+            # instead, it should be the end of `matrix_row_expr`
             if len(temp_cell) == 0:
                 row.append(None)
             else:
@@ -342,6 +345,7 @@ class AsciiMathTransformer:
         lb = self.constant_to_latex(node.children[0])
         rb = self.constant_to_latex(node.children[-1])
         if lb.strip() == '\\lbrace' and rb.strip() == '.':
+            # { (a, b), (c, d) :}, in latex it should look like `cases` env
             align = 'l'
         else:
             align = 'c'
@@ -357,14 +361,15 @@ class AsciiMathTransformer:
     def det_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
-        bar = self.constant_to_latex(node.children[0])  # left bar and right bar are the same
+        lbar = self.constant_to_latex(node.children[0])
+        rbar = self.constant_to_latex(node.children[-1])
         rows = [self.matrix_row_to_list(child)
-                for child in node.children[1:-1]    # strip left and right parens
+                for child in node.children[1:-1]    # strip left and right bars
                 if child.type == 'matrix_row_expr']
         return (
-            f'\\left{bar}\\begin{{array}}{{{len(rows[0])*"c"}}} '
+            f'\\left{lbar}\\begin{{array}}{{{len(rows[0])*"c"}}} '
             + " \\\\ ".join([" & ".join(row) for row in rows])
-            + f' \\end{{array}}\\right{bar}'
+            + f' \\end{{array}}\\right{rbar}'
         )
 
     def bigEqual_expr_to_latex(self, node: Node):
@@ -388,10 +393,10 @@ class AsciiMathTransformer:
                                  f'The node is {node.text}')
         elif len(node.children) == 5:
             # 2 cases
-            # 1. operator    sub        expr_sub  sup        expr_sup
-            #    ^.child(0)  ^child(1)  ^child2   ^child(3)  ^child4
-            # 2. operator    sup        expr_sup  sub        expr_sub
-            #    ^.child(0)  ^child(1)  ^child2   ^child(3)  ^child4
+            # 1. operator   sub        expr_sub    sup        expr_sup
+            #    ^child(0)  ^child(1)  ^child(2)   ^child(3)  ^child(4)
+            # 2. operator   sup        expr_sup    sub        expr_sub
+            #    ^child(0)  ^child(1)  ^child(2)   ^child(3)  ^child(4)
             sup, sub = None, None
             second_node = node.children[1].type
             fourth_node = node.children[3].type
@@ -426,6 +431,9 @@ class AsciiMathTransformer:
                              f'The node is {node.text}')
 
     def right_associative_expr_to_latex_supsub(self, node: Node):
+        '''
+        Only exists in super and subscripts
+        '''
         assert node.children
         assert len(node.children) == 2
         op = self.constant_to_latex(node.children[0])
@@ -465,22 +473,18 @@ class AsciiMathTransformer:
             return self.bracket_expr_to_latex(node)
 
         if node.type == 'unary_expr':
-            # 需要将小括号替换成 latex 中的大括号
             return self.unary_expr_to_latex(node)
 
         if node.type == 'binary_expr':
-            # 需要将小括号替换成 latex 中的大括号
             return self.binary_expr_to_latex(node)
 
         if node.type == 'binary_frac':
-            # 可能需要将小括号删除
             return self.binary_frac_to_latex(node)
 
         if node.type == 'factorial_expr':
             return self.factorial_expr_to_latex(node)
 
         if node.type == 'differential_expr':
-            # 可能需要将小括号删除
             return self.differential_expr_to_latex(node)
 
         if node.type == 'matrix_expr':
@@ -503,15 +507,12 @@ class AsciiMathTransformer:
         #         return self.simple_expression_to_latex(child)
 
         if node.type == 'subscript_superscript':
-            # 可能需要将小括号删除
             return self.sup_and_sub_to_latex(node)
 
         if node.type == 'subscript':
-            # 可能需要将小括号删除
             return self.subscript_to_latex(node)
 
         if node.type == 'superscript':
-            # 可能需要将小括号删除
             return self.superscript_to_latex(node)
 
         if node.type == 'bigEqual_expr':
