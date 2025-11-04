@@ -339,22 +339,171 @@ class AsciiMathTransformer:
                 row.append(' '.join(temp_cell))
         return row
 
-    def matrix_expr_to_latex(self, node: Node):
+    def matrix_row_to_list_with_bar_detection(self, node: Node):
+        """
+        Enhanced matrix row parser that detects vertical bars and records their positions.
+        Returns a tuple: (row_cells, bar_positions)
+        - row_cells: list of cell contents (bars are included as separate cells)
+        - bar_positions: list of column indices where vertical bars should be placed
+        """
+        assert node.children
+        assert len(node.children) >= 3
+        
+        row: list[str] = []
+        temp_cell: list[str] = []
+        bar_positions: list[int] = []
+        current_col = 0
+        
+        for child in node.children[1:-1]:
+            if child.type == ',':
+                # a matrix cell should be ready
+                if temp_cell:  # only add if there's content
+                    row.append(' '.join(temp_cell))
+                    current_col += 1
+                temp_cell = []
+            else:
+                # Check if this child is a vertical bar
+                # objprint(child)
+                cc = child.child(0)
+                assert cc
+                if (cc.type == 'mathOperators' and 
+                    len(cc.children) == 1 and 
+                    cc.children[0].type == 'vbar'):
+                    # Record the position where vertical bar should appear (after current cell)
+                    # We record the current column before incrementing
+                    bar_positions.append(current_col)
+                    # Skip adding this as a cell content and continue
+                #     continue
+                # else:
+                temp_cell.append(self.to_latex(child))
+        else:
+            # final cell, not ended with comma
+            # Check if the last child is a vertical bar
+            cc = child.child(0)
+            assert cc
+            if (cc.type == 'mathOperators' and 
+                len(cc.children) == 1 and 
+                cc.children[0].type == 'vbar'):
+                # Record the position where vertical bar should appear (after current cell)
+                bar_positions.append(current_col)
+                temp_cell.append(self.to_latex(cc))
+            # else:
+            if temp_cell:  # only add if there's content
+                row.append(' '.join(temp_cell))
+        
+        # objprint(row)
+        return row, bar_positions
+
+    def matrix_single_row_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
         lb = self.constant_to_latex(node.children[0])
         rb = self.constant_to_latex(node.children[-1])
+        row_node = node.children[1]
+        assert row_node.type == 'matrix_row_expr'
+
+        rows_data = []
+        max_cols = 0
+        all_bar_positions = []
+        row_cells, bar_positions = self.matrix_row_to_list_with_bar_detection(row_node)
+        rows_data.append(row_cells)
+        all_bar_positions.extend(bar_positions)
+        max_cols = max(max_cols, len(row_cells))
+
         if lb.strip() == '\\lbrace' and rb.strip() == '.':
             # { (a, b), (c, d) :}, in latex it should look like `cases` env
             align = 'l'
         else:
             align = 'c'
-        rows = [self.matrix_row_to_list(child)
-                for child in node.children[1:-1]   # strip left and right parens
-                if child.type == 'matrix_row_expr']
+
+        rows_data, real_bar_pos = self.__check_is_separated_matrix(rows_data, all_bar_positions)
+        if len(real_bar_pos) > 0:
+            col_spec = []
+            for i in range(max_cols):
+                if i in real_bar_pos:
+                    col_spec.append(f'{align}|')
+                else:
+                    col_spec.append(align)
+            col_spec_str = ''.join(col_spec)
+        else:
+            # No vertical bars, use traditional format
+            col_spec_str = max_cols * align
+        
         return (
-            f'\\left{lb}\\begin{{array}}{{{len(rows[0])*align}}} '
-            + " \\\\ ".join([" & ".join(row) for row in rows])
+            f'\\left{lb}\\begin{{array}}{{{col_spec_str}}} '
+            + " \\\\ ".join([" & ".join(row) for row in rows_data])
+            + f' \\end{{array}}\\right{rb}'
+        )
+
+    def __check_is_separated_matrix(self, rows_data: list[list[str]], all_bar_positions: list[int]):
+        if len(all_bar_positions) == 0:
+            return rows_data, []
+        unique_bar_positions = sorted(set(all_bar_positions), reverse=True)
+        real_bar_pos = []
+        for bar_pos in unique_bar_positions:
+            flag = True
+            for row in rows_data:
+                if row[bar_pos] != '|':
+                    flag = False
+                    break
+            if flag:
+                # This is a separated matrix
+                # Remove the vertical bars from each row
+                for row in rows_data:
+                    row.pop(bar_pos)
+                real_bar_pos.append(bar_pos)
+        
+        return rows_data, sorted(real_bar_pos)
+
+    def matrix_expr_to_latex(self, node: Node):
+        assert node.children
+        assert len(node.children) >= 3
+        lb = self.constant_to_latex(node.children[0])
+        rb = self.constant_to_latex(node.children[-1])
+        
+        # Check if this is a cases environment
+        if lb.strip() == '\\lbrace' and rb.strip() == '.':
+            # { (a, b), (c, d) :}, in latex it should look like `cases` env
+            align = 'l'
+        else:
+            align = 'c'
+        
+        # Process all rows and detect vertical bars
+        rows_data = []
+        max_cols = 0
+        all_bar_positions = []
+        
+        for child in node.children[1:-1]:
+            if child.type == 'matrix_row_expr':
+                row_cells, bar_positions = self.matrix_row_to_list_with_bar_detection(child)
+                rows_data.append(row_cells)
+                all_bar_positions.extend(bar_positions)
+        
+        # TODO 现在的 row_cells 包含了竖线，如果是分块矩阵，则需要将这些竖线去除
+
+        # Generate array column specification with vertical bars
+        rows_data, real_bar_pos = self.__check_is_separated_matrix(rows_data, all_bar_positions)
+        max_cols = max([len(row) for row in rows_data])
+        if len(real_bar_pos) > 0:
+            # Remove duplicate bar positions and sort them
+            # col_spec = [align for _ in range(max_cols)]
+            # for pos in unique_bar_positions[::-1]:
+            #     col_spec.insert(pos, '|')
+            # 还存在问题：当且仅当每行都有这个索引的时候，才加上这个矩阵级别的bar，否则只将这个vbar认为是个普通的identifier
+            col_spec = []
+            for i in range(max_cols):
+                if i in real_bar_pos:
+                    col_spec.append(f'|{align}')
+                else:
+                    col_spec.append(align)
+            col_spec_str = ''.join(col_spec)
+        else:
+            # No vertical bars, use traditional format
+            col_spec_str = max_cols * align
+        
+        return (
+            f'\\left{lb}\\begin{{array}}{{{col_spec_str}}} '
+            + " \\\\ ".join([" & ".join(row) for row in rows_data])
             + f' \\end{{array}}\\right{rb}'
         )
 
@@ -489,6 +638,9 @@ class AsciiMathTransformer:
 
         if node.type == 'matrix_expr':
             return self.matrix_expr_to_latex(node)
+        
+        if node.type == 'matrix_single_row_expr':
+            return self.matrix_single_row_expr_to_latex(node)
 
         if node.type == 'det_expr':
             return self.det_expr_to_latex(node)

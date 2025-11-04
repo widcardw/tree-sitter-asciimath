@@ -13,6 +13,7 @@ References
 ## TODO
 
 - [ ] Bars in matrices
+    - [x] code generation 中 matrix_expr_to_latex 的 bar 识别还存在问题
 - [ ] Test cases in `test/`
 - [ ] Test cases for bindings
     - [ ] Recursive bracket parsing
@@ -41,4 +42,19 @@ You are **NOT** encouraged to use `pnpm` to install dependencies, since it will 
 
 1. Run `npm run prepare` to load the JSON file and parse them into `identifiers/`
 2. Run `npm run generate` to generate `grammar.js`
+
+### Bindings
+
+#### Python
+
+Test cases
+
+```sh
+# (Optional) clean cache
+uv clean
+# Build grammar to python bindings
+npm run uv-prepare
+# Test bindings
+uv run -m pytest bindings/python/tests/test_binding.py
+```
 

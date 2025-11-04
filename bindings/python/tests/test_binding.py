@@ -15,49 +15,48 @@ class TestTransformerToLatex(TestCase):
 
     def test_can_transform_to_latex(self):
         try:
-            ...
-            # parser = self.parser
-            # transformer = self.transformer
+            parser = self.parser
+            transformer = self.transformer
 
-            # tree = parser.parse(b"x^2")
-            # root = tree.root_node
-            # latex = transformer.to_latex(root)
-            # self.assertEqual(latex, "{x}^{2}")
+            tree = parser.parse(b"x^2")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "x^{2}")
 
-            # tree = parser.parse(b"root(3)(4)")
-            # root = tree.root_node
-            # latex = transformer.to_latex(root)
-            # self.assertEqual(latex, "\\sqrt[3]{4}")
+            tree = parser.parse(b"root(3)(4)")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "\\sqrt[3]{4}")
 
-            # tree = parser.parse(b"[[a, b], [c, d]]")
-            # root = tree.root_node
-            # latex = transformer.to_latex(root)
-            # self.assertEqual(latex, "\\left[\\begin{array}{cc}a & b \\\\ c & d\\end{array}\\right]")
+            tree = parser.parse(b"[[a, b], [c, d]]")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "\\left[\\begin{array}{cc} a & b \\\\ c & d \\end{array}\\right]")
 
-            # tree = parser.parse(b"Q ==_a^b")
-            # root = tree.root_node
-            # latex = transformer.to_latex(root)
-            # self.assertEqual(latex, "Q \\xlongequal[a]{b}")
+            tree = parser.parse(b"Q ==_a^b")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "Q \\xlongequal[a]{b}")
 
-            # tree = parser.parse(b"-->^1")
-            # root = tree.root_node
-            # latex = transformer.to_latex(root)
-            # self.assertEqual(latex, "\\xrightarrow[]{1}")
+            tree = parser.parse(b"-->^1")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "\\xrightarrow[]{1}")
 
-            # tree = parser.parse(b"color(#ff0000)(x)")
-            # root = tree.root_node
-            # latex = transformer.to_latex(root)
-            # self.assertEqual(latex, "{\\color{#ff0000}x}")
+            tree = parser.parse(b"color(#ff0000)(x)")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "{\\color{#ff0000}x}")
 
-            # tree = parser.parse(b'tex"\\LaTeX"')
-            # root = tree.root_node
-            # latex = transformer.to_latex(root)
-            # self.assertEqual(latex, "\\LaTeX")
+            tree = parser.parse(b'tex"\\LaTeX"')
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "\\LaTeX")
 
-            # tree = parser.parse(b"|[a, b], [c, d]|")
-            # root = tree.root_node
-            # latex = transformer.to_latex(root)
-            # self.assertEqual(latex, "\\left|\\begin{array}{cc}a & b \\\\ c & d\\end{array}\\right|")
+            tree = parser.parse(b"|[a, b], [c, d]|")
+            root = tree.root_node
+            latex = transformer.to_latex(root)
+            self.assertEqual(latex, "\\left|\\begin{array}{cc} a & b \\\\ c & d \\end{array}\\right|")
 
         except Exception as e:
             self.fail(f"Error loading AsciiMath transformer: {e}")
@@ -310,15 +309,20 @@ class TestAsciiMathExamples(TestCase):
                 'i': '|(1, 2), ({::},3)|',
                 'o': '\\left|\\begin{array}{cc} 1 & 2 \\\\ {} & 3 \\end{array}\\right|',
             },
-            # {
-            #     'i': '|(1, 2),|',
-            #     'o': '\\left| \\begin{array}{cc} 1 & 2 \\end{array} \\right|',
-            # },
+            {
+                'i': '[[1,2],]',
+                'o': '\\left[\\begin{array}{cc} 1 & 2 \\end{array}\\right]',
+            },
 
-            # {
-            #     'i': '[1, 2 | 3; 4, 5 | 6]',
-            #     'o': '\\left[ \\begin{array}{cc|c} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\end{array} \\right]',
-            # },
+            {
+                'i': '[[1, |, 2, 3],[4, 5, |, 6]]',
+                'o': '\\left[\\begin{array}{cccc} 1 & | & 2 & 3 \\\\ 4 & 5 & | & 6 \\end{array}\\right]'
+            },
+
+            {
+                'i': '[[1, 2, |, 3], [4, 5, |, 6]]',
+                'o': '\\left[\\begin{array}{cc|c} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\end{array}\\right]',
+            },
             # {
             #     'i': '[1, 2 | 3; 4 | 5, 6]',
             #     'o': '\\left[ \\begin{array}{c|c|c} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\end{array} \\right]',

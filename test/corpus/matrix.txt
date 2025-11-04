@@ -126,3 +126,28 @@ Cases expression
           (rparen)))
       (right_bracket
         (rtransparent)))))
+
+==================
+Single row matrix
+==================
+
+[[1,2],]
+
+---
+
+(source_file
+  (simple_expression
+    (matrix_single_row_expr
+      (left_bracket
+        (lbracket))
+      (matrix_row_expr
+        (left_bracket
+          (lbracket))
+        (simple_expression
+          (number_symbol))
+        (simple_expression
+          (number_symbol))
+        (right_bracket
+          (rbracket)))
+      (right_bracket
+        (rbracket)))))

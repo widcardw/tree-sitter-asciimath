@@ -115,9 +115,15 @@ module.exports = grammar({
     matrix_expr: $ =>
       seq(
         $.left_bracket,
-        $.matrix_row_expr, repeat1(seq(",", $.matrix_row_expr)),
+        $.matrix_row_expr, repeat1(seq(",", $.matrix_row_expr)), optional(','),
         $.right_bracket,
       ),
+
+    matrix_single_row_expr: $ => seq(
+      $.left_bracket,
+      $.matrix_row_expr, ',',
+      $.right_bracket,
+    ),
 
     det_expr: $ =>
       prec.left(
@@ -251,6 +257,7 @@ module.exports = grammar({
       $.factorial_expr,
       $.differential_expr,
       $.matrix_expr,
+      $.matrix_single_row_expr,
       $.det_expr,
       $.literal_string,
       $.bracket_expr,
@@ -307,9 +314,5 @@ module.exports = grammar({
         // otherwise super and sub script will be matched first
         $.bigEqual_expr,
       ),
-
-    // Concatenation
-    concatenation: $ =>
-      prec.left(my_precs.concat, seq($._intermediate_expression, $._expression)),
   },
 });

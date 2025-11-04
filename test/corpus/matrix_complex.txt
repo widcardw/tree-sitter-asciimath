@@ -43,3 +43,47 @@ Matrix with supsub
           (rbracket)))
       (right_bracket
         (rbracket)))))
+
+==================
+Matrix with bar
+==================
+
+[[1,2,|,3],[4,5,|,6]]
+
+---
+
+(source_file
+  (simple_expression
+    (matrix_expr
+      (left_bracket
+        (lbracket))
+      (matrix_row_expr
+        (left_bracket
+          (lbracket))
+        (simple_expression
+          (number_symbol))
+        (simple_expression
+          (number_symbol))
+        (simple_expression
+          (mathOperators
+            (vbar)))
+        (simple_expression
+          (number_symbol))
+        (right_bracket
+          (rbracket)))
+      (matrix_row_expr
+        (left_bracket
+          (lbracket))
+        (simple_expression
+          (number_symbol))
+        (simple_expression
+          (number_symbol))
+        (simple_expression
+          (mathOperators
+            (vbar)))
+        (simple_expression
+          (number_symbol))
+        (right_bracket
+          (rbracket)))
+      (right_bracket
+        (rbracket)))))

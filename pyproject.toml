@@ -20,6 +20,7 @@ readme = "README.md"
 dependencies = [
     "objprint>=0.3.0",
     "pytest>=8.4.2",
+    "ruff>=0.14.1",
     "setuptools>=80.9.0",
     "tree-sitter>=0.25.2",
     "wheel>=0.45.1",
