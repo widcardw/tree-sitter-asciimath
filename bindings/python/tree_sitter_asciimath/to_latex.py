@@ -1,7 +1,6 @@
 from tree_sitter import Node
 import json
-from typing import TypedDict, NotRequired
-# from objprint import objprint
+from typing import TypedDict, NotRequired, Callable
 
 class PatternSymbol(TypedDict):
     pattern: str
@@ -13,6 +12,26 @@ class CommonSymbol(TypedDict):
     alias: list[str]
     tex: str
     template: NotRequired[str]
+
+
+# 定义装饰器用于注册处理方法
+def handler(node_types: str | list[str]):
+    """
+    装饰器，用于将方法注册为特定 node_type 的处理器
+    
+    Args:
+        node_types: 单个字符串或字符串列表，表示此方法处理的节点类型
+    """
+    def decorator(func: Callable[['AsciiMathTransformer', Node], str]):
+        if not hasattr(handler, 'registry'):
+            handler.registry = {}
+            
+        types = node_types if isinstance(node_types, list) else [node_types]
+        for node_type in types:
+            handler.registry[node_type] = func
+            
+        return func
+    return decorator
 
 
 class AsciiMathTransformer:
@@ -33,6 +52,7 @@ class AsciiMathTransformer:
             raise ValueError(f"Unknown token: {token}")
         return target_category[token]['tex']
 
+    @handler(['number_symbol', 'identifier'])
     def constant_to_latex(self, node: Node):
         if (node.type == 'number_symbol'
             or node.type == 'identifier'):
@@ -77,6 +97,7 @@ class AsciiMathTransformer:
         return node.type
         # raise ValueError(f"Unknown constant type: {node.type}")
 
+    @handler('superscript')
     def superscript_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
@@ -85,6 +106,7 @@ class AsciiMathTransformer:
         sup = self._trim_paren(node.children[2])
         return "%s^{%s}" % (base, sup) # f"{{{base}}}^{{{sup}}}"
 
+    @handler('subscript')
     def subscript_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
@@ -93,6 +115,7 @@ class AsciiMathTransformer:
         sub = self._trim_paren(node.children[2])
         return "%s_{%s}" % (base, sub) # f"{{{base}}}_{{{sub_or_sup}}}"
 
+    @handler('subscript_superscript')
     def sup_and_sub_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 5
@@ -110,6 +133,7 @@ class AsciiMathTransformer:
         else:
             raise ValueError(f"Unknown superscript and subscript combination: {node.children[1].type} and {node.children[3].type}")
 
+    @handler('bracket_expr')
     def bracket_expr_to_latex(self, node: Node):
         # objprint(node, node.children[1].text)
         assert node.children
@@ -169,6 +193,7 @@ class AsciiMathTransformer:
         else:
             return self.to_latex(expr_node)
 
+    @handler('unary_expr')
     def unary_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 2
@@ -188,6 +213,7 @@ class AsciiMathTransformer:
 
         return '%s{%s}' % (op, expr)
 
+    @handler('unaryFrozen_expr')
     def unary_frozen_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 2 or len(node.children) == 4
@@ -211,6 +237,7 @@ class AsciiMathTransformer:
 
         return '%s{%s}' % (op, expr)
 
+    @handler('color_expr')
     def color_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3 or len(node.children) == 5
@@ -227,6 +254,7 @@ class AsciiMathTransformer:
         expr = self._trim_paren(expr_node)
         return '{\\color{%s}%s}' % (color, expr)
 
+    @handler('binary_expr')
     def binary_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
@@ -243,6 +271,7 @@ class AsciiMathTransformer:
 
         return '%s{%s}{%s}' % (op, left, right)
 
+    @handler('binary_frac')
     def binary_frac_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3
@@ -255,6 +284,7 @@ class AsciiMathTransformer:
         right = self._trim_paren(rnode)
         return '\\frac{%s}{%s}' % (left, right)
 
+    @handler('factorial_expr')
     def factorial_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 2
@@ -271,6 +301,7 @@ class AsciiMathTransformer:
         else:
             raise ValueError(f"Unsupported type {node.type} for differential variable grabbing")
 
+    @handler('differential_expr')
     def differential_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 3 or len(node.children) == 5
@@ -308,6 +339,7 @@ class AsciiMathTransformer:
         else:
             return '\\frac{%s}{%s}' % (f'{diff}^{{{sup}}} {up_str}', down_str)
 
+    @handler('simple_expression')
     def simple_expression_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) == 1
@@ -394,6 +426,7 @@ class AsciiMathTransformer:
         # objprint(row)
         return row, bar_positions
 
+    @handler('matrix_single_row_expr')
     def matrix_single_row_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
@@ -455,6 +488,7 @@ class AsciiMathTransformer:
         
         return rows_data, sorted(real_bar_pos)
 
+    @handler('matrix_expr')
     def matrix_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
@@ -479,17 +513,9 @@ class AsciiMathTransformer:
                 rows_data.append(row_cells)
                 all_bar_positions.extend(bar_positions)
         
-        # TODO 现在的 row_cells 包含了竖线，如果是分块矩阵，则需要将这些竖线去除
-
-        # Generate array column specification with vertical bars
         rows_data, real_bar_pos = self.__check_is_separated_matrix(rows_data, all_bar_positions)
         max_cols = max([len(row) for row in rows_data])
         if len(real_bar_pos) > 0:
-            # Remove duplicate bar positions and sort them
-            # col_spec = [align for _ in range(max_cols)]
-            # for pos in unique_bar_positions[::-1]:
-            #     col_spec.insert(pos, '|')
-            # 还存在问题：当且仅当每行都有这个索引的时候，才加上这个矩阵级别的bar，否则只将这个vbar认为是个普通的identifier
             col_spec = []
             for i in range(max_cols):
                 if i in real_bar_pos:
@@ -507,6 +533,7 @@ class AsciiMathTransformer:
             + f' \\end{{array}}\\right{rb}'
         )
 
+    @handler('det_expr')
     def det_expr_to_latex(self, node: Node):
         assert node.children
         assert len(node.children) >= 3
@@ -521,6 +548,7 @@ class AsciiMathTransformer:
             + f' \\end{{array}}\\right{rbar}'
         )
 
+    @handler('bigEqual_expr')
     def bigEqual_expr_to_latex(self, node: Node):
         assert node.children
         op = self.constant_to_latex(node.children[0])
@@ -541,7 +569,7 @@ class AsciiMathTransformer:
                 raise ValueError(f'Met unexpected sub_or_sub in bigEqual_expr: {sub_or_sub}. '
                                  f'The node is {node.text}')
         elif len(node.children) == 5:
-            # 2 cases
+            # two cases
             # 1. operator   sub        expr_sub    sup        expr_sup
             #    ^child(0)  ^child(1)  ^child(2)   ^child(3)  ^child(4)
             # 2. operator   sup        expr_sup    sub        expr_sub
@@ -579,6 +607,7 @@ class AsciiMathTransformer:
             raise ValueError(f'Met unexpected case in bigEqual_expr: {sup} {sub}. '
                              f'The node is {node.text}')
 
+    @handler('right_associative_expr')
     def right_associative_expr_to_latex_supsub(self, node: Node):
         '''
         Only exists in super and subscripts
@@ -589,6 +618,7 @@ class AsciiMathTransformer:
         expr = self.to_latex(node.children[1])
         return '%s %s' % (op, expr)   # the braces will be added by supsubscripts
 
+    @handler('multiline_expr')
     def multiline_expr_to_latex(self, node: Node):
         assert node.children
         tmp_row = []
@@ -603,80 +633,23 @@ class AsciiMathTransformer:
         else:
             if len(tmp_row):
                 all_rows.append(' '.join(tmp_row))
-        return '\\begin{aligned} %s \\end{aligned}' % ' \\\\ '.join(all_rows)
+        return '\\begin{aligned} %s \\end{aligned}' % (' \\\\ '.join(all_rows))
+
+    @handler('source_file')
+    def source_file_to_latex(self, node: Node) -> str:
+        return " ".join([
+            self.to_latex(child)
+            for child in node.children
+        ])
 
     def to_latex(self, node: Node) -> str:
         if not isinstance(node, Node):
             raise TypeError("Expected a tree_sitter.Node object")
 
-        if node.type == 'source_file':
-            return " ".join([
-                self.to_latex(child)
-                for child in node.children
-            ])
-
-        if node.type == 'simple_expression':
-            return self.simple_expression_to_latex(node)
-
-        if node.type == 'bracket_expr':
-            return self.bracket_expr_to_latex(node)
-
-        if node.type == 'unary_expr':
-            return self.unary_expr_to_latex(node)
-
-        if node.type == 'binary_expr':
-            return self.binary_expr_to_latex(node)
-
-        if node.type == 'binary_frac':
-            return self.binary_frac_to_latex(node)
-
-        if node.type == 'factorial_expr':
-            return self.factorial_expr_to_latex(node)
-
-        if node.type == 'differential_expr':
-            return self.differential_expr_to_latex(node)
-
-        if node.type == 'matrix_expr':
-            return self.matrix_expr_to_latex(node)
-        
-        if node.type == 'matrix_single_row_expr':
-            return self.matrix_single_row_expr_to_latex(node)
-
-        if node.type == 'det_expr':
-            return self.det_expr_to_latex(node)
-
-        if node.type == 'color_expr':
-            return self.color_expr_to_latex(node)
-
-        if node.type == 'unaryFrozen_expr':
-            return self.unary_frozen_expr_to_latex(node)
-
-        # if node.type == 'intermediate_expression':
-        #     assert node.children
-        #     assert len(node.children) == 1
-        #     child = node.children[0]
-        #     if child.type == 'simple_expression':
-        #         return self.simple_expression_to_latex(child)
-
-        if node.type == 'subscript_superscript':
-            return self.sup_and_sub_to_latex(node)
-
-        if node.type == 'subscript':
-            return self.subscript_to_latex(node)
-
-        if node.type == 'superscript':
-            return self.superscript_to_latex(node)
-
-        if node.type == 'bigEqual_expr':
-            return self.bigEqual_expr_to_latex(node)
-
-        if node.type == 'right_associative_expr':
-            return self.right_associative_expr_to_latex_supsub(node)
-
-        if node.type == 'multiline_expr':
-            return self.multiline_expr_to_latex(node)
-
-        # else:
-        #     raise ValueError(f"Unknown intermediate_expression type: {child.type}")
-
-        return self.constant_to_latex(node)
+        # 使用字典查找方式替代原来的多个if判断
+        if node.type in handler.registry:
+            method = handler.registry[node.type]
+            return method(self, node)
+        else:
+            # 默认情况，处理常量类型
+            return self.constant_to_latex(node)
