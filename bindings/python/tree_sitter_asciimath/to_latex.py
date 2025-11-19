@@ -498,6 +498,7 @@ class AsciiMathTransformer:
         # Check if this is a cases environment
         if lb.strip() == '\\lbrace' and rb.strip() == '.':
             # { (a, b), (c, d) :}, in latex it should look like `cases` env
+            # Shall we just treat it as the cases environment?
             align = 'l'
         else:
             align = 'c'
