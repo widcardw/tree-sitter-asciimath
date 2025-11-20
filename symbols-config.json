@@ -1,5 +1,5 @@
 {
-  "logicSymbols": {
+  "logic_symbols": {
     "if": { "token": "if", "tex": "\\text{if}\\quad" },
     "otherwise": { "token": "otherwise", "tex": "\\text{otherwise}" },
     "else": { "token": "else", "tex": "\\text{else}" },
@@ -37,7 +37,7 @@
     "circArrRt": { "token": "circArrRt", "tex": "\\circlearrowright" }
   },
 
-  "greekLetters": {
+  "greek_letters": {
     "alpha": { "token": "alpha", "tex": "\\alpha" },
     "beta": { "token": "beta", "tex": "\\beta" },
     "gamma": { "token": "gamma", "tex": "\\gamma" },
@@ -90,7 +90,7 @@
     "Omega": { "token": "Omega", "tex": "\\Omega" }
   },
 
-  "mathConstants": {
+  "math_constants": {
     "sum": { "token": "sum", "tex": "\\sum" },
     "prod": { "token": "prod", "tex": "\\prod" },
     "infty": { "token": "oo", "alias": ["infty"], "tex": "\\infty" },
@@ -153,7 +153,7 @@
     "dt": {"token": "dt", "tex": "\\text{d}t"}
   },
 
-  "setOperators": {
+  "set_operators": {
     "union": { "token": "uu", "tex": "\\cup" },
     "bigUnion": { "token": "uuu", "tex": "\\bigcup" },
     "intersect": { "token": "nn", "tex": "\\cap" },
@@ -180,12 +180,12 @@
     "rnormal": { "token": "rnormal", "tex": "\\unrhd" }
   },
 
-  "rightAssociativeOperators": {
+  "right_associative_operators": {
     "plus": { "token": "+", "tex": "+" },
     "minus": { "token": "-", "tex": "-" }
   },
 
-  "mathOperators": {
+  "math_operators": {
     "cdot": { "token": "cdot", "alias": ["*"], "tex": "\\cdot" },
     "times": { "token": "xx", "tex": "\\times" },
     "equals": { "token": "=", "tex": "=" },
@@ -215,12 +215,12 @@
     "odot": { "token": "o.", "alias": ["odot"], "tex": "\\odot" },
     "ll": { "token": "<<", "alias": ["ll"], "tex": "\\ll" },
     "gg": { "token": ">>", "alias": ["gg"], "tex": "\\gg" },
-    "prec_than": { "token": "-<" },
-    "prec_than_eq": { "token": "-<=" },
-    "succ_than": { "token": ">-" },
-    "succ_than_eq": { "token": ">-=" },
-    "coloneqq": { "token": ":=" },
-    "eqqcolon": { "token": "=:" },
+    "prec_than": { "token": "-<", "tex": "\\prec" },
+    "prec_than_eq": { "token": "-<=", "tex": "\\preceq" },
+    "succ_than": { "token": ">-", "tex": "\\succ" },
+    "succ_than_eq": { "token": ">-=", "tex": "\\succeq" },
+    "coloneqq": { "token": ":=", "tex": "\\coloneqq" },
+    "eqqcolon": { "token": "=:", "tex": "\\eqqcolon" },
     "choose": { "token": "choose", "tex": "\\choose" },
     "prime": { "token": "'", "tex": "^{\\prime}" },
     "dblprime": { "token": "''", "tex": "^{\\prime\\prime}" },
@@ -257,22 +257,22 @@
     "chem_cyc": { "token": "cyc", "tex": "\\mathrm{cyc}" }
   },
 
-  "asciiEscape": {
-    "ascii_hash": { "token": "\\\\#" },
-    "ascii_and": { "token": "\\\\&" },
-    "ascii_percent": { "token": "%" },
-    "ascii_at": { "token": "\\\\@" },
-    "ascii_underline": { "token": "\\\\_" },
-    "ascii_caret": { "token": "\\\\^" },
-    "ascii_dollar": { "token": "\\\\$" },
-    "ascii_space": { "token": "\\\\ " },
-    "ascii_comma_space": { "token": "\\\\," },
-    "ascii_semi_space": { "token": "\\\\;" },
-    "ascii_colon_space": { "token": "\\\\:" },
-    "ascii_exclaim_space": { "token": "\\\\!" }
+  "ascii_escape": {
+    "ascii_hash": { "token": "\\\\#", "tex": "#" },
+    "ascii_and": { "token": "\\\\&", "tex": "\\&" },
+    "ascii_percent": { "token": "%", "tex": "\\%" },
+    "ascii_at": { "token": "\\\\@", "tex": "@" },
+    "ascii_underline": { "token": "\\\\_", "tex": "\\_" },
+    "ascii_caret": { "token": "\\\\^", "tex": "\\^" },
+    "ascii_dollar": { "token": "\\\\$", "tex": "\\$" },
+    "ascii_space": { "token": "\\\\ ", "tex": "\\ " },
+    "ascii_comma_space": { "token": "\\\\,", "tex": "\\," },
+    "ascii_semi_space": { "token": "\\\\;", "tex": "\\;" },
+    "ascii_colon_space": { "token": "\\\\:", "tex": "\\:" },
+    "ascii_exclaim_space": { "token": "\\\\!", "tex": "\\!" }
   },
 
-  "miscSymbols": {
+  "misc_symbols": {
     "ldots": { "token": "ldots", "tex": "\\ldots" },
     "cdots": { "token": "cdots", "alias": ["..."], "tex": "\\cdots" },
     "ddots": { "token": "ddots", "tex": "\\ddots" },
@@ -308,7 +308,7 @@
     "rceil": { "token": "~|", "tex": "\\rceil" }
   },
 
-  "unarySymbols": {
+  "unary_symbols": {
     "sqrt": { "token": "sqrt", "tex": "\\sqrt" },
     "mbox": { "token": "mbox", "tex": "\\mbox" },
     "cancel": { "token": "cancel", "tex": "\\cancel" },
@@ -349,18 +349,18 @@
     "huge": { "token": "huge", "tex": "\\huge", "template": "{$0 $1}" }
   },
 
-  "factorialSymbols": {
+  "factorial_symbols": {
     "factorial": { "token": "!", "tex": "!" },
     "double_factorial": { "token": "!!", "tex": "!!" }
   },
 
-  "separatorSymbols": {
+  "separator_symbols": {
     "comma": { "token": ",", "tex": "," },
     "semi": { "token": ";", "tex": ";" },
     "colon": { "token": ":", "tex": ":" }
   },
 
-  "binarySymbols": {
+  "binary_symbols": {
     "root": { "token": "root", "tex": "\\sqrt", "template": "$0[$1]{$2}" },
     "frac": { "token": "frac", "tex": "\\frac" },
     "stackrel": { "token": "stackrel", "tex": "\\stackrel" },
@@ -368,21 +368,21 @@
     "over": { "token": "over", "tex": "\\over" }
   },
 
-  "binaryMidSymbols": {
+  "binary_mid_symbols": {
     "slash_div": {"token": "/", "tex": "\\frac"}
   },
 
-  "differentialSymbols": {
+  "differential_symbols": {
     "dd": { "token": "dd", "tex": "\\mathrm{d}" },
     "pp": { "token": "pp", "tex": "\\partial" }
   },
 
-  "bigEqualSymbols": {
+  "big_equal_symbols": {
     "long_equal": { "token": "==", "tex": "\\xlongequal", "template": "$0[$2]{$1}"},
     "x_right_arrow": { "token": "-->", "tex": "\\xrightarrow", "template": "$0[$2]{$1}"}
   },
 
-  "unaryFrozenSymbols": {
+  "unary_frozen_symbols": {
     "text": { "token": "text", "tex": "\\text" },
     "tex": { "token": "tex", "tex": "", "template": "$1" },
     "op": { "token": "op", "tex": "\\operatorname" },

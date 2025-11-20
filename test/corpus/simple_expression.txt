@@ -11,5 +11,5 @@ alpha
   (simple_expression
     (number_symbol))
   (simple_expression
-    (greekLetters
+    (greek_letters
       (alpha))))

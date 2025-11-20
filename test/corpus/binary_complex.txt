@@ -10,7 +10,7 @@ root(frac(a)(b))(n)
 (source_file
   (simple_expression
     (binary_expr
-      (binarySymbols
+      (binary_symbols
         (frac))
       (simple_expression
         (bracket_expr
@@ -18,7 +18,7 @@ root(frac(a)(b))(n)
             (lparen))
           (simple_expression
             (binary_expr
-              (binarySymbols
+              (binary_symbols
                 (root))
               (simple_expression
                 (bracket_expr
@@ -48,7 +48,7 @@ root(frac(a)(b))(n)
             (rparen))))))
   (simple_expression
     (binary_expr
-      (binarySymbols
+      (binary_symbols
         (root))
       (simple_expression
         (bracket_expr
@@ -56,7 +56,7 @@ root(frac(a)(b))(n)
             (lparen))
           (simple_expression
             (binary_expr
-              (binarySymbols
+              (binary_symbols
                 (frac))
               (simple_expression
                 (bracket_expr

@@ -21,10 +21,10 @@ f'(x) &= e^x
         (right_bracket
           (rparen))))
     (simple_expression
-      (mathOperators
+      (math_operators
         (amp)))
     (simple_expression
-      (mathOperators
+      (math_operators
         (equals)))
     (superscript
       (simple_expression
@@ -35,7 +35,7 @@ f'(x) &= e^x
     (simple_expression
       (identifier))
     (simple_expression
-      (mathOperators
+      (math_operators
         (prime)))
     (simple_expression
       (bracket_expr
@@ -46,10 +46,10 @@ f'(x) &= e^x
         (right_bracket
           (rparen))))
     (simple_expression
-      (mathOperators
+      (math_operators
         (amp)))
     (simple_expression
-      (mathOperators
+      (math_operators
         (equals)))
     (superscript
       (simple_expression

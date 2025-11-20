@@ -40,17 +40,17 @@ Basic matrix
       (simple_expression
         (number_symbol))
       (simple_expression
-        (separatorSymbols
+        (separator_symbols
           (comma)))
       (simple_expression
         (number_symbol))
       (simple_expression
-        (separatorSymbols
+        (separator_symbols
           (comma)))
       (simple_expression
         (number_symbol))
       (simple_expression
-        (separatorSymbols
+        (separator_symbols
           (comma)))
       (simple_expression
         (number_symbol))
@@ -63,7 +63,7 @@ Basic matrix
       (simple_expression
         (identifier))
       (simple_expression
-        (separatorSymbols
+        (separator_symbols
           (comma)))
       (simple_expression
         (identifier))
@@ -80,15 +80,15 @@ Cases expression
 
 (source_file
   (simple_expression
-    (mathOperators
+    (math_operators
       (vbar)))
   (simple_expression
     (identifier))
   (simple_expression
-    (mathOperators
+    (math_operators
       (vbar)))
   (simple_expression
-    (mathOperators
+    (math_operators
       (equals)))
   (simple_expression
     (matrix_expr
@@ -100,12 +100,12 @@ Cases expression
         (simple_expression
           (identifier))
         (simple_expression
-          (logicSymbols
+          (logic_symbols
             (if)))
         (simple_expression
           (identifier))
         (simple_expression
-          (mathOperators
+          (math_operators
             (gt)))
         (simple_expression
           (number_symbol))
@@ -115,12 +115,12 @@ Cases expression
         (left_bracket
           (lparen))
         (simple_expression
-          (rightAssociativeOperators
+          (right_associative_operators
             (minus)))
         (simple_expression
           (identifier))
         (simple_expression
-          (logicSymbols
+          (logic_symbols
             (otherwise)))
         (right_bracket
           (rparen)))

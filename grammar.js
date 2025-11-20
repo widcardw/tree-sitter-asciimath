@@ -147,7 +147,7 @@ module.exports = grammar({
       prec.left(
         my_precs.unary,
         seq(
-          $.unarySymbols,
+          $.unary_symbols,
           $.simple_expression,
         ),
       ),
@@ -157,7 +157,7 @@ module.exports = grammar({
     unaryFrozen_expr: $ => prec.left(
       my_precs.unary,
       seq(
-        $.unaryFrozenSymbols,
+        $.unary_frozen_symbols,
         choice(
           $.literal_string,
           seq($.left_bracket, $.inner_frozen, $.right_bracket)
@@ -182,7 +182,7 @@ module.exports = grammar({
       prec.left(
         my_precs.binary,
         seq(
-          $.binarySymbols,
+          $.binary_symbols,
           $.simple_expression,
           $.simple_expression,
         ),
@@ -192,20 +192,20 @@ module.exports = grammar({
     binary_frac: $ =>
       prec.left(
         my_precs.binary_frac,
-        seq($._intermediate_expression, $.binaryMidSymbols, $._intermediate_expression),
+        seq($._intermediate_expression, $.binary_mid_symbols, $._intermediate_expression),
       ),
 
     factorial_expr: $ =>
       prec.left(
         my_precs.factorial,
-        seq($.simple_expression, $.factorialSymbols),
+        seq($.simple_expression, $.factorial_symbols),
       ),
 
     differential_expr: $ =>
       prec.left(
         my_precs.diffential,
         seq(
-          $.differentialSymbols,
+          $.differential_symbols,
           optional(seq("^", choice($.simple_expression, $.right_associative_expr))),
           $.simple_expression,
           $.simple_expression,
@@ -216,12 +216,12 @@ module.exports = grammar({
       my_precs.bigEqual,
       choice(
         seq(
-          $.bigEqualSymbols,
+          $.big_equal_symbols,
           optional(seq("^", choice($.simple_expression, $.right_associative_expr))),
           optional(seq("_", choice($.simple_expression, $.right_associative_expr))),
         ),
         seq(
-          $.bigEqualSymbols,
+          $.big_equal_symbols,
           optional(seq("_", choice($.simple_expression, $.right_associative_expr))),
           optional(seq("^", choice($.simple_expression, $.right_associative_expr))),
         ),
@@ -231,7 +231,7 @@ module.exports = grammar({
     right_associative_expr: $ => prec.right(
       my_precs.right_associative,
       seq(
-        $.rightAssociativeOperators,
+        $.right_associative_operators,
         $._intermediate_expression,
       )
     ),
@@ -242,15 +242,15 @@ module.exports = grammar({
       $.number_symbol,
       $.identifier,
       // categorized
-      $.logicSymbols,
-      $.greekLetters,
-      $.mathConstants,
-      $.rightAssociativeOperators,
-      $.setOperators,
-      $.mathOperators,
-      $.asciiEscape,
-      $.miscSymbols,
-      $.separatorSymbols,
+      $.logic_symbols,
+      $.greek_letters,
+      $.math_constants,
+      $.right_associative_operators,
+      $.set_operators,
+      $.math_operators,
+      $.ascii_escape,
+      $.misc_symbols,
+      $.separator_symbols,
       // complex expressions
       $.unary_expr,
       $.binary_expr,

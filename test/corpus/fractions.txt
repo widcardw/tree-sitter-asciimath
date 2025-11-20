@@ -13,7 +13,7 @@ frac(a)(b)
     (binary_frac
       (simple_expression
         (identifier))
-      (binaryMidSymbols
+      (binary_mid_symbols
         (slash_div))
       (simple_expression
         (identifier))))
@@ -21,7 +21,7 @@ frac(a)(b)
     (binary_frac
       (simple_expression
         (identifier))
-      (binaryMidSymbols
+      (binary_mid_symbols
         (slash_div))
       (simple_expression
         (bracket_expr
@@ -30,7 +30,7 @@ frac(a)(b)
           (simple_expression
             (identifier))
           (simple_expression
-            (rightAssociativeOperators
+            (right_associative_operators
               (plus)))
           (simple_expression
             (identifier))
@@ -38,7 +38,7 @@ frac(a)(b)
             (rparen))))))
   (simple_expression
     (binary_expr
-      (binarySymbols
+      (binary_symbols
         (frac))
       (simple_expression
         (bracket_expr

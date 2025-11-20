@@ -11,24 +11,24 @@ Big Equal Expressions
 
 (source_file
   (bigEqual_expr
-    (bigEqualSymbols
+    (big_equal_symbols
       (long_equal))
     (simple_expression
       (identifier))
     (simple_expression
       (identifier)))
   (bigEqual_expr
-    (bigEqualSymbols
+    (big_equal_symbols
       (x_right_arrow))
     (simple_expression
       (identifier))
     (simple_expression
       (identifier)))
   (bigEqual_expr
-    (bigEqualSymbols
+    (big_equal_symbols
       (x_right_arrow)))
   (bigEqual_expr
-    (bigEqualSymbols
+    (big_equal_symbols
       (long_equal))
     (simple_expression
       (number_symbol))))

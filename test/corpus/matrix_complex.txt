@@ -65,7 +65,7 @@ Matrix with bar
         (simple_expression
           (number_symbol))
         (simple_expression
-          (mathOperators
+          (math_operators
             (vbar)))
         (simple_expression
           (number_symbol))
@@ -79,7 +79,7 @@ Matrix with bar
         (simple_expression
           (number_symbol))
         (simple_expression
-          (mathOperators
+          (math_operators
             (vbar)))
         (simple_expression
           (number_symbol))

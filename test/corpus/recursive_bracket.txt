@@ -18,7 +18,7 @@ Recursive brackets
           (simple_expression
             (identifier))
           (simple_expression
-            (separatorSymbols
+            (separator_symbols
               (comma)))
           (simple_expression
             (identifier))

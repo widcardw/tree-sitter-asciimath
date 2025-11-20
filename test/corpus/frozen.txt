@@ -13,13 +13,13 @@ color(blue)(xyz)
 (source_file
   (simple_expression
     (unaryFrozen_expr
-      (unaryFrozenSymbols
+      (unary_frozen_symbols
         (text))
       (literal_string
         (string_fragment))))
   (simple_expression
     (unaryFrozen_expr
-      (unaryFrozenSymbols
+      (unary_frozen_symbols
         (text))
       (left_bracket
         (lparen))
@@ -28,7 +28,7 @@ color(blue)(xyz)
         (rparen))))
   (simple_expression
     (unaryFrozen_expr
-      (unaryFrozenSymbols
+      (unary_frozen_symbols
         (tex))
       (literal_string
         (escape_sequence)

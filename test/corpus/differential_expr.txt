@@ -11,7 +11,7 @@ pp {::} x
 (source_file
   (simple_expression
     (differential_expr
-      (differentialSymbols
+      (differential_symbols
         (dd))
       (simple_expression
         (identifier))
@@ -19,7 +19,7 @@ pp {::} x
         (identifier))))
   (simple_expression
     (differential_expr
-      (differentialSymbols
+      (differential_symbols
         (pp))
       (simple_expression
         (number_symbol))
@@ -29,7 +29,7 @@ pp {::} x
         (identifier))))
   (simple_expression
     (differential_expr
-      (differentialSymbols
+      (differential_symbols
         (pp))
       (simple_expression
         (bracket_expr

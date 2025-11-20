@@ -69,22 +69,22 @@ class AsciiMathTransformer:
             token = node.children[0].type  # .text.decode('utf-8')
             return self.get_tex(node.type, token)
 
-        if (node.type == 'logicSymbols'
-            or node.type == 'greekLetters'
-            or node.type == 'mathConstants'
-            or node.type == 'setOperators'
-            or node.type == 'mathOperators'
-            or node.type == 'asciiEscape'
-            or node.type == 'miscSymbols'
-            or node.type == 'unarySymbols'
-            or node.type == 'factorialSymbols'
-            or node.type == 'binarySymbols'
-            or node.type == 'binaryMidSymbols'
-            or node.type == 'differentialSymbols'
-            or node.type == 'separatorSymbols'
-            or node.type == 'bigEqualSymbols'
-            or node.type == 'unaryFrozenSymbols'
-            or node.type == 'rightAssociativeOperators'
+        if (node.type == 'logic_symbols'
+            or node.type == 'greek_letters'
+            or node.type == 'math_constants'
+            or node.type == 'set_operators'
+            or node.type == 'math_operators'
+            or node.type == 'ascii_escape'
+            or node.type == 'misc_symbols'
+            or node.type == 'unary_symbols'
+            or node.type == 'factorial_symbols'
+            or node.type == 'binary_symbols'
+            or node.type == 'binary_mid_symbols'
+            or node.type == 'differential_symbols'
+            or node.type == 'separator_symbols'
+            or node.type == 'big_equal_symbols'
+            or node.type == 'unary_frozen_symbols'
+            or node.type == 'right_associative_operators'
             # special cases
             or node.type == 'color'
         ):
@@ -206,7 +206,7 @@ class AsciiMathTransformer:
         expr_node = node.children[1]  # simple_expression
         expr = self._trim_paren(expr_node)
 
-        tpl = self.symbol_config["unarySymbols"][token].get('template')
+        tpl = self.symbol_config["unary_symbols"][token].get('template')
         if tpl is not None:
             return (tpl.replace('$0', op)
                        .replace('$1', expr))
@@ -230,7 +230,7 @@ class AsciiMathTransformer:
             assert expr_node.text
             expr = expr_node.text.decode('utf-8')
 
-        tpl = self.symbol_config["unaryFrozenSymbols"][token].get('template')
+        tpl = self.symbol_config["unary_frozen_symbols"][token].get('template')
         if tpl is not None:
             return (tpl.replace('$0', op)
                        .replace('$1', expr))
@@ -264,7 +264,7 @@ class AsciiMathTransformer:
         left = self._trim_paren(node.children[1])
         right = self._trim_paren(node.children[2])
 
-        if tpl := self.symbol_config["binarySymbols"][token].get('template'):
+        if tpl := self.symbol_config["binary_symbols"][token].get('template'):
             return (tpl.replace('$0', op)
                        .replace('$1', left)
                        .replace('$2', right))
@@ -398,7 +398,7 @@ class AsciiMathTransformer:
                 # objprint(child)
                 cc = child.child(0)
                 assert cc
-                if (cc.type == 'mathOperators' and 
+                if (cc.type == 'math_operators' and 
                     len(cc.children) == 1 and 
                     cc.children[0].type == 'vbar'):
                     # Record the position where vertical bar should appear (after current cell)
@@ -413,7 +413,7 @@ class AsciiMathTransformer:
             # Check if the last child is a vertical bar
             cc = child.child(0)
             assert cc
-            if (cc.type == 'mathOperators' and 
+            if (cc.type == 'math_operators' and 
                 len(cc.children) == 1 and 
                 cc.children[0].type == 'vbar'):
                 # Record the position where vertical bar should appear (after current cell)
@@ -592,7 +592,7 @@ class AsciiMathTransformer:
                              f'The node is {node.text}')
 
         token = node.children[0].children[0].type
-        tpl = self.symbol_config["bigEqualSymbols"][token].get('template')  # $0[$2]{$1}
+        tpl = self.symbol_config["big_equal_symbols"][token].get('template')  # $0[$2]{$1}
 
         if tpl is None:
             raise ValueError(f'Met unexpected token in bigEqual_expr {token} or cannot find template for {token}. '

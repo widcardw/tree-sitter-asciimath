@@ -10,7 +10,7 @@ cc(N)
 (source_file
   (simple_expression
     (unary_expr
-      (unarySymbols
+      (unary_symbols
         (sqrt))
       (simple_expression
         (bracket_expr
@@ -18,7 +18,7 @@ cc(N)
             (lparen))
           (simple_expression
             (binary_expr
-              (binarySymbols
+              (binary_symbols
                 (frac))
               (simple_expression
                 (bracket_expr
@@ -40,7 +40,7 @@ cc(N)
             (rparen))))))
   (simple_expression
     (unary_expr
-      (unarySymbols
+      (unary_symbols
         (sqrt))
       (simple_expression
         (bracket_expr
@@ -49,7 +49,7 @@ cc(N)
           (simple_expression
             (identifier))
           (simple_expression
-            (rightAssociativeOperators
+            (right_associative_operators
               (plus)))
           (simple_expression
             (identifier))
@@ -57,7 +57,7 @@ cc(N)
             (rparen))))))
   (simple_expression
     (unary_expr
-      (unarySymbols
+      (unary_symbols
         (cc))
       (simple_expression
         (bracket_expr

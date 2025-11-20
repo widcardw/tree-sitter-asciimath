@@ -10,7 +10,7 @@ a + b
   (simple_expression
     (identifier))
   (simple_expression
-    (rightAssociativeOperators
+    (right_associative_operators
       (plus)))
   (simple_expression
     (identifier)))

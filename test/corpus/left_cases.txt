@@ -17,12 +17,12 @@ Cases expressions
         (simple_expression
           (identifier))
         (simple_expression
-          (logicSymbols
+          (logic_symbols
             (if)))
         (simple_expression
           (identifier))
         (simple_expression
-          (mathOperators
+          (math_operators
             (ge)))
         (simple_expression
           (number_symbol))
@@ -32,12 +32,12 @@ Cases expressions
         (left_bracket
           (lparen))
         (simple_expression
-          (rightAssociativeOperators
+          (right_associative_operators
             (minus)))
         (simple_expression
           (identifier))
         (simple_expression
-          (logicSymbols
+          (logic_symbols
             (else)))
         (right_bracket
           (rparen)))
