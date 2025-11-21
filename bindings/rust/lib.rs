@@ -214,6 +214,24 @@ impl AsciiMathToLatex {
         }
     }
 
+    fn _trim_paren(&self, expr_node: Node, source: &[u8]) -> Result<String, String> {
+        if expr_node.kind() == "simple_expression" && expr_node.child_count() > 0 {
+            let first_child = expr_node.child(0).unwrap();
+            if first_child.kind() == "bracket_expr" {
+                return self._process_bracket_only(first_child, source);
+            }
+        } else if expr_node.kind() == "intermediate_expression" && expr_node.child_count() > 0 {
+            let first_child = expr_node.child(0).unwrap();
+            if first_child.kind() == "simple_expression" && first_child.child_count() > 0 {
+                let grand_child = first_child.child(0).unwrap();
+                if grand_child.kind() == "bracket_expr" {
+                    return self._process_bracket_only(grand_child, source);
+                }
+            }
+        }
+        self.to_latex(expr_node, source)
+    }
+
     pub fn to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
         match node.kind() {
             "source_file" => self.source_file_to_latex(node, source),
@@ -240,10 +258,10 @@ impl AsciiMathToLatex {
             "right_associative_expr" => self.right_associative_expr_to_latex(node, source),
             "multiline_expr" => self.multiline_expr_to_latex(node, source),
 
-            "literal_string" => Ok(format!(
-                "\\text{{{}}}",
-                node.utf8_text(source).expect("Cannot decode string!")
-            )),
+            "literal_string" => {
+                let t = node.utf8_text(source).expect("Cannot decode string!");
+                Ok(format!("\\text{{{}}}", t[1..t.len() - 1].to_string()))
+            }
             "left_bracket" | "right_bracket" => {
                 let child_node = node.child(0).expect("Cannot get first child of bracket!");
                 let token = child_node.kind();
@@ -280,46 +298,12 @@ impl AsciiMathToLatex {
                 } else if node.named_child_count() == 1 {
                     // Handle wrapper nodes
                     self.to_latex(node.named_child(0).unwrap(), source)
-                } else if node.kind() == "root" {
-                    // Special handling for root node to ensure proper parenthesis trimming
-                    self._trim_paren(node, source)
                 } else {
-                    Err(format!("Unhandled node type: {}", node.kind()))
+                    // Err(format!("Unhandled node type: {}", node.kind()))
+                    Ok(node.kind().to_string())
                 }
             }
         }
-    }
-
-    fn _trim_paren(&self, expr_node: Node, source: &[u8]) -> Result<String, String> {
-        if expr_node.kind() == "simple_expression" && expr_node.child_count() > 0 {
-            let first_child = expr_node.child(0).unwrap();
-            if first_child.kind() == "bracket_expr" {
-                return self._process_bracket_only(first_child, source);
-            }
-        } else if expr_node.kind() == "intermediate_expression" && expr_node.child_count() > 0 {
-            let first_child = expr_node.child(0).unwrap();
-            if first_child.kind() == "simple_expression" && first_child.child_count() > 0 {
-                let grand_child = first_child.child(0).unwrap();
-                if grand_child.kind() == "bracket_expr" {
-                    return self._process_bracket_only(grand_child, source);
-                }
-            }
-        } else if expr_node.child_count() > 0 {
-            // More general handling to match Python version
-            // If this is a node with children, try to process the first child as bracket_expr
-            for i in 0..expr_node.child_count() {
-                let child = expr_node.child(i).unwrap();
-                if child.kind() == "bracket_expr" {
-                    return self._process_bracket_only(child, source);
-                } else if child.kind() == "simple_expression" && child.child_count() > 0 {
-                    let grand_child = child.child(0).unwrap();
-                    if grand_child.kind() == "bracket_expr" {
-                        return self._process_bracket_only(grand_child, source);
-                    }
-                }
-            }
-        }
-        self.to_latex(expr_node, source)
     }
 
     fn source_file_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
@@ -342,22 +326,22 @@ impl AsciiMathToLatex {
 
     fn superscript_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
         let base = self.to_latex(node.child(0).ok_or("Missing base in superscript")?, source)?;
-        let sup = self.to_latex(node.child(2).ok_or("Missing superscript")?, source)?;
+        let sup = self._trim_paren(node.child(2).ok_or("Missing superscript")?, source)?;
         Ok(format!("{}^{{{}}}", base, sup))
     }
 
     fn subscript_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
         let base = self.to_latex(node.child(0).ok_or("Missing base in subscript")?, source)?;
-        let sub = self.to_latex(node.child(2).ok_or("Missing subscript")?, source)?;
+        let sub = self._trim_paren(node.child(2).ok_or("Missing subscript")?, source)?;
         Ok(format!("{}_{{{}}}", base, sub))
     }
 
     fn subscript_superscript_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
         let base = self.to_latex(node.child(0).ok_or("Missing base in sub/sup")?, source)?;
         let op1_kind = node.child(1).ok_or("Missing first operator")?.kind();
-        let expr1 = self.to_latex(node.child(2).ok_or("Missing first expression")?, source)?;
+        let expr1 = self._trim_paren(node.child(2).ok_or("Missing first expression")?, source)?;
         let op2_kind = node.child(3).ok_or("Missing second operator")?.kind();
-        let expr2 = self.to_latex(node.child(4).ok_or("Missing second expression")?, source)?;
+        let expr2 = self._trim_paren(node.child(4).ok_or("Missing second expression")?, source)?;
 
         if op1_kind == "^" && op2_kind == "_" {
             Ok(format!("{}_{{{}}}^{{{}}}", base, expr2, expr1))
@@ -389,7 +373,7 @@ impl AsciiMathToLatex {
         }
 
         if left.trim() == "." && right.trim() == "." {
-            Ok(format!("\\left\\{{{}}}\\right.", contents))
+            Ok(format!("{{{}}}", contents))
         } else {
             Ok(format!("\\left{}{}\\right{}", left, contents, right))
         }
@@ -404,7 +388,7 @@ impl AsciiMathToLatex {
             .ok_or("Missing expression in unary expression")?;
 
         let op = self.to_latex(op_node, source)?;
-        let expr = self.to_latex(expr_node, source)?;
+        let expr = self._trim_paren(expr_node, source)?;
 
         // Get the actual token for template lookup
         let token_node = op_node.child(0).ok_or("Missing token in operator")?;
@@ -478,7 +462,7 @@ impl AsciiMathToLatex {
             .ok_or("Missing expression in color expression")?;
         let expr = self._trim_paren(expr_node, source)?;
 
-        Ok(format!("{{\\color{{{}}} {}}}", color, expr))
+        Ok(format!("{{\\color{{{}}}{}}}", color, expr))
     }
 
     fn binary_expr_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
@@ -493,8 +477,8 @@ impl AsciiMathToLatex {
             .ok_or("Missing right operand in binary expression")?;
 
         let op = self.to_latex(op_node, source)?;
-        let left = self.to_latex(left_node, source)?;
-        let right = self.to_latex(right_node, source)?;
+        let left = self._trim_paren(left_node, source)?;
+        let right = self._trim_paren(right_node, source)?;
 
         // Get the actual token for template lookup
         let token_node = op_node.child(0).ok_or("Missing token in operator")?;
@@ -513,8 +497,8 @@ impl AsciiMathToLatex {
     }
 
     fn binary_frac_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
-        let left = self.to_latex(node.child(0).ok_or("Missing numerator")?, source)?;
-        let right = self.to_latex(node.child(2).ok_or("Missing denominator")?, source)?;
+        let left = self._trim_paren(node.child(0).ok_or("Missing numerator")?, source)?;
+        let right = self._trim_paren(node.child(2).ok_or("Missing denominator")?, source)?;
         Ok(format!("\\frac{{{}}}{{{}}}", left, right))
     }
 
@@ -535,6 +519,7 @@ impl AsciiMathToLatex {
             source,
         )?;
 
+        let mut copy_super = true;
         let (sup, up_str, down_str) = if node.child_count() == 3 {
             // No superscript case
             let up = self._trim_paren(node.child(1).ok_or("Missing upper expression")?, source)?;
@@ -545,16 +530,47 @@ impl AsciiMathToLatex {
             // With superscript case
             let sup = Some(self._trim_paren(node.child(2).ok_or("Missing superscript")?, source)?);
             let up = self._trim_paren(node.child(3).ok_or("Missing upper expression")?, source)?;
-            let down =
-                self._trim_paren(node.child(4).ok_or("Missing lower expression")?, source)?;
+            let down_node = node.child(4).ok_or("Missing lower expression")?;
+            let down_child = down_node
+                .child(0)
+                .ok_or("Cannot get the first child of down expr")?;
+            let down = if down_child.kind() == "bracket_expr" && down_child.child_count() > 3 {
+                copy_super = false;
+                // 修复：实现类似Python版本的逻辑，获取bracket_expr内部的内容
+                let mut contents = Vec::new();
+                // 跳过第一个和最后一个子节点（左右括号）
+                for i in 1..down_child.child_count() - 1 {
+                    let child = down_child
+                        .child(i)
+                        .ok_or("Cannot get child of bracket_expr")?;
+                    if child.kind() != "," {
+                        contents.push(self.to_latex(child, source)?);
+                    }
+                }
+                contents
+                    .join(" ")
+                    .split_whitespace()
+                    .map(|d| format!("{} {}", diff, d))
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            } else {
+                self._trim_paren(down_node, source)?
+            };
             (sup, up, down)
         };
 
         if let Some(sup_val) = sup {
-            Ok(format!(
-                "\\frac{{{}^{{{}}} {}}}{{{} {}}} ",
-                diff, sup_val, up_str, diff, down_str
-            ))
+            if copy_super {
+                Ok(format!(
+                    "\\frac{{{}^{{{}}} {}}}{{{} {}}}",
+                    diff, sup_val, up_str, diff, down_str
+                ))
+            } else {
+                Ok(format!(
+                    "\\frac{{{}^{{{}}} {}}}{{{}}}",
+                    diff, sup_val, up_str, down_str
+                ))
+            }
         } else {
             Ok(format!(
                 "\\frac{{{} {}}}{{{} {}}} ",
@@ -589,7 +605,7 @@ impl AsciiMathToLatex {
             }
         }
 
-        let align = if lb.trim() == "\\lbrace" && rb.trim() == "." {
+        let _align = if lb.trim() == "\\lbrace" && rb.trim() == "." {
             "l"
         } else {
             "c"
@@ -640,7 +656,7 @@ impl AsciiMathToLatex {
         } else {
             "c"
         };
-        let col_spec = "c".repeat(max_cols);
+        let col_spec = align.repeat(max_cols);
 
         let row_strings: Vec<String> = rows.into_iter().map(|row| row.join(" & ")).collect();
 
