@@ -208,7 +208,7 @@ impl AsciiMathToLatex {
         if left.trim() == "(" && right.trim() == ")" {
             Ok(contents)
         } else if left.trim() == "." && right.trim() == "." {
-            Ok(format!("\\left\\{{{}}}\\right.", contents))
+            Ok(format!("{{{}}}", contents))
         } else {
             Ok(format!("\\left{}{}\\right{}", left, contents, right))
         }
@@ -536,20 +536,15 @@ impl AsciiMathToLatex {
                 .ok_or("Cannot get the first child of down expr")?;
             let down = if down_child.kind() == "bracket_expr" && down_child.child_count() > 3 {
                 copy_super = false;
-                // 修复：实现类似Python版本的逻辑，获取bracket_expr内部的内容
                 let mut contents = Vec::new();
-                // 跳过第一个和最后一个子节点（左右括号）
                 for i in 1..down_child.child_count() - 1 {
                     let child = down_child
                         .child(i)
                         .ok_or("Cannot get child of bracket_expr")?;
-                    if child.kind() != "," {
-                        contents.push(self.to_latex(child, source)?);
-                    }
+                    contents.push(self.to_latex(child, source)?);
                 }
                 contents
-                    .join(" ")
-                    .split_whitespace()
+                    .into_iter()
                     .map(|d| format!("{} {}", diff, d))
                     .collect::<Vec<_>>()
                     .join(" ")
@@ -562,8 +557,8 @@ impl AsciiMathToLatex {
         if let Some(sup_val) = sup {
             if copy_super {
                 Ok(format!(
-                    "\\frac{{{}^{{{}}} {}}}{{{} {}}}",
-                    diff, sup_val, up_str, diff, down_str
+                    "\\frac{{{}^{{{}}} {}}}{{{} {}^{{{}}}}}",
+                    diff, sup_val, up_str, diff, down_str, sup_val
                 ))
             } else {
                 Ok(format!(
@@ -573,7 +568,7 @@ impl AsciiMathToLatex {
             }
         } else {
             Ok(format!(
-                "\\frac{{{} {}}}{{{} {}}} ",
+                "\\frac{{{} {}}}{{{} {}}}",
                 diff, up_str, diff, down_str
             ))
         }
@@ -582,6 +577,116 @@ impl AsciiMathToLatex {
     fn simple_expression_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
         let child = node.child(0).ok_or("Missing child in simple expression")?;
         self.to_latex(child, source)
+    }
+
+    fn matrix_row_to_list_with_bar_detection(
+        &self,
+        node: Node,
+        source: &[u8],
+    ) -> (Vec<String>, Vec<usize>) {
+        let mut row: Vec<String> = Vec::new();
+        let mut bar_positions: Vec<usize> = Vec::new();
+        let mut current_col = 0;
+        let mut temp_cell: Vec<String> = Vec::new();
+
+        for idx in 1..node.child_count() - 1 {
+            let child = node
+                .child(idx)
+                .ok_or(format!("Cannot find child at index {}", idx))
+                .expect("Cannot get the result of child");
+            if child.kind() == "," {
+                if temp_cell.len() > 0 {
+                    row.push(temp_cell.join(" "));
+                    current_col += 1;
+                }
+                temp_cell.clear();
+            } else {
+                let cc = child
+                    .child(0)
+                    .ok_or(format!("Cannot find cc at index {}", idx))
+                    .expect("Cannot get the result of sub children");
+                if cc.kind() == "math_operator"
+                    && cc.child_count() == 1
+                    && cc
+                        .child(0)
+                        .ok_or("Cannot find the vbar")
+                        .expect("Cannot get the result")
+                        .kind()
+                        == "vbar"
+                {
+                    bar_positions.push(current_col);
+                }
+                temp_cell.push(self.to_latex(child, source).expect("Cannot parse to latex"));
+            }
+        }
+
+        // TODO: 这里有重复push的问题
+        if node.child_count() >= 3 {
+            let child = node
+                .child(node.child_count() - 2)
+                .ok_or("Cannot find the last child")
+                .expect("Cannot get the result of last child");
+            let cc = child
+                .child(0)
+                .ok_or("Cannot find cc at index -2")
+                .expect("Cannot get the child at index -2");
+            if cc.kind() == "math_operator"
+                && cc.child_count() == 1
+                && cc
+                    .child(0)
+                    .ok_or("Cannot find the vbar")
+                    .expect("Cannot get the result of vbar")
+                    .kind()
+                    == "vbar"
+            {
+                bar_positions.push(current_col);
+                temp_cell.push(self.to_latex(cc, source).expect("Cannot parse to latex"));
+            }
+
+            if temp_cell.len() > 0 {
+                row.push(temp_cell.join(" "));
+            }
+        }
+
+        (row, bar_positions)
+    }
+
+    fn _check_is_separated_matrix(
+        &self,
+        rows_data: Vec<Vec<String>>,
+        all_bar_positions: Vec<usize>,
+    ) -> (Vec<Vec<String>>, Option<Vec<usize>>) {
+        if all_bar_positions.len() == 0 {
+            return (rows_data, None);
+        }
+        let mut rows_data = rows_data;
+        let mut unique_bar_positions = all_bar_positions;
+        unique_bar_positions.dedup();
+        unique_bar_positions.sort_by(|a, b| b.cmp(a));
+        let unique_bar_positions: Vec<usize> = unique_bar_positions;
+        let mut real_bar_pos: Vec<usize> = Vec::new();
+        for bar_pos in unique_bar_positions {
+            let mut flag = true;
+            for row in rows_data.iter() {
+                if let Some(maybe_bar) = row.get(bar_pos) {
+                    if maybe_bar != "|" {
+                        flag = false;
+                        break;
+                    }
+                };
+            }
+            if flag {
+                // 修复：使用 iter_mut() 而不是直接 move rows_data
+                for row in rows_data.iter_mut() {
+                    if row.len() > bar_pos {
+                        row.remove(bar_pos);
+                    }
+                }
+                real_bar_pos.push(bar_pos);
+            }
+        }
+        real_bar_pos.sort();
+        (rows_data, Some(real_bar_pos))
     }
 
     fn matrix_single_row_expr_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
@@ -597,30 +702,44 @@ impl AsciiMathToLatex {
             return Err("Expected matrix_row_expr".to_string());
         }
 
-        let mut row_data = Vec::new();
-        for i in 1..row_node.child_count() - 1 {
-            let child = row_node.child(i).ok_or("Missing child in row")?;
-            if child.kind() != "," {
-                row_data.push(self.to_latex(child, source)?);
-            }
-        }
+        let mut rows_data: Vec<Vec<String>> = Vec::new();
+        let mut all_bar_positions = Vec::new();
+        let (row_cells, mut bar_positions) =
+            self.matrix_row_to_list_with_bar_detection(row_node, source);
+        let max_cols = row_cells.len();
+        rows_data.push(row_cells);
+        all_bar_positions.append(&mut bar_positions);
 
-        let _align = if lb.trim() == "\\lbrace" && rb.trim() == "." {
+        let align = if lb.trim() == "\\lbrace" && rb.trim() == "." {
             "l"
         } else {
             "c"
         };
-        let col_spec = "c".repeat(row_data.len());
+        let (rows_data, real_bar_pos) =
+            self._check_is_separated_matrix(rows_data, all_bar_positions);
+        let col_spec_str = if let Some(real_bar_pos) = real_bar_pos {
+            let mut col_spec = Vec::new();
+            for i in 0..max_cols {
+                if real_bar_pos.contains(&i) {
+                    col_spec.push(format!("{}|", align));
+                } else {
+                    col_spec.push(align.to_owned());
+                }
+            }
+            col_spec.join("")
+        } else {
+            align.repeat(max_cols)
+        };
 
         Ok(format!(
             "\\left{}\\begin{{array}}{{{}}} {} \\end{{array}}\\right{}",
             lb,
-            if col_spec.is_empty() {
-                "c".to_string()
-            } else {
-                col_spec
-            },
-            row_data.join(" & "),
+            col_spec_str,
+            rows_data
+                .into_iter()
+                .map(|row| { row.join(" & ") })
+                .collect::<Vec<_>>()
+                .join(" \\\\ "),
             rb
         ))
     }
@@ -633,42 +752,54 @@ impl AsciiMathToLatex {
             source,
         )?;
 
-        let mut rows = Vec::new();
-        let mut max_cols = 0;
-
-        for i in 1..node.child_count() - 1 {
-            let child = node.child(i).ok_or("Missing child in matrix")?;
-            if child.kind() == "matrix_row_expr" {
-                let mut row_data = Vec::new();
-                for j in 1..child.child_count() - 1 {
-                    let row_child = child.child(j).ok_or("Missing child in row")?;
-                    if row_child.kind() != "," {
-                        row_data.push(self.to_latex(row_child, source)?);
-                    }
-                }
-                max_cols = max_cols.max(row_data.len());
-                rows.push(row_data);
-            }
-        }
-
         let align = if lb.trim() == "\\lbrace" && rb.trim() == "." {
             "l"
         } else {
             "c"
         };
-        let col_spec = align.repeat(max_cols);
 
-        let row_strings: Vec<String> = rows.into_iter().map(|row| row.join(" & ")).collect();
+        let mut rows_data = Vec::new();
+        let mut all_bar_poss = Vec::new();
+
+        for idx in 1..node.child_count() - 1 {
+            let child = node.child(idx).ok_or("Cannot find child")?;
+            if child.kind() == "matrix_row_expr" {
+                let (row_cells, mut bar_poss) =
+                    self.matrix_row_to_list_with_bar_detection(child, source);
+                rows_data.push(row_cells);
+                all_bar_poss.append(&mut bar_poss);
+            }
+        }
+
+        let (rows_data, real_bar_pos) = self._check_is_separated_matrix(rows_data, all_bar_poss);
+        let max_cols = rows_data
+            .iter()
+            .map(|row| row.len())
+            .max()
+            .ok_or("Cannot get the max_value")?;
+        let col_spec_str = if let Some(real_bar_pos) = real_bar_pos {
+            let mut col_spec = Vec::new();
+            for i in 0..max_cols {
+                if real_bar_pos.contains(&i) {
+                    col_spec.push(format!("|{}", align));
+                } else {
+                    col_spec.push(align.to_owned());
+                }
+            }
+            col_spec.join("")
+        } else {
+            align.repeat(max_cols)
+        };
 
         Ok(format!(
             "\\left{}\\begin{{array}}{{{}}} {} \\end{{array}}\\right{}",
             lb,
-            if col_spec.is_empty() {
-                "c".to_string()
-            } else {
-                col_spec
-            },
-            row_strings.join(" \\\\ "),
+            col_spec_str,
+            rows_data
+                .into_iter()
+                .map(|row| { row.join(" & ") })
+                .collect::<Vec<_>>()
+                .join(" \\\\ "),
             rb
         ))
     }
