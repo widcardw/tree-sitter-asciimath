@@ -6,6 +6,7 @@ Basic numbers
 3.14159
 0.5
 100
+varepsilon
 
 ---
 
@@ -17,4 +18,7 @@ Basic numbers
   (simple_expression
     (number_symbol))
   (simple_expression
-    (number_symbol)))
+    (number_symbol))
+  (simple_expression
+    (greek_letters
+      (varepsilon))))

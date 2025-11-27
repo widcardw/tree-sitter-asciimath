@@ -10,21 +10,26 @@ References
 - https://github.com/asciimath/asciimathml
 - https://gist.github.com/Aerijo/df27228d70c633e088b0591b8857eeef
 
-## TODO
-
-- [ ] Bars in matrices
-    - [x] code generation 中 matrix_expr_to_latex 的 bar 识别还存在问题
-- [ ] Test cases in `test/`
-- [ ] Test cases for bindings
-    - [ ] Recursive bracket parsing
-    - [ ] Unary `+` and `-`
-
 ## Setup
 
 1. `npm install tree-sitter-cli`
 2. `npm run prepare && npm run generate`
 3. `uv sync` (make sure `python` is in `PATH`)
 4. `npm i`
+
+## Roadmap
+
+- [x] `symbols-config.json` for common symbols
+- [x] `grammar.js` for parsing expressions into trees
+  - [ ] `test/corpus`
+    - [x] Basic test cases
+    - [ ] Corner cases, like `a/b/c/d`, `x^y^z`, maybe `sin(x)/x` to be `\frac{sin(x)}{x}`?
+- [ ] bindings
+  - [ ] `to_latex`
+    - [x] Python (Will be replaced with rust libraries)
+    - [x] Rust
+    - [ ] Node.js, C, Go, Swift (May be built with rust libraries)
+  - [ ] `to_mathml` 
 
 ## Warning
 
@@ -41,20 +46,36 @@ You are **NOT** encouraged to use `pnpm` to install dependencies, since it will 
 ### Build Steps
 
 1. Run `npm run prepare` to load the JSON file and parse them into `identifiers/`
-2. Run `npm run generate` to generate `grammar.js`
+2. Run `npm run generate` to transform `grammar.js` into grammar
 
 ### Bindings
 
-#### Python
+#### Test Cases
 
-Test cases
+##### Python
+
+(Optional) clean cache
 
 ```sh
-# (Optional) clean cache
 uv clean
-# Build grammar to python bindings
+```
+
+Build grammar to python bindings (if there was any change in grammar.js)
+
+```sh
 npm run uv-prepare
-# Test bindings
+# If the command above does not work, then manually remove and add one package, for example, wheel
+uv remove wheel && uv add wheel
+```
+
+Test bindings
+
+```sh
 uv run -m pytest bindings/python/tests/test_binding.py
 ```
 
+##### Rust
+
+```sh
+cargo test
+```
