@@ -605,7 +605,7 @@ impl AsciiMathToLatex {
                     .child(0)
                     .ok_or(format!("Cannot find cc at index {}", idx))
                     .expect("Cannot get the result of sub children");
-                if cc.kind() == "math_operator"
+                if cc.kind() == "math_operators"
                     && cc.child_count() == 1
                     && cc
                         .child(0)
@@ -615,12 +615,12 @@ impl AsciiMathToLatex {
                         == "vbar"
                 {
                     bar_positions.push(current_col);
+                    println!("Detected bar at {}", current_col);
                 }
                 temp_cell.push(self.to_latex(child, source).expect("Cannot parse to latex"));
             }
         }
 
-        // TODO: 这里有重复push的问题
         if node.child_count() >= 3 {
             let child = node
                 .child(node.child_count() - 2)
