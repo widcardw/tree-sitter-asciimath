@@ -83,6 +83,9 @@
 - input: 1+-2
   expected: 1 \pm 2
 
+- input: x^2+y_1+z^12_34
+  expected: x^{2} + y_{1} + z_{34}^{12}
+
 - input: (1+2]
   expected: \left(1 + 2\right]
 
@@ -281,3 +284,27 @@
 
 - input: 👀
   expected: 👀
+
+- input: sin^-1(x)
+  expected: \sin^{- 1} \left(x\right)
+
+- input: dd {::} x f(x) = lim_(h->0) (f(x+h)-f(x))/h
+  expected: \frac{\mathrm{d} {}}{\mathrm{d} x} f \left(x\right) = \lim_{h \to 0} \frac{f \left(x + h\right) - f \left(x\right)}{h}
+
+- input: f(x)=sum_(n=0)^oo(f^((n))(a))/(n!)(x-a)^n
+  expected: f \left(x\right) = \sum_{n = 0}^{\infty} \frac{f^{\left(n\right)} \left(a\right)}{n!} \left(x - a\right)^{n}
+
+- input: '[[a,b],[c,d]]((n),(k))'
+  expected: \left[\begin{array}{cc} a & b \\ c & d \end{array}\right] \left(\begin{array}{c} n \\ k \end{array}\right)
+
+- input: x/x={(1,if x!=0),("undefined", if x=0):}
+  expected: \frac{x}{x} = \left\lbrace \begin{array}{ll} 1 & \text{if}\quad x \ne 0 \\ \text{undefined} & \text{if}\quad x = 0 \end{array}\right.
+
+- input: '{::}_92^238U'
+  expected: '{}_{92}^{238} U'
+
+- input: '(a,b]={x in RR: a<x<=b}'
+  expected: '\left(a , b\right] = \left\lbrace x \in \mathbb{R} : a \lt x \le b\right\rbrace'
+
+- input: abc-123.45^-1.1
+  expected: abc - 123.45^{- 1.1}

@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-import json
 import os
 from tree_sitter import Language, Parser
 import tree_sitter_asciimath
