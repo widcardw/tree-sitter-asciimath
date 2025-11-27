@@ -18,8 +18,9 @@
 //! [`Parser`]: https://docs.rs/tree-sitter/0.25.10/tree_sitter/struct.Parser.html
 //! [tree-sitter]: https://tree-sitter.github.io/
 
+mod node_type;
+use node_type::{NodeType, SymbolConfig};
 use serde::Deserialize;
-use std::collections::HashMap;
 use tree_sitter::Node;
 use tree_sitter_language::LanguageFn;
 
@@ -42,42 +43,6 @@ pub const NODE_TYPES: &str = include_str!("../../src/node-types.json");
 // pub const LOCALS_QUERY: &str = include_str!("../../queries/locals.scm");
 // pub const TAGS_QUERY: &str = include_str!("../../queries/tags.scm");
 
-#[derive(Deserialize, Debug)]
-struct SymbolConfig {
-    logic_symbols: HashMap<String, SymbolEntry>,
-    greek_letters: HashMap<String, SymbolEntry>,
-    math_constants: HashMap<String, SymbolEntry>,
-    set_operators: HashMap<String, SymbolEntry>,
-    math_operators: HashMap<String, SymbolEntry>,
-    ascii_escape: HashMap<String, SymbolEntry>,
-    misc_symbols: HashMap<String, SymbolEntry>,
-    unary_symbols: HashMap<String, SymbolEntry>,
-    factorial_symbols: HashMap<String, SymbolEntry>,
-    binary_symbols: HashMap<String, SymbolEntry>,
-    binary_mid_symbols: HashMap<String, SymbolEntry>,
-    differential_symbols: HashMap<String, SymbolEntry>,
-    separator_symbols: HashMap<String, SymbolEntry>,
-    big_equal_symbols: HashMap<String, SymbolEntry>,
-    unary_frozen_symbols: HashMap<String, SymbolEntry>,
-    right_associative_operators: HashMap<String, SymbolEntry>,
-    // skipped since we just use control flow
-    // number_symbol: HashMap<String, SymbolEntry>,
-    // identifier: HashMap<String, SymbolEntry>,
-    left_bracket: HashMap<String, SymbolEntry>,
-    right_bracket: HashMap<String, SymbolEntry>,
-}
-
-#[derive(Deserialize, Debug)]
-struct SymbolEntry {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    token: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    alias: Option<Vec<String>>,
-    tex: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    template: Option<String>,
-}
-
 pub struct AsciiMathToLatex {
     symbol_config: SymbolConfig,
 }
@@ -92,94 +57,94 @@ impl AsciiMathToLatex {
     }
 
     fn get_tex(&self, typ: &str, token: &str) -> Result<String, String> {
-        match typ {
-            "logic_symbols" => self
+        match NodeType::from(typ) {
+            NodeType::LogicSymbols => self
                 .symbol_config
                 .logic_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "greek_letters" => self
+            NodeType::GreekLetters => self
                 .symbol_config
                 .greek_letters
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "math_constants" => self
+            NodeType::MathConstants => self
                 .symbol_config
                 .math_constants
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "set_operators" => self
+            NodeType::SetOperators => self
                 .symbol_config
                 .set_operators
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "math_operators" => self
+            NodeType::MathOperators => self
                 .symbol_config
                 .math_operators
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "ascii_escape" => self
+            NodeType::AsciiEscape => self
                 .symbol_config
                 .ascii_escape
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "misc_symbols" => self
+            NodeType::MiscSymbols => self
                 .symbol_config
                 .misc_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "unary_symbols" => self
+            NodeType::UnarySymbols => self
                 .symbol_config
                 .unary_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "factorial_symbols" => self
+            NodeType::FactorialSymbols => self
                 .symbol_config
                 .factorial_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "binary_symbols" => self
+            NodeType::BinarySymbols => self
                 .symbol_config
                 .binary_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "binary_mid_symbols" => self
+            NodeType::BinaryMidSymbols => self
                 .symbol_config
                 .binary_mid_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "differential_symbols" => self
+            NodeType::DifferentialSymbols => self
                 .symbol_config
                 .differential_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "separator_symbols" => self
+            NodeType::SeparatorSymbols => self
                 .symbol_config
                 .separator_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "big_equal_symbols" => self
+            NodeType::BigEqualSymbols => self
                 .symbol_config
                 .big_equal_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "unary_frozen_symbols" => self
+            NodeType::UnaryFrozenSymbols => self
                 .symbol_config
                 .unary_frozen_symbols
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "right_associative_operators" => self
+            NodeType::RightAssociativeOperators => self
                 .symbol_config
                 .right_associative_operators
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "number_symbol" | "identifier" => Some(token.to_string()),
-            "left_bracket" => self
+            NodeType::NumberSymbol | NodeType::Identifier => Some(token.to_string()),
+            NodeType::LeftBracket => self
                 .symbol_config
                 .left_bracket
                 .get(token)
                 .map(|s| s.tex.clone()),
-            "right_bracket" => self
+            NodeType::RightBracket => self
                 .symbol_config
                 .right_bracket
                 .get(token)
@@ -215,14 +180,18 @@ impl AsciiMathToLatex {
     }
 
     fn _trim_paren(&self, expr_node: Node, source: &[u8]) -> Result<String, String> {
-        if expr_node.kind() == "simple_expression" && expr_node.child_count() > 0 {
+        let node_type: NodeType = expr_node.kind().into();
+
+        if node_type == NodeType::SimpleExpression && expr_node.child_count() > 0 {
             let first_child = expr_node.child(0).unwrap();
             if first_child.kind() == "bracket_expr" {
                 return self._process_bracket_only(first_child, source);
             }
-        } else if expr_node.kind() == "intermediate_expression" && expr_node.child_count() > 0 {
+        } else if node_type == NodeType::SimpleExpression && expr_node.child_count() > 0 {
             let first_child = expr_node.child(0).unwrap();
-            if first_child.kind() == "simple_expression" && first_child.child_count() > 0 {
+            let first_child_type: NodeType = first_child.kind().into();
+
+            if first_child_type == NodeType::SimpleExpression && first_child.child_count() > 0 {
                 let grand_child = first_child.child(0).unwrap();
                 if grand_child.kind() == "bracket_expr" {
                     return self._process_bracket_only(grand_child, source);
@@ -233,62 +202,68 @@ impl AsciiMathToLatex {
     }
 
     pub fn to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
-        match node.kind() {
-            "source_file" => self.source_file_to_latex(node, source),
-            "number_symbol" | "identifier" => Ok(String::from_utf8_lossy(
+        let node_type: NodeType = node.kind().into();
+
+        match node_type {
+            NodeType::SourceFile => self.source_file_to_latex(node, source),
+            NodeType::NumberSymbol | NodeType::Identifier => Ok(String::from_utf8_lossy(
                 &source[node.start_byte()..node.end_byte()],
             )
             .to_string()),
-            "superscript" => self.superscript_to_latex(node, source),
-            "subscript" => self.subscript_to_latex(node, source),
-            "subscript_superscript" => self.subscript_superscript_to_latex(node, source),
-            "bracket_expr" => self.bracket_expr_to_latex(node, source),
-            "unary_expr" => self.unary_expr_to_latex(node, source),
-            "unaryFrozen_expr" => self.unary_frozen_expr_to_latex(node, source),
-            "color_expr" => self.color_expr_to_latex(node, source),
-            "binary_expr" => self.binary_expr_to_latex(node, source),
-            "binary_frac" => self.binary_frac_to_latex(node, source),
-            "factorial_expr" => self.factorial_expr_to_latex(node, source),
-            "differential_expr" => self.differential_expr_to_latex(node, source),
-            "simple_expression" => self.simple_expression_to_latex(node, source),
-            "matrix_single_row_expr" => self.matrix_single_row_expr_to_latex(node, source),
-            "matrix_expr" => self.matrix_expr_to_latex(node, source),
-            "det_expr" => self.det_expr_to_latex(node, source),
-            "bigEqual_expr" => self.big_equal_expr_to_latex(node, source),
-            "right_associative_expr" => self.right_associative_expr_to_latex(node, source),
-            "multiline_expr" => self.multiline_expr_to_latex(node, source),
-
-            "literal_string" => {
+            NodeType::Superscript => self.superscript_to_latex(node, source),
+            NodeType::Subscript => self.subscript_to_latex(node, source),
+            NodeType::SubscriptSuperscript => self.subscript_superscript_to_latex(node, source),
+            NodeType::BracketExpr => self.bracket_expr_to_latex(node, source),
+            NodeType::UnaryExpr => self.unary_expr_to_latex(node, source),
+            NodeType::UnaryFrozenExpr => self.unary_frozen_expr_to_latex(node, source),
+            NodeType::ColorExpr => self.color_expr_to_latex(node, source),
+            NodeType::BinaryExpr => self.binary_expr_to_latex(node, source),
+            NodeType::BinaryFrac => self.binary_frac_to_latex(node, source),
+            NodeType::FactorialExpr => self.factorial_expr_to_latex(node, source),
+            NodeType::DifferentialExpr => self.differential_expr_to_latex(node, source),
+            NodeType::SimpleExpression => self.simple_expression_to_latex(node, source),
+            NodeType::MatrixSingleRowExpr => self.matrix_single_row_expr_to_latex(node, source),
+            NodeType::MatrixExpr => self.matrix_expr_to_latex(node, source),
+            NodeType::DetExpr => self.det_expr_to_latex(node, source),
+            NodeType::BigEqualExpr => self.big_equal_expr_to_latex(node, source),
+            NodeType::RightAssociativeExpr => self.right_associative_expr_to_latex(node, source),
+            NodeType::MultilineExpr => self.multiline_expr_to_latex(node, source),
+            NodeType::MatrixRowExpr => panic!("Cannot meet matrix row in `to_latex`! The process should be within Matrix or MatrixSingleRow!"),
+            NodeType::LiteralString => {
                 let t = node.utf8_text(source).expect("Cannot decode string!");
                 Ok(format!("\\text{{{}}}", t[1..t.len() - 1].to_string()))
             }
-            "left_bracket" | "right_bracket" => {
+            NodeType::LeftBracket | NodeType::RightBracket => {
                 let child_node = node.child(0).expect("Cannot get first child of bracket!");
                 let token = child_node.kind();
                 self.get_tex(node.kind(), token)
             }
-            "logic_symbols"
-            | "greek_letters"
-            | "math_constants"
-            | "set_operators"
-            | "math_operators"
-            | "ascii_escape"
-            | "misc_symbols"
-            | "unary_symbols"
-            | "factorial_symbols"
-            | "binary_symbols"
-            | "binary_mid_symbols"
-            | "differential_symbols"
-            | "separator_symbols"
-            | "big_equal_symbols"
-            | "unary_frozen_symbols"
-            | "right_associative_operators"
-            | "color" => {
-                let child_node = node.child(0).expect("Cannot get first child of bracket!");
+            NodeType::LogicSymbols
+            | NodeType::GreekLetters
+            | NodeType::MathConstants
+            | NodeType::SetOperators
+            | NodeType::MathOperators
+            | NodeType::AsciiEscape
+            | NodeType::MiscSymbols
+            | NodeType::UnarySymbols
+            | NodeType::FactorialSymbols
+            | NodeType::BinarySymbols
+            | NodeType::BinaryMidSymbols
+            | NodeType::DifferentialSymbols
+            | NodeType::SeparatorSymbols
+            | NodeType::BigEqualSymbols
+            | NodeType::UnaryFrozenSymbols
+            | NodeType::RightAssociativeOperators
+            | NodeType::Color
+            | NodeType::Vbar
+            | NodeType::Comma
+            | NodeType::Sup 
+            | NodeType::Sub  => {
+                let child_node = node.child(0).expect("Cannot get first child!");
                 let token = child_node.kind();
                 self.get_tex(node.kind(), token)
             }
-            _ => {
+            NodeType::Unknown | NodeType::MultilineBreak => {
                 if node.named_child_count() == 0 && node.child_count() > 0 {
                     // Handle terminal nodes with children (like symbols)
                     let child = node.child(0).unwrap();
@@ -338,14 +313,14 @@ impl AsciiMathToLatex {
 
     fn subscript_superscript_to_latex(&self, node: Node, source: &[u8]) -> Result<String, String> {
         let base = self.to_latex(node.child(0).ok_or("Missing base in sub/sup")?, source)?;
-        let op1_kind = node.child(1).ok_or("Missing first operator")?.kind();
+        let op1_kind: NodeType = node.child(1).ok_or("Missing first operator")?.kind().into();
         let expr1 = self._trim_paren(node.child(2).ok_or("Missing first expression")?, source)?;
-        let op2_kind = node.child(3).ok_or("Missing second operator")?.kind();
+        let op2_kind: NodeType = node.child(3).ok_or("Missing second operator")?.kind().into();
         let expr2 = self._trim_paren(node.child(4).ok_or("Missing second expression")?, source)?;
 
-        if op1_kind == "^" && op2_kind == "_" {
+        if op1_kind == NodeType::Sup && op2_kind == NodeType::Sub {
             Ok(format!("{}_{{{}}}^{{{}}}", base, expr2, expr1))
-        } else if op1_kind == "_" && op2_kind == "^" {
+        } else if op1_kind == NodeType::Sub && op2_kind == NodeType::Sup {
             Ok(format!("{}_{{{}}}^{{{}}}", base, expr1, expr2))
         } else {
             Err("Invalid sub/superscript combination".to_string())
@@ -534,7 +509,9 @@ impl AsciiMathToLatex {
             let down_child = down_node
                 .child(0)
                 .ok_or("Cannot get the first child of down expr")?;
-            let down = if down_child.kind() == "bracket_expr" && down_child.child_count() > 3 {
+            let down = if NodeType::from(down_child.kind()) == NodeType::BracketExpr
+                && down_child.child_count() > 3
+            {
                 copy_super = false;
                 let mut contents = Vec::new();
                 for i in 1..down_child.child_count() - 1 {
@@ -594,7 +571,7 @@ impl AsciiMathToLatex {
                 .child(idx)
                 .ok_or(format!("Cannot find child at index {}", idx))
                 .expect("Cannot get the result of child");
-            if child.kind() == "," {
+            if NodeType::from(child.kind()) == NodeType::Comma {
                 if temp_cell.len() > 0 {
                     row.push(temp_cell.join(" "));
                     current_col += 1;
@@ -605,17 +582,18 @@ impl AsciiMathToLatex {
                     .child(0)
                     .ok_or(format!("Cannot find cc at index {}", idx))
                     .expect("Cannot get the result of sub children");
-                if cc.kind() == "math_operators"
+                let cc_type: NodeType = cc.kind().into();
+
+                if cc_type == NodeType::MathOperators
                     && cc.child_count() == 1
-                    && cc
-                        .child(0)
-                        .ok_or("Cannot find the vbar")
-                        .expect("Cannot get the result")
-                        .kind()
-                        == "vbar"
+                    && NodeType::from(
+                        cc.child(0)
+                            .ok_or("Cannot find the vbar")
+                            .expect("Cannot get the result")
+                            .kind(),
+                    ) == NodeType::Vbar
                 {
                     bar_positions.push(current_col);
-                    println!("Detected bar at {}", current_col);
                 }
                 temp_cell.push(self.to_latex(child, source).expect("Cannot parse to latex"));
             }
@@ -630,14 +608,16 @@ impl AsciiMathToLatex {
                 .child(0)
                 .ok_or("Cannot find cc at index -2")
                 .expect("Cannot get the child at index -2");
-            if cc.kind() == "math_operator"
+            let cc_type: NodeType = cc.kind().into();
+
+            if cc_type == NodeType::MathOperators
                 && cc.child_count() == 1
-                && cc
-                    .child(0)
-                    .ok_or("Cannot find the vbar")
-                    .expect("Cannot get the result of vbar")
-                    .kind()
-                    == "vbar"
+                && NodeType::from(
+                    cc.child(0)
+                        .ok_or("Cannot find the vbar")
+                        .expect("Cannot get the result")
+                        .kind(),
+                ) == NodeType::Vbar
             {
                 bar_positions.push(current_col);
                 temp_cell.push(self.to_latex(cc, source).expect("Cannot parse to latex"));
@@ -698,7 +678,7 @@ impl AsciiMathToLatex {
         )?;
 
         let row_node = node.child(1).ok_or("Missing row node")?;
-        if row_node.kind() != "matrix_row_expr" {
+        if NodeType::from(row_node.kind()) != NodeType::MatrixRowExpr {
             return Err("Expected matrix_row_expr".to_string());
         }
 
@@ -763,7 +743,7 @@ impl AsciiMathToLatex {
 
         for idx in 1..node.child_count() - 1 {
             let child = node.child(idx).ok_or("Cannot find child")?;
-            if child.kind() == "matrix_row_expr" {
+            if NodeType::from(child.kind()) == NodeType::MatrixRowExpr {
                 let (row_cells, mut bar_poss) =
                     self.matrix_row_to_list_with_bar_detection(child, source);
                 rows_data.push(row_cells);
@@ -816,11 +796,11 @@ impl AsciiMathToLatex {
 
         for i in 1..node.child_count() - 1 {
             let child = node.child(i).ok_or("Missing child in determinant")?;
-            if child.kind() == "matrix_row_expr" {
+            if NodeType::from(child.kind()) == NodeType::MatrixRowExpr {
                 let mut row_data = Vec::new();
                 for j in 1..child.child_count() - 1 {
                     let row_child = child.child(j).ok_or("Missing child in row")?;
-                    if row_child.kind() != "," {
+                    if NodeType::from(row_child.kind()) != NodeType::Comma {
                         row_data.push(self.to_latex(row_child, source)?);
                     }
                 }
@@ -869,27 +849,27 @@ impl AsciiMathToLatex {
         let (sup, sub) = match node.child_count() {
             1 => (None, None),
             3 => {
-                let sub_or_sup = node.child(1).ok_or("Missing sub/sup indicator")?.kind();
+                let sub_or_sup: NodeType = node.child(1).ok_or("Missing sub/sup indicator")?.kind().into();
                 let expr = self._trim_paren(node.child(2).ok_or("Missing expression")?, source)?;
-                if sub_or_sup == "_" {
+                if sub_or_sup == NodeType::Sub {
                     (None, Some(expr))
-                } else if sub_or_sup == "^" {
+                } else if sub_or_sup == NodeType::Sup {
                     (Some(expr), None)
                 } else {
-                    return Err(format!("Unexpected sub_or_sup: {}", sub_or_sup));
+                    return Err(format!("Unexpected sub_or_sup: {:?}", sub_or_sup));
                 }
             }
             5 => {
-                let second_node_kind = node.child(1).ok_or("Missing second node")?.kind();
-                let fourth_node_kind = node.child(3).ok_or("Missing fourth node")?.kind();
+                let second_node_kind: NodeType = node.child(1).ok_or("Missing second node")?.kind().into();
+                let fourth_node_kind: NodeType = node.child(3).ok_or("Missing fourth node")?.kind().into();
 
-                if second_node_kind == "_" && fourth_node_kind == "^" {
+                if second_node_kind == NodeType::Sub && fourth_node_kind == NodeType::Sup {
                     let sub_expr =
                         self._trim_paren(node.child(2).ok_or("Missing sub expression")?, source)?;
                     let sup_expr =
                         self._trim_paren(node.child(4).ok_or("Missing sup expression")?, source)?;
                     (Some(sup_expr), Some(sub_expr))
-                } else if second_node_kind == "^" && fourth_node_kind == "_" {
+                } else if second_node_kind == NodeType::Sup && fourth_node_kind == NodeType::Sub {
                     let sup_expr =
                         self._trim_paren(node.child(2).ok_or("Missing sup expression")?, source)?;
                     let sub_expr =
@@ -897,7 +877,7 @@ impl AsciiMathToLatex {
                     (Some(sup_expr), Some(sub_expr))
                 } else {
                     return Err(format!(
-                        "Unexpected combination: {} and {}",
+                        "Unexpected combination: {:?} and {:?}",
                         second_node_kind, fourth_node_kind
                     ));
                 }
@@ -940,7 +920,7 @@ impl AsciiMathToLatex {
             let child = node
                 .child(i)
                 .ok_or("Missing child in multiline expression")?;
-            if child.kind() == "multi_linebreak" {
+            if NodeType::from(child.kind()) == NodeType::MultilineBreak {
                 rows.push(current_row.join(" "));
                 current_row = Vec::new();
             } else {
