@@ -308,3 +308,226 @@
 
 - input: abc-123.45^-1.1
   expected: abc - 123.45^{- 1.1}
+
+- input: sqrt(x^2 + y^2)
+  expected: \sqrt{x^{2} + y^{2}}
+
+- input: x^(1/2)
+  expected: x^{\frac{1}{2}}
+
+- input: 1/2
+  expected: \frac{1}{2}
+
+- input: (a+b)/(c+d)
+  expected: \frac{a + b}{c + d}
+
+- input: sin(x) + cos(y)
+  expected: \sin \left(x\right) + \cos \left(y\right)
+
+- input: lim_(x->0) (sin(x))/x
+  expected: \lim_{x \to 0} \frac{\sin \left(x\right)}{x}
+
+- input: sum_(i=1)^n i^2
+  expected: \sum_{i = 1}^{n} i^{2}
+
+- input: prod_(k=1)^n k
+  expected: \prod_{k = 1}^{n} k
+
+- input: int_0^1 x^2 dx
+  expected: \int_{0}^{1} x^{2} \text{d}x
+
+- input: alpha + beta = gamma
+  expected: \alpha + \beta = \gamma
+
+- input: x_(i+1)
+  expected: x_{i + 1}
+
+- input: x_(i,j)
+  expected: x_{i , j}
+
+- input: (sum_(i=1)^n i)
+  expected: \left(\sum_{i = 1}^{n} i\right)
+
+- input: "|x|"
+  expected: "| x |"
+
+- input: "||x||"
+  expected: \Vert x \Vert
+
+- input: x < y <= z
+  expected: x \lt y \le z
+
+- input: A uu B
+  expected: A \cup B
+
+- input: A nn B
+  expected: A \cap B
+
+- input: ->
+  expected: \to
+
+- input: <->
+  expected: \leftrightarrow
+
+- input: x ~~ y
+  expected: x \approx y
+
+- input: x != y
+  expected: x \ne y
+
+- input: x @ y
+  expected: x \circ y
+
+- input: vec(v)
+  expected: \vec{v}
+
+- input: hat(x)
+  expected: \hat{x}
+
+- input: bar(x)
+  expected: \bar{x}
+
+- input: underline(x)
+  expected: \underline{x}
+
+- input: ((a+b))
+  expected: \left(\left(a + b\right)\right)
+
+- input: "{(a+b)/(c+d)}"
+  expected: \left\lbrace \frac{a + b}{c + d}\right\rbrace
+
+- input: "sum_(i=1)^(n+1) i/(i+1)"
+  expected: "\\sum_{i = 1}^{n + 1} \\frac{i}{i + 1}"
+
+- input: "x = (a/b)^2"
+  expected: x = \left(\frac{a}{b}\right)^{2}
+
+- input: x+y*z
+  expected: x + y \cdot z
+
+- input: x/-2
+  expected: \frac{x}{-} 2
+
+- input: -x^2
+  expected: "- x^{2}"
+
+- input: (-x)^2
+  expected: \left(- x\right)^{2}
+
+- input: "1/2/3"
+  expected: \frac{\frac{1}{2}}{3}
+
+- input: 1/(2/3)
+  expected: \frac{1}{\frac{2}{3}}
+
+- input: (1/2)/3
+  expected: \frac{\frac{1}{2}}{3}
+
+- input: 1/(2*3)
+  expected: \frac{1}{2 \cdot 3}
+
+- input: 1/((2+3)*4)
+  expected: \frac{1}{\left(2 + 3\right) \cdot 4}
+
+- input: (a/b)/(c/d)
+  expected: \frac{\frac{a}{b}}{\frac{c}{d}}
+
+# chaining superscripts
+# - input: x^y^z
+#   expected: x^{y^{z}}
+
+- input: x_(i_j)
+  expected: "x_{i_{j}}"
+
+- input: x_(i^j)
+  expected: "x_{i^{j}}"
+
+- input: x^(i_j)
+  expected: x^{i_{j}}
+
+- input: x_(i+1)^(j+2)
+  expected: x_{i + 1}^{j + 2}
+
+- input: sin x
+  expected: \sin x
+
+- input: sin(xy)
+  expected: \sin \left(xy\right)
+
+- input: log_2(x)
+  expected: \log_{2} \left(x\right)
+
+- input: lim_(n->oo) a_n
+  expected: \lim_{n \to \infty} a_{n}
+
+- input: ln(x)
+  expected: \ln \left(x\right)
+
+- input: abs(x)
+  expected: \left| x \right|
+
+- input: floor(x)
+  expected: \left\lfloor x \right\rfloor
+
+- input: ceil(x)
+  expected: \left\lceil x \right\rceil
+
+- input: Gamma + gamma
+  expected: \Gamma + \gamma
+
+- input: epsilon != varepsilon
+  expected: \epsilon \ne \varepsilon
+
+- input: phi != varphi
+  expected: \phi \ne \varphi
+
+- input: infty - oo
+  expected: \infty - \infty
+
+- input: A uu B nn C
+  expected: A \cup B \cap C
+
+- input: x in A
+  expected: x \in A
+
+- input: x !in A
+  expected: x \notin A
+
+- input: A sub B
+  expected: A \subset B
+
+- input: A supe B
+  expected: A \supseteq B
+
+- input: a -> b
+  expected: a \to b
+
+- input: <->
+  expected: \leftrightarrow
+
+- input: =>
+  expected: \implies
+
+- input: "|->"
+  expected: \mapsto
+
+- input: uarr
+  expected: \uparrow
+
+- input: darr
+  expected: \downarrow
+
+- input: sqrt sqrt(x)
+  expected: \sqrt{\sqrt{x}}
+
+- input: root(3)(x)
+  expected: \sqrt[3]{x}
+
+- input: sqrt(x+y/2)
+  expected: \sqrt{x + \frac{y}{2}}
+
+- input: sqrt((x+y)/(a+b))
+  expected: \sqrt{\frac{x + y}{a + b}}
+
+- input: gcd(a,b)
+  expected: \gcd \left(a , b\right)
