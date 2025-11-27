@@ -983,18 +983,8 @@ mod tests {
 
         let transformer = AsciiMathToLatex::new();
 
-        // Load test cases from JSON file
-        let test_cases_content = include_str!("../test_cases/common_cases.jsonc");
-
-        // Remove comments (lines starting with //)
-        let lines: Vec<&str> = test_cases_content
-            .lines()
-            .filter(|line| !line.trim().starts_with("//"))
-            .collect();
-
-        let clean_json = lines.join("\n");
-        let test_cases: Vec<TestCase> =
-            serde_json::from_str(&clean_json).expect("Failed to parse test cases");
+        let test_cases_content = include_str!("../test_cases/common_cases.yml");
+        let test_cases: Vec<TestCase> = serde_yaml::from_str(test_cases_content).expect("Cannot deserialize yaml");
 
         for case in test_cases {
             let tree = parser.parse(&case.input, None).unwrap();

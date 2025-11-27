@@ -1,0 +1,283 @@
+# Common test cases for AsciiMath transformer implementations
+# This file contains test cases that should be shared across all language bindings
+# Each test case has an "input" field (AsciiMath string) and "expected" field (LaTeX string)
+# 
+# Some other original cases not tested
+# {
+#     'i': '[1, 2 | 3; 4 | 5, 6]',
+#     'o': '\\left[ \\begin{array}{c|c|c} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\end{array} \\right]',
+# },
+# {
+#     'i': '[a, b; [1, 2; 3, 4], d]',
+#     'o': '\\left[ \\begin{array}{cc} a & b \\\\ \\left[ \\begin{array}{cc} 1 & 2 \\\\ 3 & 4 \\end{array} \\right] & d \\end{array} \\right]',
+# },
+# {
+#     'i': '[|a, b; c,d]',
+#     'o': '\\left[ \\begin{array}{|cc} a & b \\\\ c & d \\end{array} \\right]',
+# },
+# {
+#     'i': '[a, b|; c,d]',
+#     'o': '\\left[ \\begin{array}{cc|} a & b \\\\ c & d \\end{array} \\right]',
+# },
+# {
+#     'i': '[|a, b|; c,d]',
+#     'o': '\\left[ \\begin{array}{|cc|} a & b \\\\ c & d \\end{array} \\right]',
+# },
+# {
+#     'i': '[|hline 1| 2|; hline 3, 4; hline]',
+#     'o': '\\left[ \\begin{array}{|c|c|} \\hline 1 & 2 \\\\ \\hline 3 & 4 \\\\ \\hline \\end{array} \\right]',
+# },
+# {
+#     'i': '\uD83D\uDC40',
+#     'o': '\uD83D\uDC40',
+# },
+# {
+#     'i': 'hline\na && 111 && 333\n\nhline\nb && 222\n\nhline',
+#     'o': '\\begin{aligned}\\hline a && 111 && 333 \\\\ \\hline b && 222 \\\\ \\hline\\end{aligned}',
+# },
+# {
+#     'i': '[hline|a|b|;]',
+#     'o': '\\left[ \\begin{array}{|c|c|} \\hline a & b \\end{array} \\right]',
+# },
+# {
+#     'i': '{:\n--\n|a|b|;\n--\nc, d;\n--\n:}',
+#     'o': '\\left. \\begin{array}{|c|c|} \\hline a & b \\\\ \\hline c & d \\\\ \\hline \\end{array} \\right.',
+# },
+
+- input: x^2
+  expected: x^{2}
+
+- input: root(3)(4)
+  expected: \sqrt[3]{4}
+
+- input: '[[a, b], [c, d]]'
+  expected: \left[\begin{array}{cc} a & b \\ c & d \end{array}\right]
+
+- input: Q ==_a^b
+  expected: Q \xlongequal[a]{b}
+
+- input: -->^1
+  expected: \xrightarrow[]{1}
+
+- input: color(#ff0000)(x)
+  expected: '{\color{#ff0000}x}'
+
+- input: tex"\LaTeX"
+  expected: \LaTeX
+
+- input: '|[a, b], [c, d]|'
+  expected: \left|\begin{array}{cc} a & b \\ c & d \end{array}\right|
+
+- input: '    '
+  expected: ''
+
+- input: a
+  expected: a
+
+- input: pi
+  expected: \pi
+
+- input: 1+2+3
+  expected: 1 + 2 + 3
+
+- input: 1+-2
+  expected: 1 \pm 2
+
+- input: (1+2]
+  expected: \left(1 + 2\right]
+
+- input: sin 11_4^514 19^19_8 1_0
+  expected: \sin 11_{4}^{514} 19_{8}^{19} 1_{0}
+
+- input: '[(a),(b),(c)]'
+  expected: \left[\begin{array}{c} a \\ b \\ c \end{array}\right]
+
+- input: '[(a, b), (c, d):}'
+  expected: \left[\begin{array}{cc} a & b \\ c & d \end{array}\right.
+
+- input: sqrt x
+  expected: \sqrt{x}
+
+- input: sqrt (x)
+  expected: \sqrt{x}
+
+- input: root 3 2.0
+  expected: \sqrt[3]{2.0}
+
+- input: root (3)  {:2.0}
+  expected: \sqrt[3]{\left. 2.0\right\rbrace}
+
+- input: sum_(n=1)^(+oo) 1/n^2 = pi^2/6
+  expected: \sum_{n = 1}^{+ \infty} \frac{1}{n^{2}} = \frac{\pi^{2}}{6}
+
+- input: a_1^2 + b_1^2 = c_1^2
+  expected: a_{1}^{2} + b_{1}^{2} = c_{1}^{2}
+
+- input: a/b, a//b
+  expected: \frac{a}{b} , a / b
+
+- input: sqrt n, root n x, a^2/sqrt b
+  expected: \sqrt{n} , \sqrt[n]{x} , \frac{a^{2}}{\sqrt{b}}
+
+- input: lim_(n->oo) (1 + 1/n)^n
+  expected: \lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^{n}
+
+- input: 'sin {: x/2 :}'
+  expected: \sin {\frac{x}{2}}
+
+- input: int_a^b f(x) dx
+  expected: \int_{a}^{b} f \left(x\right) \text{d}x
+
+- input: (del f)/(del x), (del^3 f)/(del x del y^2)
+  expected: \frac{\partial f}{\partial x} , \frac{\partial^{3} f}{\partial x \partial y^{2}}
+
+- input: frac a b
+  expected: \frac{a}{b}
+
+- input: '"hello world"'
+  expected: \text{hello world}
+
+- input: color "red"  a b c
+  expected: '{\color{red}a} b c'
+
+- input: hspace "12pt"
+  expected: \hspace{12pt}
+
+- input: tex "\LaTeX"
+  expected: \LaTeX
+
+- input: dy/dx, ("d"r)/("d"theta), f''(x)
+  expected: \frac{\text{d}y}{\text{d}x} , \frac{\text{d} r}{\text{d} \theta} , f ^{\prime\prime} \left(x\right)
+
+- input: dd f x , dd^2 f x , ddot x
+  expected: \frac{\mathrm{d} f}{\mathrm{d} x} , \frac{\mathrm{d}^{2} f}{\mathrm{d} x^{2}} , \ddot{x}
+
+- input: pp f x
+  expected: \frac{\partial f}{\partial x}
+
+- input: pp {::} x
+  expected: \frac{\partial {}}{\partial x}
+
+- input: pp^3 f (x y^2)
+  expected: \frac{\partial^{3} f}{\partial x \partial y^{2}}
+
+- input: abs(x)
+  expected: \left| x \right|
+
+- input: '{ a | b }'
+  expected: \left\lbrace a | b\right\rbrace
+
+- input: (a,b)
+  expected: \left(a , b\right)
+
+- input: '{(x,y)|x^2+y^2<=1}'
+  expected: \left\lbrace \left(x , y\right) | x^{2} + y^{2} \le 1\right\rbrace
+
+- input: '|(a, b), (c, d)|'
+  expected: \left|\begin{array}{cc} a & b \\ c & d \end{array}\right|
+
+- input: '|x| = { (x, if x > 0), (-x, otherwise) :}'
+  expected: '| x | = \left\lbrace \begin{array}{ll} x & \text{if}\quad x \gt 0 \\
+    - x & \text{otherwise} \end{array}\right.'
+
+- input: e^-x
+  expected: e^{- x}
+
+- input: e^-(x^-2+y^2)
+  expected: e^{- \left(x^{- 2} + y^{2}\right)}
+
+- input: -(a+b-c)/2
+  expected: '- \frac{a + b - c}{2}'
+
+- input: f'_(+) (x)
+  expected: f ^{\prime}_{+} \left(x\right)
+
+- input: a^2 choose b^2
+  expected: a^{2} \choose b^{2}
+
+- input: n!
+  expected: n!
+
+- input: n!!^2/2!
+  expected: \frac{n!!^{2}}{2!}
+
+- input: '|__x__|'
+  expected: \left\lfloor x\right\rfloor
+
+- input: '[ ]'
+  expected: \left[\right]
+
+- input: '[1]'
+  expected: \left[1\right]
+
+- input: '[1,]'
+  expected: \left[1 ,\right]
+
+- input: '[1, 2]'
+  expected: \left[1 , 2\right]
+
+- input: '[[1, 2], [3]]'
+  expected: \left[\begin{array}{cc} 1 & 2 \\ 3 \end{array}\right]
+
+- input: '[[1, 2], [{::},3]]'
+  expected: \left[\begin{array}{cc} 1 & 2 \\ {} & 3 \end{array}\right]
+
+- input: '| |'
+  expected: '| |'
+
+- input: '|1|'
+  expected: '| 1 |'
+
+- input: '|1,|'
+  expected: '| 1 , |'
+
+- input: '|1, 2|'
+  expected: '| 1 , 2 |'
+
+- input: '|(1, 2), (3, 4)|'
+  expected: \left|\begin{array}{cc} 1 & 2 \\ 3 & 4 \end{array}\right|
+
+- input: '|(1, 2), ({::},3)|'
+  expected: \left|\begin{array}{cc} 1 & 2 \\ {} & 3 \end{array}\right|
+
+- input: '[[1,2],]'
+  expected: \left[\begin{array}{cc} 1 & 2 \end{array}\right]
+
+- input: '[[1, |, 2, 3],[4, 5, |, 6]]'
+  expected: \left[\begin{array}{cccc} 1 & | & 2 & 3 \\ 4 & 5 & | & 6 \end{array}\right]
+
+- input: '[[1, 2, |, 3], [4, 5, |, 6]]'
+  expected: \left[\begin{array}{cc|c} 1 & 2 & 3 \\ 4 & 5 & 6 \end{array}\right]
+
+- input: '[[1, 2, |, 3], [4, |, 5, 6]]'
+  expected: \left[\begin{array}{cccc} 1 & 2 & | & 3 \\ 4 & | & 5 & 6 \end{array}\right]
+
+- input: ==^b_a
+  expected: \xlongequal[a]{b}
+
+- input: -->^114_5
+  expected: \xrightarrow[5]{114}
+
+- input: ==^b
+  expected: \xlongequal[]{b}
+
+- input: ==_a
+  expected: \xlongequal[a]{}
+
+- input: 🍎/(🍌+🍍) + 🍌/(🍍+🍎) + 🍍/(🍎+🍌) = 4
+  expected: \frac{🍎}{🍌 + 🍍} + \frac{🍌}{🍍 + 🍎} + \frac{🍍}{🍎 + 🍌} = 4
+
+- input: '& 1111
+
+
+    & 2222'
+  expected: \begin{aligned} & 1111 \\ & 2222 \end{aligned}
+
+- input: '"\\"'
+  expected: \text{\\}
+
+- input: '"some text and \ backslashes \ a"'
+  expected: \text{some text and \ backslashes \ a}
+
+- input: 👀
+  expected: 👀

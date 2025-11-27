@@ -5,7 +5,7 @@ import os
 from tree_sitter import Language, Parser
 import tree_sitter_asciimath
 from tree_sitter_asciimath.to_latex import AsciiMathTransformer
-
+import yaml
 
 class TestTransformerToLatex(TestCase):
 
@@ -50,24 +50,11 @@ class TestAsciiMathExamples(TestCase):
             '..', 
             '..',
             'test_cases',
-            'common_cases.jsonc'
+            'common_cases.yml'
         )
         
         with open(test_cases_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # Remove comments from JSONC
-        lines = content.split('\n')
-        filtered_lines = []
-        for line in lines:
-            line = line.strip()
-            if not line or line.startswith('//'):
-                continue
-            filtered_lines.append(line)
-        
-        # Join back and parse as JSON
-        json_content = '\n'.join(filtered_lines)
-        return json.loads(json_content)
+            return yaml.load(f, Loader=yaml.FullLoader)
 
     def test_examples(self):
         """Test all examples from the common test cases file"""
