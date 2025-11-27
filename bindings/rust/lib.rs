@@ -20,7 +20,6 @@
 
 mod node_type;
 use node_type::{NodeType, SymbolConfig};
-use serde::Deserialize;
 use tree_sitter::Node;
 use tree_sitter_language::LanguageFn;
 
@@ -942,6 +941,7 @@ impl AsciiMathToLatex {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde::Deserialize;
 
     #[test]
     fn test_can_load_grammar() {
