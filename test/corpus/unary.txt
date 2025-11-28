@@ -67,3 +67,25 @@ cc(N)
             (identifier))
           (right_bracket
             (rparen)))))))
+
+==================
+Unary with Division
+==================
+
+sqrt x / 2
+
+---
+
+(source_file
+  (simple_expression
+    (binary_frac
+      (simple_expression
+        (unary_expr
+          (unary_symbols
+            (sqrt))
+          (simple_expression
+            (identifier))))
+      (binary_mid_symbols
+        (slash_div))
+      (simple_expression
+        (number_symbol)))))

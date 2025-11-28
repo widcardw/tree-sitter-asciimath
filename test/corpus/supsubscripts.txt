@@ -69,3 +69,71 @@ sum_(i=1)^n a_i^2
       (identifier))
     (simple_expression
       (number_symbol))))
+
+==================
+Superscript or Subscript
+==================
+
+e^x
+a_1
+
+---
+
+(source_file
+  (superscript
+    (simple_expression
+      (identifier))
+    (simple_expression
+      (identifier)))
+  (subscript
+    (simple_expression
+      (identifier))
+    (simple_expression
+      (number_symbol))))
+
+==================
+Scripts with division
+==================
+
+e^x/2
+a_1^2/3
+b_1/4
+
+---
+
+(source_file
+  (simple_expression
+    (binary_frac
+      (superscript
+        (simple_expression
+          (identifier))
+        (simple_expression
+          (identifier)))
+      (binary_mid_symbols
+        (slash_div))
+      (simple_expression
+        (number_symbol))))
+  (simple_expression
+    (binary_frac
+      (subscript_superscript
+        (simple_expression
+          (identifier))
+        (simple_expression
+          (number_symbol))
+        (simple_expression
+          (number_symbol)))
+      (binary_mid_symbols
+        (slash_div))
+      (simple_expression
+        (number_symbol))))
+  (simple_expression
+    (binary_frac
+      (subscript
+        (simple_expression
+          (identifier))
+        (simple_expression
+          (number_symbol)))
+      (binary_mid_symbols
+        (slash_div))
+      (simple_expression
+        (number_symbol)))))

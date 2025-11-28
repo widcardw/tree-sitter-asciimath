@@ -21,6 +21,7 @@ References
 
 - [x] `symbols-config.json` for common symbols
 - [x] `grammar.js` for parsing expressions into trees
+  - [ ] Remove redundant precedences (`binary_frac`, `unary`, `super_and_sub_scripts` and so on)
   - [ ] `test/corpus`
     - [x] Basic test cases
     - [ ] Corner cases, like `a/b/c/d`, `x^y^z`, maybe `sin(x)/x` to be `\frac{sin(x)}{x}`?
