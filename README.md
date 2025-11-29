@@ -80,3 +80,11 @@ uv run -m pytest bindings/python/tests/test_binding.py
 ```sh
 cargo test
 ```
+
+##### Node.js
+
+```sh
+npm i
+npm run node-test
+```
+

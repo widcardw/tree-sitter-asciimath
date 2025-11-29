@@ -9,7 +9,8 @@
     "parse": "tree-sitter parse",
     "test": "tree-sitter test",
     "build": "tree-sitter build",
-    "uv-prepare": "uv pip install --no-deps --force-reinstall ."
+    "uv-prepare": "uv pip install --no-deps --force-reinstall .",
+    "node-test": "node bindings/node/binding_test.js"
   },
   "keywords": [
     "tree-sitter",
@@ -20,6 +21,10 @@
   "dependencies": {
     "node-addon-api": "^8.5.0",
     "node-gyp-build": "^4.8.4",
+    "tree-sitter": "^0.25.0",
     "tree-sitter-cli": "^0.25.10"
+  },
+  "devDependencies": {
+    "js-yaml": "^4.1.1"
   }
 }
