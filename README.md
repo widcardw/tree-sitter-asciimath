@@ -19,7 +19,7 @@ References
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone git@github.com:widcardw/tree-sitter-asciimath
 cd tree-sitter-asciimath
 
 # Install dependencies
@@ -51,43 +51,43 @@ const tree = parser.parse('sqrt(a^2 + b^2)');
 
 | Command | Description |
 |---------|-------------|
-| `npm run ts:prepare` | Generate all symbols in grammar.js |
-| `npm run generate` | Generate parser from grammar.js |
-| `npm run parse` | Parse a file using the generated parser |
-| `npm run test` | Run tree-sitter test suite |
-| `npm run build` | Build tree-sitter parser |
+| `npm run ts:generate` | Generate parser from grammar.js |
+| `npm run ts:parse` | Parse a file using the generated parser |
+| `npm run ts:test` | Run tree-sitter test suite |
+| `npm run ts:build` | Build tree-sitter parser |
+| `npm run ts:prepare` | Prepare grammar symbols |
 
 ### Rust FFI Library Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm run build:rust` | Build Rust library with FFI bindings |
-| `npm run test:rust` | Run Rust tests |
+| `npm run rust:build` | Build Rust library with FFI bindings |
+| `npm run rust:test` | Run Rust tests |
 
 ### Node.js Binding Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm run build:node` | Build Node.js native addon |
-| `npm run copy:rust-lib` | Copy Rust library to build directory |
-| `npm run rebuild` | Full rebuild: Rust + Node.js + copy library |
-| `npm run test:node` | Run Node.js binding tests |
+| `npm run node:build` | Build Node.js native addon |
+| `npm run node:copy-lib` | Copy Rust library to build directory |
+| `npm run node:rebuild` | Rebuild Node.js binding (Rust + Node.js + copy) |
+| `npm run node:test` | Run Node.js binding tests |
 
 ### C Binding Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm run build:c` | Build C bindings using Makefile |
-| `npm run build:c-script` | Build C bindings using shell script |
-| `npm run test:c` | Run C binding example program |
-| `npm run clean:c` | Clean C binding build artifacts |
+| `npm run c:build` | Build C bindings using Makefile |
+| `npm run c:build-script` | Build C bindings using shell script |
+| `npm run c:test` | Run C binding example program |
+| `npm run c:clean` | Clean C binding build artifacts |
 
 ### Python Binding Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm run uv-prepare` | Install Python bindings with uv |
-| `npm run test:python` | Run Python binding tests |
+| `npm run python:prepare` | Install Python bindings with uv |
+| `npm run python:test` | Run Python binding tests |
 
 ### Development Commands
 
@@ -95,7 +95,8 @@ const tree = parser.parse('sqrt(a^2 + b^2)');
 |---------|-------------|
 | `npm run prepare` | Prepare project (generates symbols, builds Rust, copies library) |
 | `npm run dev` | Development workflow: rebuild + test Node.js bindings |
-| `npm run rebuild:all` | Full rebuild including all bindings (Rust, Node.js, C) |
+| `npm run rebuild` | Full rebuild including all bindings (Rust, Node.js, C) |
+| `npm run test` | Run all tests (tree-sitter, Rust, Node.js, C, Python) |
 
 ### Setup for Development
 
@@ -111,11 +112,13 @@ const tree = parser.parse('sqrt(a^2 + b^2)');
 
 3. Test the bindings:
    ```bash
-   npm run test:node
+   npm run node:test
    # or
-   npm run test:rust
+   npm run rust:test
    # or
-   npm run test:python
+   npm run python:test
+   # or
+   npm run c:test
    ```
 
 ## Project Structure
@@ -265,12 +268,12 @@ int main() {
 ```bash
 # Using Makefile
 cd bindings/c
-make
-make run  # Run example
+make          # Build using Makefile
+make run      # Run example
 
 # Or using npm
-npm run build:c
-npm run test:c
+npm run c:build
+npm run c:test
 ```
 
 ### Python API
@@ -290,9 +293,10 @@ print(result)  # Output: "x^{2} + y^{2}"
 3. Make your changes
 4. Run tests:
    ```bash
-   npm run test:node
-   npm run test:rust
-   npm run test:python
+   npm run node:test
+   npm run rust:test
+   npm run python:test
+   npm run c:test
    ```
 5. Submit a pull request
 
@@ -302,7 +306,7 @@ print(result)  # Output: "x^{2} + y^{2}"
 
 ```bash
 # Method 1: Using npm scripts
-npm run rebuild:all  # Builds everything including C bindings
+npm run rebuild  # Builds everything including C bindings
 
 # Method 2: Manual build
 cd bindings/c
