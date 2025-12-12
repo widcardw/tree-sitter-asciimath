@@ -20,18 +20,20 @@
 
 mod node_type;
 mod to_latex;
-// use node_type::{NodeType, SymbolConfig};
-// use tree_sitter::Node;
 use tree_sitter_language::LanguageFn;
-use to_latex::{AsciiMathToLatex};
 use std::ffi::CStr;
-use std::os::raw::{c_char, c_int, c_uint};
+use std::os::raw::{c_char, c_uint};
 use std::ptr;
-use std::slice;
 use std::str;
+pub use to_latex::AsciiMathToLatex;
 
 extern "C" {
     fn tree_sitter_asciimath() -> *const ();
+}
+
+#[no_mangle]
+pub extern "C" fn reexport_tree_sitter_asciimath() -> *const () {
+    unsafe { tree_sitter_asciimath() }
 }
 
 /// The tree-sitter [`LanguageFn`] for this grammar.
@@ -50,98 +52,124 @@ pub const NODE_TYPES: &str = include_str!("../../src/node-types.json");
 // pub const TAGS_QUERY: &str = include_str!("../../queries/tags.scm");
 
 // C interface for external languages
-use std::sync::Once;
+use std::sync::OnceLock;
 use std::sync::Mutex;
 
-static INIT: Once = Once::new();
-static mut TRANSFORMER: Option<Mutex<AsciiMathToLatex>> = None;
+static TRANSFORMER: OnceLock<Mutex<(tree_sitter::Parser, AsciiMathToLatex)>> = OnceLock::new();
 
 /// Initialize the global AsciiMathToLatex transformer
 /// This function is thread-safe and only initializes once
-fn get_transformer() -> &'static Mutex<AsciiMathToLatex> {
-    unsafe {
-        INIT.call_once(|| {
-            TRANSFORMER = Some(Mutex::new(AsciiMathToLatex::new()));
-        });
-        TRANSFORMER.as_ref().unwrap()
-    }
+fn get_transformer() -> &'static Mutex<(tree_sitter::Parser, AsciiMathToLatex)> {
+    TRANSFORMER.get_or_init(|| {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&LANGUAGE.into())
+              .expect("Error loading AsciiMath parser");
+        Mutex::new((parser, AsciiMathToLatex::new()))
+    })
 }
 
 /// Represents a string with its length for C ABI compatibility
 #[repr(C)]
-pub struct CStringResult {
-    pub ptr: *mut c_char,
-    pub len: c_uint,
+pub struct FfiString {
+    pub data: *mut c_char,
+    pub len: usize,
+    pub capacity: usize,
 }
 
-impl Default for CStringResult {
+impl Default for FfiString {
     fn default() -> Self {
-        CStringResult {
-            ptr: ptr::null_mut(),
+        FfiString {
+            data: ptr::null_mut(),
             len: 0,
+            capacity: 0,
         }
     }
 }
 
-/// Convert an AsciiMath tree to LaTeX using C ABI
-/// 
-/// # Parameters
-/// - `tree_ptr`: Pointer to the tree_sitter Tree object
-/// - `source_ptr`: Pointer to the source string (null-terminated)
-/// - `source_len`: Length of the source string in bytes
-/// 
-/// # Returns
-/// A CStringResult containing the LaTeX string and its length
-/// The caller is responsible for freeing the returned pointer using `free_string`
-#[no_mangle]
-pub extern "C" fn ascii_math_to_latex(
-    tree_ptr: *mut tree_sitter::Tree,
-    source_ptr: *const c_char,
-    source_len: c_uint,
-) -> CStringResult {
-    if tree_ptr.is_null() || source_ptr.is_null() {
-        return CStringResult::default();
+impl FfiString {
+    pub fn new(s: String) -> Self {
+        let mut bytes = s.into_bytes();
+        let len = bytes.len();
+        bytes.push(0); // Add null terminator for C strings
+        let capacity = bytes.capacity();
+        
+        let data = Box::into_raw(bytes.into_boxed_slice()) as *mut u8 as *mut c_char;
+        
+        FfiString { data, len: len, capacity: capacity }
     }
+}
 
-    // Convert C string to Rust slice
-    let source_slice = unsafe {
-        slice::from_raw_parts(source_ptr as *const u8, source_len as usize)
-    };
-
-    // Get the tree and root node
-    let tree = unsafe { &mut *tree_ptr };
-    let root_node = tree.root_node();
-
-    // Transform to LaTeX
-    let transformer = get_transformer();
-    let result = match transformer.lock() {
-        Ok(guard) => guard.to_latex(root_node, source_slice),
-        Err(_) => return CStringResult::default(),
-    };
-
-    match result {
-        Ok(latex_string) => {
-            // Convert to C string
-            let c_string = std::ffi::CString::new(latex_string).unwrap_or_default();
-            let ptr = c_string.into_raw();
-            let len = unsafe { CStr::from_ptr(ptr).to_bytes().len() as c_uint };
-            
-            CStringResult { ptr, len }
+impl Drop for FfiString {
+    fn drop(&mut self) {
+        if !self.data.is_null() {
+            let slice = unsafe {
+                // We need to include the null terminator in the length
+                Vec::from_raw_parts(self.data as *mut u8, self.len + 1, self.capacity)
+            };
+            drop(slice);
         }
-        Err(_) => CStringResult::default(),
     }
+}
+
+#[no_mangle]
+pub extern "C" fn directly_to_latex(input: *const c_char) -> *mut FfiString {
+    if input.is_null() {
+        return ptr::null_mut();
+    }
+
+    let c_str = unsafe { CStr::from_ptr(input) };
+    let input_str = match c_str.to_str() {
+        Ok(s) => s,
+        Err(_) => return ptr::null_mut()
+    };
+    
+    // Transform to LaTeX
+    let tr = get_transformer();
+    let result = match tr.lock() {
+        Ok(mut guard) => {
+            let (parser, transformer) = &mut *guard;
+            let tree = match parser.parse(input_str, None) {
+                Some(tree) => tree,
+                None => return ptr::null_mut(),
+            };
+            let root_node = tree.root_node();
+            match transformer.to_latex(root_node, input_str.as_bytes()) {
+                Ok(res2) => res2,
+                Err(_) => return ptr::null_mut(),
+            }
+        },
+        Err(_) => return ptr::null_mut(),
+    };
+
+    let ffi_string = FfiString::new(result);
+    Box::into_raw(Box::new(ffi_string))
 }
 
 /// Free the string returned by ascii_math_to_latex
 #[no_mangle]
-pub extern "C" fn free_string(ptr: *mut c_char) {
+pub extern "C" fn free_ffi_string(ptr: *mut FfiString) {
     if !ptr.is_null() {
         unsafe {
-            let _ = std::ffi::CString::from_raw(ptr);
+            let _ = Box::from_raw(ptr);
         }
     }
 }
 
+#[no_mangle]
+pub extern "C" fn ffi_string_data(ptr: *const FfiString) -> *const c_char {
+    if ptr.is_null() {
+        return ptr::null();
+    }
+    unsafe { (*ptr).data }
+}
+
+#[no_mangle]
+pub extern "C" fn ffi_string_len(ptr: *const FfiString) -> c_uint {
+    if ptr.is_null() {
+        return 0;
+    }
+    unsafe { (*ptr).len as c_uint }
+}
 
 
 #[cfg(test)]

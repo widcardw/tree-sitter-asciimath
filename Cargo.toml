@@ -23,7 +23,7 @@ include = [
 
 [lib]
 path = "bindings/rust/lib.rs"
-crate-type = ["cdylib", "rlib", "staticlib"]
+crate-type = ["dylib"]
 
 [dependencies]
 serde = { version = "1.0.228", features = ["derive"] }

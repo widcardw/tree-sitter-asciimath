@@ -13,7 +13,9 @@
         "src/parser.c",
       ],
       "variables": {
-        "has_scanner": "<!(node -p \"fs.existsSync('src/scanner.c')\")"
+        "has_scanner": "<!(node -p \"fs.existsSync('src/scanner.c')\")",
+        "rust_lib_dir": "bindings/rust/target/release",
+        "rust_lib_name": "tree_sitter_asciimath"
       },
       "conditions": [
         ["has_scanner=='true'", {
@@ -23,11 +25,19 @@
           "cflags_c": [
             "-std=c11",
           ],
+          "link_settings": {
+            "libraries": [
+              "-ldl"
+            ]
+          }
         }, { # OS == "win"
           "cflags_c": [
             "/std:c11",
             "/utf-8",
           ],
+          "link_settings": {
+            "libraries": []
+          }
         }],
       ],
     }
