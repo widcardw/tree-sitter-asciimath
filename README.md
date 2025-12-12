@@ -73,6 +73,15 @@ const tree = parser.parse('sqrt(a^2 + b^2)');
 | `npm run rebuild` | Full rebuild: Rust + Node.js + copy library |
 | `npm run test:node` | Run Node.js binding tests |
 
+### C Binding Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run build:c` | Build C bindings using Makefile |
+| `npm run build:c-script` | Build C bindings using shell script |
+| `npm run test:c` | Run C binding example program |
+| `npm run clean:c` | Clean C binding build artifacts |
+
 ### Python Binding Commands
 
 | Command | Description |
@@ -84,8 +93,9 @@ const tree = parser.parse('sqrt(a^2 + b^2)');
 
 | Command | Description |
 |---------|-------------|
-| `npm run lib:prepare` | Prepare project (builds Rust, copies library) |
+| `npm run prepare` | Prepare project (generates symbols, builds Rust, copies library) |
 | `npm run dev` | Development workflow: rebuild + test Node.js bindings |
+| `npm run rebuild:all` | Full rebuild including all bindings (Rust, Node.js, C) |
 
 ### Setup for Development
 
@@ -129,6 +139,7 @@ This project uses a hybrid architecture:
    - Node.js: Uses `dlopen` to dynamically load Rust library
    - Python: Uses ctypes to call Rust functions
    - Rust: Direct library usage
+   - C: Thin wrapper library that dynamically loads Rust FFI functions
 
 ## Roadmap
 
@@ -141,9 +152,10 @@ This project uses a hybrid architecture:
 - [x] Python bindings
 
 ### In Progress / Planned
+- [x] C language bindings ✓
 - [ ] Remove redundant precedences in grammar
 - [ ] Add more corner case tests (`a/b/c/d`, `x^y^z`, etc.)
-- [ ] Additional language bindings (C, Go, Swift)
+- [ ] Additional language bindings (Go, Swift)
 - [ ] `to_mathml` conversion
 - [ ] Performance optimizations
 - [ ] WebAssembly build target
@@ -222,6 +234,45 @@ fn main() {
 }
 ```
 
+### C API
+
+```c
+#include "tree_sitter_asciimath.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    // Convert AsciiMath to LaTeX
+    char* latex = asciimath_convert_to_latex("x^2 + sqrt(y)");
+    if (latex) {
+        printf("LaTeX: %s\n", latex); // Output: "x^{2} + \sqrt{y}"
+        free(latex);
+    }
+    
+    // Get tree-sitter language
+    TSLanguage* language = tree_sitter_asciimath();
+    if (language) {
+        printf("Got tree-sitter language\n");
+    }
+    
+    // Cleanup
+    asciimath_cleanup();
+    return 0;
+}
+```
+
+**Building C bindings:**
+```bash
+# Using Makefile
+cd bindings/c
+make
+make run  # Run example
+
+# Or using npm
+npm run build:c
+npm run test:c
+```
+
 ### Python API
 
 ```python
@@ -244,6 +295,43 @@ print(result)  # Output: "x^{2} + y^{2}"
    npm run test:python
    ```
 5. Submit a pull request
+
+## C Binding Details
+
+### Building from Source
+
+```bash
+# Method 1: Using npm scripts
+npm run rebuild:all  # Builds everything including C bindings
+
+# Method 2: Manual build
+cd bindings/c
+make          # Build using Makefile
+./build.sh    # Alternative: build using shell script
+```
+
+### Library Files
+
+The C binding produces:
+- `libtree_sitter_asciimath_c.dylib` (macOS) / `.so` (Linux) / `.dll` (Windows) - Shared library
+- `libtree_sitter_asciimath_c.a` - Static library
+- `tree-sitter-asciimath-c.pc` - pkg-config file
+
+### Dependencies
+
+The C binding has the following dependencies:
+1. **Runtime**: Rust FFI library (`libtree_sitter_asciimath.*`)
+2. **Build-time**: Rust library must be built first
+3. **System**: `dlopen`/`dlsym` for dynamic loading
+
+### Integration with Other Languages
+
+The C binding can be used as a foundation for bindings in other languages:
+
+- **Go**: Use cgo to call C functions
+- **Swift**: Create a bridging header
+- **Rust (FFI)**: Use `extern "C"` to call C functions
+- **Python (alternative)**: Use ctypes with C library instead of direct Rust FFI
 
 ## License
 

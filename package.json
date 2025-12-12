@@ -4,26 +4,26 @@
   "description": "Tree-sitter parser for AsciiMath",
   "scripts": {
     "init": "tree-sitter init",
-    
     "ts:prepare": "node scripts/generate-symbols.js",
     "generate": "tree-sitter generate",
     "parse": "tree-sitter parse",
     "test": "tree-sitter test",
     "build": "tree-sitter build",
-    
     "build:rust": "cd bindings/rust && cargo build --release",
     "test:rust": "cd bindings/rust && cargo test",
-    
     "build:node": "node-gyp rebuild",
     "copy:rust-lib": "node copy_rust_lib.js",
     "rebuild": "npm run build:rust && npm run build:node && npm run copy:rust-lib",
     "test:node": "node bindings/node/binding.spec.js",
-    
+    "build:c": "cd bindings/c && make",
+    "build:c-script": "cd bindings/c && ./build.sh",
+    "test:c": "cd bindings/c && make run",
+    "clean:c": "cd bindings/c && make clean",
     "uv-prepare": "uv pip install --no-deps --force-reinstall .",
     "test:python": "uv run -m pytest bindings/python/tests/test_binding.py",
-    
     "lib:prepare": "npm run build:rust && npm run copy:rust-lib",
-    "dev": "npm run rebuild && npm run test:node"
+    "dev": "npm run rebuild && npm run test:node",
+    "rebuild:all": "npm run rebuild && npm run build:c"
   },
   "keywords": [
     "tree-sitter",
