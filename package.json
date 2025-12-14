@@ -21,6 +21,8 @@
     "c:clean": "cd bindings/c && make clean",
     "python:prepare": "uv pip install --no-deps --force-reinstall .",
     "python:test": "uv run -m pytest bindings/python/tests/test_binding.py",
+    "python:test-ffi": "cd bindings/python && uv run python test_ffi.py",
+    "python:example-ffi": "cd bindings/python && uv run python example_ffi.py",
     "prepare": "npm run ts:prepare && npm run rust:build && npm run node:copy-lib",
     "dev": "npm run node:rebuild && npm run node:test",
     "rebuild": "npm run rust:build && npm run node:build && npm run node:copy-lib && npm run c:build",

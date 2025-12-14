@@ -647,7 +647,7 @@ class AsciiMathTransformer:
         if not isinstance(node, Node):
             raise TypeError("Expected a tree_sitter.Node object")
 
-        # 使用字典查找方式替代原来的多个if判断
+        # use dictionary lookup instead of multiple if statements
         if node.type in handler.registry:
             method = handler.registry[node.type]
             return method(self, node)

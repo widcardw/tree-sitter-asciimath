@@ -3,7 +3,8 @@
 from importlib.resources import files as _files
 
 from ._binding import language
-
+from .to_latex import AsciiMathTransformer
+from .ffi import AsciiMathFFI, to_latex_ffi, get_ffi, test_ffi
 
 def _get_query(name, file):
     query = _files(f"{__package__}.queries") / file
@@ -28,6 +29,11 @@ def __getattr__(name):
 
 __all__ = [
     "language",
+    "AsciiMathTransformer",
+    "AsciiMathFFI",
+    "to_latex_ffi",
+    "get_ffi",
+    "test_ffi",
     # "HIGHLIGHTS_QUERY",
     # "INJECTIONS_QUERY",
     # "LOCALS_QUERY",
