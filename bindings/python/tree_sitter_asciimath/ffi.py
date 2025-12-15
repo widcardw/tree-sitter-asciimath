@@ -217,6 +217,9 @@ class AsciiMathFFI:
         if not isinstance(asciimath, str):
             raise TypeError(f"Expected string, got {type(asciimath).__name__}")
         
+        if asciimath.strip() == "":
+            return ""
+        
         # Convert string to bytes for C
         input_bytes = asciimath.encode('utf-8')
         
