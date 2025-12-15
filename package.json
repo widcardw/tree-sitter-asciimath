@@ -12,7 +12,7 @@
     "rust:build": "cd bindings/rust && cargo build --release",
     "rust:test": "cd bindings/rust && cargo test",
     "node:build": "node-gyp rebuild",
-    "node:copy-lib": "node copy_rust_lib.js",
+    "node:copy-lib": "node scripts/copy_rust_lib.js",
     "node:rebuild": "npm run rust:build && npm run node:build && npm run node:copy-lib",
     "node:test": "node bindings/node/binding.spec.js",
     "c:build": "cd bindings/c && make",
@@ -26,7 +26,7 @@
     "prepare": "npm run ts:prepare && npm run rust:build && npm run node:copy-lib",
     "dev": "npm run node:rebuild && npm run node:test",
     "rebuild": "npm run rust:build && npm run node:build && npm run node:copy-lib && npm run c:build",
-    "test": "npm run ts:test && npm run rust:test && npm run node:test && npm run c:test && npm run python:test"
+    "test": "npm run ts:test && npm run rust:test && npm run node:test && npm run c:test && npm run python:test-ffi"
   },
   "keywords": [
     "tree-sitter",

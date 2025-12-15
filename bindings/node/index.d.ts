@@ -24,4 +24,6 @@ type Language = {
 };
 
 declare const language: Language;
-export = language;
+declare function toLatex(asciimath: string): string;
+
+export { language, toLatex };

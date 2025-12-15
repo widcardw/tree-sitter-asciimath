@@ -31,7 +31,7 @@ function copyRustLibrary() {
   }
   
   // Paths
-  const rustLibDir = path.join(__dirname, 'target/release');
+  const rustLibDir = path.join(__dirname, '..', 'target/release');
   const rustLibPath = path.join(rustLibDir, libName);
   
   // Check if Rust library exists
@@ -40,8 +40,8 @@ function copyRustLibrary() {
     console.log('Building Rust library...');
     
     try {
-      execSync('cd bindings/rust && cargo build --release', {
-        cwd: __dirname,
+      execSync('cd ../bindings/rust && cargo build --release', {
+        cwd: path.join(__dirname, '..'),
         stdio: 'inherit'
       });
     } catch (error) {
@@ -58,7 +58,7 @@ function copyRustLibrary() {
   }
   
   // Create build directory if it doesn't exist
-  const buildDir = path.join(__dirname, 'build');
+  const buildDir = path.join(__dirname, '..', 'build');
   if (!fs.existsSync(buildDir)) {
     fs.mkdirSync(buildDir, { recursive: true });
   }
@@ -83,7 +83,7 @@ function copyRustLibrary() {
       const installName = `@loader_path/${libName}`;
       try {
         execSync(`install_name_tool -id "${installName}" "${destLibPath}"`, {
-          cwd: __dirname,
+          cwd: path.join(__dirname, '.'),
           stdio: 'inherit'
         });
         console.log('Install name fixed');
@@ -99,7 +99,7 @@ function copyRustLibrary() {
     console.log(`Also copied to: ${rootDestPath}`);
     
     // Copy to bindings/node directory for easier testing
-    const nodeBindingDir = path.join(__dirname, 'bindings/node');
+    const nodeBindingDir = path.join(__dirname, '..', 'bindings/node');
     const nodeDestPath = path.join(nodeBindingDir, libName);
     fs.copyFileSync(rustLibPath, nodeDestPath);
     console.log(`Also copied to: ${nodeDestPath}`);

@@ -201,13 +201,10 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports["language"] = language;
     exports["toLatex"] = Napi::Function::New(env, ToLatex);
     
-    // Register cleanup function
-    static auto cleanup = []() {
+    // Register cleanup hook with Node.js environment
+    napi_add_env_cleanup_hook(env, [](void* /*arg*/) {
         cleanup_rust_library();
-    };
-    
-    // Note: In a real implementation, you might want to register this cleanup
-    // with Node.js's atexit mechanism, but for simplicity we're just defining it
+    }, nullptr);
     
     return exports;
 }

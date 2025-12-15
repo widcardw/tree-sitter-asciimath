@@ -129,9 +129,10 @@ const tree = parser.parse('sqrt(a^2 + b^2)');
 - `symbols-config.json` - Contains almost all the categories and symbols
 - `scripts/generate-symbols.js` - Generates `identifiers/` for grammar.js
 - `grammar.js` - Tree-sitter grammar definition
-- `bindings/rust/lib.rs` - Rust FFI implementation with LaTeX conversion
-- `bindings/node/binding.cc` - Node.js native addon binding
-- `bindings/python/` - Python bindings
+- `bindings/`
+  - `rust/lib.rs` - Rust FFI implementation with LaTeX conversion
+  - `node/binding.cc` - Node.js native addon binding
+  - `python/` - Python bindings
 
 ### Architecture
 
@@ -201,6 +202,8 @@ This project uses a hybrid architecture:
 ## API Reference
 
 ### Node.js API
+
+> ⚠️ Warning: This is not for browser!
 
 ```javascript
 // Import the binding
