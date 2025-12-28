@@ -9,6 +9,7 @@
     "ts:parse": "tree-sitter parse",
     "ts:test": "tree-sitter test",
     "ts:build": "tree-sitter build",
+    "ts:build:wasm": "tree-sitter build --wasm",
     "rust:build": "cd bindings/rust && cargo build --release",
     "rust:test": "cd bindings/rust && cargo test",
     "node:build": "node-gyp rebuild",
